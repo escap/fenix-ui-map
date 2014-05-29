@@ -26,7 +26,7 @@ FM.WMSUtils = FM.Class.extend({
     _createWMSDropDown: function(wmsServers, divID, dropdowndID, outputID, fenixmap) {
 
         // TODO: dynamic width
-        var html = '<select id="'+ dropdowndID+'" style="width:200px" data-placeholder="'+ $.i18n.prop('_selectaWMSServer') +'" class="">';
+        var html = '<select id="'+ dropdowndID+'" style="width:200px;" data-placeholder="'+ $.i18n.prop('_selectaWMSServer') +'" class="">';
         html += '<option value=""></option>';
         for(var i=0; i < wmsServers.length; i++)
             html += '<option value="'+ wmsServers[i].url + '">'+wmsServers[i].label +'</option>';
@@ -36,7 +36,7 @@ FM.WMSUtils = FM.Class.extend({
         $('#' + divID).append(html);
 
         try {
-            $('#' + dropdowndID).chosen({disable_search_threshold:10, width: '100%'});
+            $('#' + dropdowndID).chosen({disable_search_threshold:6, width: '100%'});
         }  catch (e) {}
 
         // enable on click
@@ -105,8 +105,11 @@ FM.WMSUtils = FM.Class.extend({
                 layer.srs = fenixmap.map.options.crs.code;
                 layer.openlegend = true; //this will open the legend by on preview (choose on add if we want to leave it open **/
 
-                console.log($(this));
-               /** TODO: save getLegendURl http://gis.stackexchange.com/questions/21912/how-to-get-wms-legendgraphics-using-geoserver-and-geowebcache **/
+                /** TODO: save legengdURL **/
+                //.legendurl = $(this).children("Style").children("LegendURL");
+                //console.log(layer.legendurl);
+
+                /** TODO: save getLegendURl http://gis.stackexchange.com/questions/21912/how-to-get-wms-legendgraphics-using-geoserver-and-geowebcache **/
 
 
                 /*

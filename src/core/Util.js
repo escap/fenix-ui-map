@@ -16,7 +16,7 @@ FM.Util = {
             case 'ES' : I18NLang = 'es'; break;
             default: I18NLang = 'en'; break;
         }
-        var path =  FMCONFIG.BASEURL + '/'+ FMCONFIG.BASEURL_LANG;
+        var path = FMCONFIG.BASEURL_LANG;
 
         $.i18n.properties({
             name: 'I18N',

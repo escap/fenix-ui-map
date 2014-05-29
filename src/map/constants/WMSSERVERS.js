@@ -15,6 +15,7 @@ FM.WMSSERVERS = {
         {
             label: 'UNREDD Congo',
             label_EN: 'UNREDD Congo',
+            //url: 'http://rdc-snsf.org/diss_geoserver/gwc/service/wms'
             url: 'http://rdc-snsf.org/diss_geoserver/gwc/service/wms'
         },
         {
