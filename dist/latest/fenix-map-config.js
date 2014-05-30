@@ -1,15 +1,15 @@
 FMCONFIG = {
 
     // fenix-maps-js config variables
-    BASEURL: 'http://localhost:8080/fenix-map-js',
+    BASEURL: 'http://168.202.28.214:8085/fenix-map-js',
 
     //BASEURL_DEPENDENCIES: 'config/DEPENDENCIES.json',
     BASEURL_LANG: 'http://localhost:63342/FENIX-MAPS/fenix-map-js/dist/I18N/',
 
     // MAPS Servicies config variables
-    BASEURL_MAPS: 'fenixapps.fao.org/maps',
+    BASEURL_MAPS: 'fenixapps2.fao.org/maps',
 
-    DEFAULT_WMS_SERVER: 'http://fenix.fao.org/geoserver',
+    DEFAULT_WMS_SERVER: 'http://fenixapps.fao.org/geoserver',
 
 
     // BASEURL_MAPS: 'fenixapps.fao.org/maps',

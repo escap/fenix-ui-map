@@ -333,6 +333,7 @@
         };
 
         var mapsSpatialQueries = function(mapsObj, series, xAxisMin, xAxisMax, yAxisMin, yAxisMax ) {
+            console.log("mapsSpatialQueries()");
             var chartOriginalAxes = o.chart.originalAxes;
             if ( chartOriginalAxes.xmin == xAxisMin && chartOriginalAxes.xmax == xAxisMax && chartOriginalAxes.ymin ==  yAxisMin && chartOriginalAxes.ymax == yAxisMax ) {
                 mapsSpatialQueriesReset(mapsObj);
@@ -343,11 +344,12 @@
         };
 
         var mapsSpatialQueriesLoad = function(mapsObj, series, xAxisMin, xAxisMax, yAxisMin, yAxisMax ) {
+            console.log("mapsSpatialQueriesLoad()");
             for(var i=0; i < mapsObj.length; i++) {
                 var mapObj = mapsObj[i];
                 var fenixMap = mapObj.fenixMap;
                 for(var j=0; j < mapObj.layers.length; j++) {
-                    //console.log(mapObj.layers[j]);
+                    console.log(mapObj.layers[j]);
                     var l = mapObj.layers[j].l;
                     var layerHighlight = mapObj.layers[j].layerHighlight;
                     FM.SpatialQuery.scatterLayerFilterFaster(l, fenixMap, series, xAxisMin, xAxisMax, yAxisMin, yAxisMax, layerHighlight, l.layer.reclassify, l.layer.formula);
@@ -356,6 +358,7 @@
         };
 
         var mapsSpatialQueriesReset = function(mapsObj) {
+            console.log("mapsSpatialQueriesReset()");
             for(var i=0; i < mapsObj.length; i++) {
                 var mapObj = mapsObj[i];
                 for(var j=0; j < mapObj.layers.length; j++) {
