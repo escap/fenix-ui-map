@@ -9,12 +9,7 @@
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
 
     <!--Fenix Map -->
-    <!-- leaflet -->
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.1/leaflet.css" />
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.1/leaflet.ie.css" />
-    <![endif]-->
-
+    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.css" />
     <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.markecluster/1.0/MarkerCluster.Default.css" />
 
     <!-- choosen css -->
@@ -24,16 +19,26 @@
     <link rel="stylesheet" href="http://fenixapps.fao.org/repository/css/jquery.power.tip/1.1.0/jquery.powertip.css" type="text/css" />
 
     <!-- Fenix Map CSS -->
-    <link rel="stylesheet" href="../../css/fenix-map-js.css" />
-    <link rel="stylesheet" href="../../css/leaflet-custom.css" />
+    <link rel="stylesheet" href="../../dist/css/fenix-map-js.css" />
+    <link rel="stylesheet" href="../../dist/css/leaflet-custom.css" />
 
 </head>
 
 <body onload="initialize();">
 
-<div style='height: 25px;'></div>
 
-<div style='height: 15px; clear:both;'></div>
+<div class="container">
+    <div class="page-header">
+        <h3>
+            <p class="text-primary">FENIX Scatter Analysis</p>
+        </h3>
+        <h5>
+            <i>Please upload your CSV to analyze it</i>
+        </h5>
+    </div>
+</div>
+
+
 <div class="container">
 
     <!-- TITLE -->
@@ -133,7 +138,7 @@
 
 <!-- FENIX Map-->
 <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/jquery/1.10.2/jquery-1.10.2.min.js"></script>
-<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/0.7.1/leaflet.js"></script>
+<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.js"></script>
 <script src="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.markecluster/1.0/leaflet.markercluster.js"></script>
 <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/jquery.power.tip/1.1.0/jquery.powertip.min.js"></script>
 <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.js'></script>
@@ -149,8 +154,8 @@
 <script src="http://fenixapps.fao.org/repository/js/console.log-wrapper/1.0/consolelog.detailprint.min.js"></script>
 
 <!-- Highchart -->
-<script src="http://fenixapps.fao.org/repository/js/highcharts/3.0.9/js/highcharts.js"></script>
-<script src="http://fenixapps.fao.org/repository/js/highcharts/3.0.9/js/modules/exporting.js"></script>
+<script src="http://fenixapps.fao.org/repository/js/highcharts/4.0.1/js/highcharts.js"></script>
+<script src="http://fenixapps.fao.org/repository/js/highcharts/4.0.1/js/modules/exporting.js"></script>
 
 <!--bootstrap-->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
@@ -172,42 +177,47 @@
 
 
 <!-- fenix-map-js -->
-<script type='text/javascript' src='../../js/fenix-map-js-min.js'></script>
-<script type='text/javascript' src='../../js/fenix-map-js-config.js'></script>
+<script type='text/javascript' src='../../dist/latest/fenix-map-min.js'></script>
+<script type='text/javascript' src='../../dist/latest/fenix-map-config.js'></script>
 <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/wkt.js'></script>
-
-<!-- scatter chart -->
-<!--
-<script src="http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/js/plugins/ChartLibrary.js"></script>
--->
-<script src="../..//js/plugins/ChartLibrary.js"></script>
-<script src="http://fenixapps.fao.org/repository/js/highcharts/plugins/regression/1.0/regression.js"></script>
-
-<script src="../../js/map/controller/SpatialQuery.js"></script>
-
-<script src="../../js/plugins/FMChartScatterRefactoring.js"></script>
-<script src="../../js/plugins/FMDrawing.js"></script>
-<script src="../../js/plugins/FMPopUp.js"></script>
-<script src="../../js/plugins/FMFileHandler.js"></script>
-
-<script src="../../js/map/controller/MapControllerDraggable.js"></script>
-<script src="../../js/map/controller/LayerUtils.js"></script>
-<script src="../../js/map/controller/LayerLegend.js"></script>
-
-<script src="../../js/map/constants/WMSSERVERS.js"></script>
-<script src="../../js/map/constants/DEFAULTLAYER.js"></script>
-
-
-
-<script src="../../js/map/Map.js"></script>
-
-
-<script src='leaflet-image.js'></script>
-
 
 <!-- WKT Parser -->
 <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/terraformer/1.0.2/terraformer-1.0.2.min.js"></script>
 <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/terraformer/wkt-parser/1.0/terraformer-wkt-parser.min.js"></script>
+
+
+
+<!-- scatter chart -->
+
+<script src="http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/js/plugins/ChartLibrary.js"></script>
+
+
+<script src="http://fenixapps.fao.org/repository/js/highcharts/plugins/regression/1.0/regression.js"></script>
+
+
+<script src="../../src/map/utils/SpatialQuery.js"></script>
+
+<script src="../../dist/latest/plugins/FMChartScatterRefactoring.js"></script>
+<script src="../../dist/latest/plugins/FMDrawing.js"></script>
+<script src="../../dist/latest/plugins/FMPopUp.js"></script>
+<script src="../../dist/latest/plugins/FMFileHandler.js"></script>
+
+
+
+<!--<script src="../../js/map/controller/MapControllerDraggable.js"></script>-->
+<!--<script src="../../js/map/controller/LayerUtils.js"></script>-->
+<!--<script src="../../js/map/controller/LayerLegend.js"></script>-->
+
+<!--<script src="../../js/map/constants/WMSSERVERS.js"></script>-->
+<!--<script src="../../js/map/constants/DEFAULTLAYER.js"></script>-->
+
+
+
+<!--<script src="../../js/map/Map.js"></script>-->
+
+
+<script src='leaflet-image.js'></script>
+
 
 
 </html>
@@ -316,7 +326,7 @@ function createScatter(csv) {
     maps.push(map);
 
     var c = new FMChartScatter();
-    console.log(csv);
+    //console.log(csv);
     c.init({
         chart : {
             data : csv,
@@ -396,12 +406,12 @@ function createMap(mapID, fullscrenID) {
         attributionControl: false
     };
 
-    console.log(mapID);
+    //console.log(mapID);
     var m = new FM.Map(mapID, options, mapOptions);
     m.createMap();
 
     // On Move
-    var _m = m;
+   /* var _m = m;
     var GFIchk = {};
     GFIchk["lat-" + m.id] = 0;
     GFIchk["lng-" + m.id] = 0;
@@ -427,7 +437,7 @@ function createMap(mapID, fullscrenID) {
         GFIchk["lng-" + m.id] = 0;
         GFIchk["globalID-" + m.id] = 0;
         $('#' + mapID +'-gfioutput').empty();
-    });
+    });*/
 
 
     /*document.getElementById(m.id).addEventListener("test", function(event){
@@ -446,26 +456,27 @@ function createMap(mapID, fullscrenID) {
 }
 
 function createLayer() {
-    var layer = FMDEFAULTLAYER.getLayer($('#GAUL-TYPE').val())
+    var layer = FMDEFAULTLAYER.getLayer($('#GAUL-TYPE').val(), true, $('#formula option:selected').text())
     layer.layertitle="Scatter Analysis"
     layer.joindata=''
     layer.addborders='true'
     layer.borderscolor='FFFFFF'
     layer.bordersstroke='0.8'
     layer.bordersopacity='0.4'
+    layer.opacity='0.8';
     layer.visibility=true;
 
     var formula = $('#formula option:selected');
     layer.legendtitle=formula.text();
 
-    console.log(formula.val());
+    //console.log(formula.val());
     layer.formula=formula.val();
 
     //layer.cql_filter="adm0_code IN (182)";
     layer.mu = 'Index';
     layer.srs = 'EPSG:3857';
     layer.layertype = 'JOIN';
-    layer.lang='e';
+    layer.lang='en';
     layer.jointype='shaded';
     layer.defaultgfi = true;
     layer.openlegend = true;
@@ -487,7 +498,7 @@ function createLayer() {
 }
 
 function createHighlightLayer(m) {
-    var layer = FMDEFAULTLAYER.getLayer($('#GAUL-TYPE').val())
+    var layer = FMDEFAULTLAYER.getLayer($('#GAUL-TYPE').val(), false)
     layer.layertitle="Scatter Analysis (Highlight)"
     layer.urlWMS = 'http://fenixapps.fao.org/geoserver'
     layer.style = 'highlight_features';
@@ -551,7 +562,7 @@ function swapMasterChart(chartToSwap) {
 }
 
 function updateObjects() {
-    console.log('updateObjects');
+   // console.log('updateObjects');
     var masterChart = masterCharts[0];
     if ( masterCharts.length < 1 ) {
         // do nothing
@@ -563,7 +574,7 @@ function updateObjects() {
 }
 
 function setMapAsMaster(scatterChart, fenixMap) {
-    console.log(scatterChart);
+    //console.log(scatterChart);
     // set the drawing extension to the map
 
     // on selected area estract the codes, based on the joincolumn of the layer
