@@ -495,7 +495,8 @@ FM.MAPController = FM.Class.extend({
         $(idItem + '-title').append(l.layer.layertitle);
 
         // add baselayer icon
-        $('#' + l.id + '-controller-item-baselayer-image').attr("src", FMCONFIG.BASEURL + '/css/images/baselayers/' + l.layer.layername + '.png' );
+//        $('#' + l.id + '-controller-item-baselayer-image').attr("src", FMCONFIG.BASEURL + '/css/images/baselayers/' + l.layer.layername + '.png' );
+        $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
 
         $(idItem+ '-enabledisable').click({id:l.id}, function(event) {
             _this.showHide(event.data.id)

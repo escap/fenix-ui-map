@@ -19,7 +19,7 @@ FM.guiController = {
     baselayer :
         '<div id="REPLACE-controller-box-item" class="fm-box-zindex fm-controller-box-item-baselayer-content">' + // class="fm-controller-box-item">' +
             '<div id="REPLACE-controller-item">' +
-                '<div class="fm-controller-box-item-baselayer-image"><img style="width:48px; height:48px" id="REPLACE-controller-item-baselayer-image" src=""></div>' +
+                '<div class="fm-controller-box-item-baselayer-image" id="REPLACE-controller-item-baselayer-image"></div>' +
                 '<div class="fm-controller-box-item-baselayer-text">' +
                     '<div>' +
                         '<label class="fm-controller-box-item-baselayer-text fm-controller-item-title" id="REPLACE-controller-item-title"><input id="REPLACE-controller-item-radio"  class="fm-checkbox-hide" type="radio" name="MAPID" value="REPLACE"><label>' +
