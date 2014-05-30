@@ -389,7 +389,7 @@ var FAOSTATTrade = (function() {
 
     function createLayer(o, m) {
 
-        var layer = FMDEFAULTLAYER.getLayer('GAUL0_FAOSTAT');
+        var layer = FMDEFAULTLAYER.getLayer('GAUL0_FAOSTAT', true, 'Growth Rate %');
 
         layer.layertitle = m.title;
         layer.measurementunit = m.measurementunit;
@@ -408,7 +408,7 @@ var FAOSTATTrade = (function() {
 
         layer.srs = 'EPSG:3857';
         layer.layertype = 'JOIN';
-        layer.lang='e'; // dynamic
+        layer.lang='en'; // dynamic
         layer.jointype='shaded';
         layer.defaultgfi = true;
         layer.openlegend = true;
