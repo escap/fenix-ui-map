@@ -7,8 +7,11 @@ FMDEFAULTLAYER = {
             case "GAUL0_ISO2"           : return FMDEFAULTLAYER._getGAUL('gaul0_faostat_3857', 'iso2_code', 'the_geom', isjoin, 'faost_n', measurementunit, 'ISO2'); break;
             case "GAUL0_ISO3"           : return FMDEFAULTLAYER._getGAUL('gaul0_faostat_3857', 'iso3_code', 'the_geom', isjoin, 'faost_n', measurementunit, 'ISO3'); break;
             case "GAUL0_BOUNDARIES"     : return FMDEFAULTLAYER._getWMSLayer('gaul0_line_3857'); break;
-            case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
-            case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
+             case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857_2', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
+
+//            case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
+//            case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
+            case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857_2', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
         }
     },
 
@@ -41,12 +44,12 @@ FMDEFAULTLAYER = {
     /** TODO: handle multilanguage **/
     joinDefaultPopUp: function( layer ) {
         var measurementunit  = ( layer.measurementunit )? " " + layer.measurementunit +"": "";
-        var joinlabel  = ( layer.joincolumnlabel )? "<b>{{" + layer.joincolumnlabel +"}}</b><hr>": "";
+        var joinlabel  = ( layer.joincolumnlabel )? "<b>{{" + layer.joincolumnlabel +"}}</b><br>": "";
         layer.customgfi = {
             content : {
-                en: "<div class='fm-popup'>" + joinlabel + "{{{" + layer.joincolumn +"}}} " + measurementunit +"</div>",
-                fr: "<div class='fm-popup'>" + joinlabel + "{{{" + layer.joincolumn +"}}} " + measurementunit +"</div>",
-                es: "<div class='fm-popup'>" + joinlabel + "{{{" + layer.joincolumn +"}}} " + measurementunit +"</div>"
+                en: "<div class='fm-popup'>" + joinlabel + "{{{" + layer.joincolumn +"}}} <i>" + measurementunit +"</i></div>",
+                fr: "<div class='fm-popup'>" + joinlabel + "{{{" + layer.joincolumn +"}}} <i>" + measurementunit +"</i></div>",
+                es: "<div class='fm-popup'>" + joinlabel + "{{{" + layer.joincolumn +"}}} <i>" + measurementunit +"</i></div>"
             }
             ,showpopup: true
             ,output: {

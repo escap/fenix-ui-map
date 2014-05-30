@@ -10,7 +10,7 @@ FMCONFIG = {
     //BASEURL_MAPS: 'fenix.fao.org/mapshm',
     // BASEURL_MAPS: 'hqlprfenixapp2.hq.un.fao.org:11000/maps',
     //BASEURL_MAPS: 'fenixapps.fao.org/maps',
-    BASEURL_MAPS: '168.202.28.214:8085/maps',
+    BASEURL_MAPS: 'fenixapps2.fao.org/maps',
 
     DEFAULT_WMS_SERVER: 'http://fenixapps.fao.org/geoserver',
 

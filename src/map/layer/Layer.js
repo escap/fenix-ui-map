@@ -90,13 +90,15 @@ FM.Layer = FM.Class.extend({
     },
 
     // this is just to use with the WMS Layers // check layer type
-    redraw: function() {
+    redraw: function(fenixmap) {
+        var l = this;
+        console.log(l)
         if (l.layer.layertype ) {
             switch(l.layer.layertype ) {
                 case 'JOIN':
                     if (l.layer.jointype.toLocaleUpperCase() == 'SHADED') {
                         if ( fenixmap ) fenixmap.addLayer(this);
-                        else if ( this._fenixmap) this._fenixmap.addLayer(this);
+                        else if ( this._fenixmap ) this._fenixmap.addLayer(this);
                     }
                     else if (l.layer.jointype.toLocaleUpperCase() == 'POINT') console.log('TODO: handle redraw point');
                     break;

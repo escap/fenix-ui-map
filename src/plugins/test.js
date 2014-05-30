@@ -20,7 +20,7 @@
         var log = function() {
 
             var app = test;
-             $.get('http://168.202.23.224:8085/fenix-map-js/projects/countrystat/csv/NGA_rainfall_2005-2006.csv', { test: "asdasd"}).done(function( data ) {
+             $.get('http://168.202.23.224:8085/fenix-map-js/projects/countrystat/csv/GAUL1_NGA_rainfall_2005-2006.csv', { test: "asdasd"}).done(function( data ) {
                //console.log(data);
                 clear(app);
             });

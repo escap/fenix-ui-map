@@ -133,7 +133,10 @@ FM.SpatialQuery = {
 
     customPopup: function(response, custompopup, lang, joindata) {
         console.log('SpatialQuery.customPopup()')
-        console.log(joindata)
+        //console.log(joindata)
+        //console.log(response)
+        //console.log(custompopup)
+        //console.log(lang)
         var values = this._parseHTML(custompopup.content[lang]);
         if ( values.id.length > 0 || values.joinid.length > 0) {
             var h = $('<div></div>').append(response);
@@ -152,7 +155,7 @@ FM.SpatialQuery = {
 
     _customizePopUp:function(content, values, responsetable, joindata) {
         console.log('SpatialQuery._customizePopUp()')
-        console.log(joindata)
+        //console.log(joindata)
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
         var rowsData = [];
@@ -170,8 +173,8 @@ FM.SpatialQuery = {
         // this is in case the joinid is not empty TODO: split the code
         if ( joindata ) {
             var headersHTMLJOINIndexs = [];
-            console.log( 'values.joinid');
-            console.log( values.joinid);
+            //console.log( 'values.joinid');
+            //console.log( values.joinid);
             for ( var i=0;  i < headersHTML.length; i ++) {
                 for (var j=0; j< values.joinid.length; j++) {
                     if ( values.joinid[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
@@ -186,12 +189,12 @@ FM.SpatialQuery = {
             rowsData.push($(tableHTML[i]).find('td'))
         }
 
-        console.log(rowsData);
-        console.log(headersHTML);
+        //console.log(rowsData);
+        //console.log(headersHTML);
 
         // create the response results
         var htmlresult = [];
-        console.log(rowsData);
+        //console.log(rowsData);
         for( var j=0; j < rowsData.length; j++) {
 
             // this is done for each row of result (They could be many rows)
@@ -201,21 +204,20 @@ FM.SpatialQuery = {
             for(var i=0; i<headersHTMLIndexs.length; i ++) {
                 var header = '{{' + headersHTML[headersHTMLIndexs[i]].innerHTML + '}}'
                 var d = rowsData[j][headersHTMLIndexs[i]].innerHTML;
-                console.log(d);
+                //console.log(d);
                 c = FM.Util.replaceAll(c, header, d);
             }
 
             // Replace joindata (if needed)
             if ( joindata ) {
-                console.log('here');
-                console.log(headersHTMLJOINIndexs);
+                //console.log(headersHTMLJOINIndexs);
 
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
-                    console.log(headersHTML[headersHTMLJOINIndexs[i]]);
+                    //console.log(headersHTML[headersHTMLJOINIndexs[i]]);
                     var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
                     var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
-                    console.log(v);
+                    //console.log(v);
                     c = FM.Util.replaceAll(c, header, v);
                 }
             }
@@ -228,11 +230,11 @@ FM.SpatialQuery = {
 
 
     _getJoinValueFromCode: function(code, joindata) {
-        console.log("SpatialQuery._getJoinValueFromCode()");
+        //console.log("SpatialQuery._getJoinValueFromCode()");
 
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
         var integerCode = ( parseInt(code) )? parseInt(code): null
-        console.log(joindata);
+        //console.log(joindata);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
@@ -254,7 +256,7 @@ FM.SpatialQuery = {
         values.id = [];
         values.joinid = [];
 
-        console.log(content);
+        //console.log(content);
         var array = content.match(/\{\{.*?\}\}/g);
         for (var i=0; i < array.length; i++) {
             array[i] = FM.Util.replaceAll(array[i], "{{", "");
@@ -280,7 +282,7 @@ FM.SpatialQuery = {
         var result = [];
         if ( table ) {
             var r = FM.SpatialQuery.transposeHTML(table)
-            console.log(r);
+            //console.log(r);
             if ( r != null ) return r;
         }
         return null;
@@ -291,7 +293,7 @@ FM.SpatialQuery = {
 
         var titleHTML = table.find('caption');
 
-        console.log(table)
+        //console.log(table)
 
         try {
             div.append(titleHTML[0].innerHTML)
@@ -381,9 +383,11 @@ FM.SpatialQuery = {
     },
 
     scatterLayerFilterFaster:function(l, fenixMap, series, xmin, xmax, ymin, ymax, layerHighlight, reclassify, formula) {
-        //console.log('----------scatterLayerFilterFaster');
-        //console.log(formula);
-        //console.log(series);
+        console.log('----------scatterLayerFilterFaster');
+        console.log(formula);
+        console.log(series);
+        console.log(l);
+        console.log(layerHighlight);
         var zoomToFeatures = ( l.layer.zoomToFeatures )?  l.layer.zoomToFeatures : false;
         if ( !l.leafletLayer || reclassify ) l.layer.joindata = [];
 
@@ -448,13 +452,14 @@ FM.SpatialQuery = {
 
     // Highlight the features (it's passed not '10','15' that has to be converted)
     highlightFeaturesOfLayer:  function(l, codes) {
-        //console.log('highlightFeaturesOfLayer')
-        //console.log(l)
+        console.log('highlightFeaturesOfLayer')
+        console.log(l)
         console.log(codes)
-        codes = FM.Util.replaceAll(codes, "'", "");
+        var codes = FM.Util.replaceAll(codes, "'", "");
 
 
         l.layer.cql_filter = l.layer.joincolumn + " IN (" + codes + ")";
+        console.log(l.layerAdded)
         if ( l.layerAdded )
             l.redraw();
         else
@@ -507,6 +512,7 @@ FM.SpatialQuery = {
                 //console.log(response);
                 var wkt = new Wkt.Wkt();
                 wkt.read(response)
+                console.log("WKT:");
                 console.log(wkt)
                 map.panTo([wkt.components[0].y,wkt.components[0].x]);
             },
