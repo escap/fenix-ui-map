@@ -71,8 +71,9 @@ FM.Layer = FM.Class.extend({
         options.id = this.id;
 
         // can be used layers (default WMS parameter or layername)
-        options.layers = this.layer.layers;
-        if ( this.layer.layername ) options.layers = this.layer.layername;
+//        options.layers = this.layer.layers;
+//        if ( this.layer.layername ) options.layers = this.layer.layername;
+        options.layers = ( this.layer.layername )?  this.layer.layername: this.layer.layers;
         options.format= this.layer.format;
         options.transparent = this.layer.transparent.toUpperCase();
         options.visibility = this.layer.visibility;
