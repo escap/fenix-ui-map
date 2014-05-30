@@ -1,7 +1,7 @@
-* {
-    font-family: 'Roboto', sans-serif !important;
-    font-family: 'Roboto Condensed', sans-serif;
-}
+/** {*/
+    /*font-family: 'Roboto', sans-serif !important;*/
+    /*font-family: 'Roboto Condensed', sans-serif;*/
+/*}*/
 
 .fm-map-box {
     position:relative;
@@ -505,6 +505,18 @@ div#legend.bottomright div table {
 
 /** join popup hover **/
 
+.fm-popup-join-title {
+    color: #428BCA;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.fm-popup-join-content {
+    color: #47576F;
+    font-size: 11px;
+    margin-top:3px;
+}
+
 .fm-popup-join-point-holder {
     position:absolute;
     bottom:12px;
@@ -621,6 +633,7 @@ div.fm-controller-item-title {
     margin-left: 2px;
     margin-top: 2px;
     font-weight: normal;
+    font-size:12px;
 }
 
 .fm-checkbox-hide {
@@ -948,5 +961,26 @@ div.fm-controller-item-title {
 
 .fm-icon-close:hover {
     background-position: -12px 0px;
+}
+
+
+.fm-icon-baselayer-ESRI_WORLDSTREETMAP {
+    background-image: url(images/baselayers/ESRI_WORLDSTREETMAP.png);
+}
+
+.fm-icon-baselayer-ESRI_WORLDTERRAINBASE {
+    background-image: url(images/baselayers/ESRI_WORLDTERRAINBASE.png);
+}
+
+.fm-icon-baselayer-OSM {
+    background-image: url(images/baselayers/OSM.png);
+}
+
+.fm-icon-baselayer-MAPQUEST_NASA_AERIAL {
+    background-image: url(images/baselayers/MAPQUEST_NASA_AERIAL.png);
+}
+
+.fm-icon-baselayer-OSM_GRAYSCALE {
+    background-image: url(images/baselayers/OSM_GRAYSCALE.png);
 }
 
