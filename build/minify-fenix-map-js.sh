@@ -6,6 +6,7 @@ mkdir -p $DISTRIBUTION_FOLDER
 
 # Create a demo folder with the files placed in ../projects
 CREATE_DEMO_FILES=true
+DEMO_FOLDER=projects
 
 
 # TODO: use a variable for the files (or an external source)
@@ -40,13 +41,14 @@ then
         #echo $DEST_FOLDER
 
         # destination folder
-        DESTINATION_FOLDER=$DISTRIBUTION_FOLDER/demo$DEST_FOLDER/
+        DESTINATION_FOLDER=$DISTRIBUTION_FOLDER/$DEMO_FOLDER/$DEST_FOLDER/
 
 #        echo "DESTINATION FOLDER"
 #        echo $FOLDER
 #        echo $DESTINATION_FOLDER
 
         # create folder (if it doesn't exists yet)
+        rm $DESTINATION_FOLDER -Rf
         mkdir -p $DESTINATION_FOLDER
 
         FILES=$FOLDER/*
