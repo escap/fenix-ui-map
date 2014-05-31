@@ -12,7 +12,9 @@
 
             SUFFIX: FMStyleUtils.randomID(),
             ID_CODE_PANEL: "fm_style_code_panel_", // then should be added the suffix
-            ID_APPLY_BTN: "fm_style_apply_btn_",
+            ID_APPLY_BTN: "fm_style_apply_style_",
+            ID_EXPORT_SLD_BTN: "fm_style_export_sld_",
+            ID_EXPORT_CSS_BTN: "fm_style_export_css_",
             SERVICE_CSS2SLD: 'http://168.202.28.214:8090/geoserver/CSS2SLD' //TODO move to a configuration file
         };
 
@@ -32,6 +34,8 @@
 
             // apply style listener
             $('#' + o.ID_APPLY_BTN + o.SUFFIX).bind( "click", applyStyle);
+            $('#' + o.ID_EXPORT_SLD_BTN + o.SUFFIX).bind( "click", exportSLD());
+            $('#' + o.ID_EXPORT_CSS_BTN + o.SUFFIX).bind( "click", exportCSS());
         }
 
         var getCodePanelValue = function() {
@@ -40,6 +44,18 @@
 
         var setLayer = function(l) {
             return o.l = l;
+        }
+
+        var exportCSS = function() {
+            alert(o.codePanel.getValue());
+        }
+
+        var exportSLD = function() {
+            alert(o.SLD);
+        }
+
+        var getCodePanelValue = function() {
+            return o.codePanel.getValue();
         }
 
         var applyStyle = function() {
