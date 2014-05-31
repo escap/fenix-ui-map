@@ -26,7 +26,6 @@ cp ../src/fenix-map-config.js $DISTRIBUTION_FOLDER
 # remove file that hass been created
 rm fenix-map-min.js
 
-    BASEURL_MAPS: 'fenixapps2.fao.org/maps',
 if [ $CREATE_DEMO_FILES = true ]
 then
     # FOLDER OF THE PROJECTS to move to demo
@@ -74,11 +73,17 @@ then
                 # echo $TMP
 
                 #changing javascript folder
-                sed "s/dist\/latest\///g" $TMP | tee $DEFNITITIVE_PATH >/dev/null
+                TMP2=$DESTINATION_FOLDER$filename.tmp2
+                sed "s/dist\/latest\///g" $TMP | tee $TMP2 >/dev/null
+                # echo $DEFNITITIVE_PATH
+
+                #changing plugins folder
+                sed "s/src\/plugins\//plugins\//g" $TMP2 | tee $DEFNITITIVE_PATH >/dev/null
                 # echo $DEFNITITIVE_PATH
 
                 #remove tmp file
                 rm $TMP
+                rm $TMP2
             fi
         done
     done
