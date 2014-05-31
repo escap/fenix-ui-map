@@ -224,6 +224,8 @@ FM.MAPController = FM.Class.extend({
             var idControllerItem = l.id + '-controller-item';
             var overlayStructure = FM.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
 
+            // TODO: a way to get the layer back by the ID
+
             // $(idStructure).append(overlayStructure);
             $(idStructure).prepend(overlayStructure);
 

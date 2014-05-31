@@ -16,6 +16,27 @@ FM.Layer = FM.Class.extend({
         opacity: 1,
 
         // Other Options
+        name: '',
+        tiitle: '',
+        abstract: '',
+        srs: '',
+        LatLonBoundingBox: '',
+        BoundingBox: '',
+        Style: {
+            name: '',
+            title: '',
+            abstract: '',
+            legendurl: {
+                format: '',
+                onlineresource: '' //differenct xml attributes (how to store it?
+            }
+        },
+        KeywordList: [],
+
+
+
+
+
         layertitle: '',
         enablegfi: true,
         layertype: 'WMS', //['WMS', 'JOIN']
@@ -71,20 +92,22 @@ FM.Layer = FM.Class.extend({
         options.id = this.id;
 
         // can be used layers (default WMS parameter or layername)
-//        options.layers = this.layer.layers;
-//        if ( this.layer.layername ) options.layers = this.layer.layername;
-        options.layers = ( this.layer.layername )?  this.layer.layername: this.layer.layers;
+        options.layers = ( this.layer.name )?  this.layer.name: this.layer.layers;
         options.format= this.layer.format;
         options.transparent = this.layer.transparent.toUpperCase();
         options.visibility = this.layer.visibility;
         options.opacity = this.layer.opacity;
 
+        /** TODO: handle additional parameters that are not default ones **/
+        /** i.e. http://nyc.freemap.in/cgi-bin/mapserv?MAP=/www/freemap.in/nyc/map/basemap.map **/
+
         // check whether styles or style is set (styles is the default URL parameter)
         options.styles=this.layer.styles;
         if ( this.layer.style ) options.styles = this.layer.style;
-        if ( this.layer.sldurl ) options.sld=this.layer.sldurl;
-        if ( this.layer.cql_filter ) options.cql_filter=this.layer.cql_filter;
-        if ( this.layer.sld_body ) options.sld_body=this.layer.sld_body;
+        if ( this.layer.sldurl ) options.sld = this.layer.sldurl;
+        if ( this.layer.cql_filter ) options.cql_filter = this.layer.cql_filter;
+        if ( this.layer.sld_body ) options.sld_body = this.layer.sld_body;
+        this.layer.layers = ( this.layer.layername )?  this.layer.layername: this.layer.layers;
 
         return options;
     },

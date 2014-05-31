@@ -2,7 +2,7 @@ FM.TileLayer = FM.Layer.extend({
 
     createTileLayer: function() {
        var tileTitle = 'TITLE_' + this.layer.lang.toUpperCase();
-       var layer = FM.TILELAYER[this.layer.layername];
+       var layer = (this.layer.layername)? FM.TILELAYER[this.layer.layername]: FM.TILELAYER[this.layer.layers];
        this.layer.layertitle = {};
        this.layer.layertitle = layer[tileTitle];
        this.layer.layertype= 'TILE';
@@ -14,7 +14,9 @@ FM.TileLayer = FM.Layer.extend({
 
 FM.TileLayer.createBaseLayer = function (layername, lang) {
     var layer = {};
-    layer.layername =layername;
+    // this is replicated because in wms it's used "layers" instead of layername
+    layer.layername = layername;
+    layer.layers = layername;
     layer.layertype ='TILE';
     layer.lang = lang;
     var l = new FM.TileLayer(layer);

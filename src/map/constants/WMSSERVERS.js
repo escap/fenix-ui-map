@@ -19,6 +19,11 @@ FM.WMSSERVERS = {
             url: 'http://rdc-snsf.org/diss_geoserver/gwc/service/wms'
         },
         {
+            label: 'OpenGeo Demo Server',
+            label_EN: 'OpenGeo Demo Server',
+            url: 'http://demo.opengeo.org/geoserver/ows'
+        },
+        {
             label: 'HarvestChoice 1',
             label_EN: 'HarvestChoice 1',
             url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_1/MapServer/WMSServer'
@@ -62,7 +67,8 @@ FM.WMSSERVERS = {
             label: 'GP Map Service',
             label_EN: 'gp map service201',
             url: 'http://geoportal.logcluster.org:8081/gp_map_service201/wms'
-        }
+        },
+
 
 /*        ,{
             label: 'OCHA Map Service',
