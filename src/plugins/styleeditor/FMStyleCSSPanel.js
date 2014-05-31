@@ -34,8 +34,8 @@
 
             // apply style listener
             $('#' + o.ID_APPLY_BTN + o.SUFFIX).bind( "click", applyStyle);
-            $('#' + o.ID_EXPORT_SLD_BTN + o.SUFFIX).bind( "click", exportSLD());
-            $('#' + o.ID_EXPORT_CSS_BTN + o.SUFFIX).bind( "click", exportCSS());
+            $('#' + o.ID_EXPORT_SLD_BTN + o.SUFFIX).bind( "click", exportSLD);
+            $('#' + o.ID_EXPORT_CSS_BTN + o.SUFFIX).bind( "click", exportCSS);
         }
 
         var getCodePanelValue = function() {
