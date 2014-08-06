@@ -11,6 +11,8 @@ FMDEFAULTLAYER = {
 
 //            case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
 //            case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
+
+            // TODO: change to a standard GAUL2 layer. 'gaul2_3857_2'is another GAUL2 used with the new popup (the old gaul2 as content.ftl used by countrystat)
             case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857_2', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
         }
     },
@@ -28,7 +30,6 @@ FMDEFAULTLAYER = {
             FMDEFAULTLAYER.joinDefaultPopUp(layer);
             layer.joinboundary = joinboundary;
         }
-        console.log(layer);
         return layer;
     },
 
@@ -43,6 +44,7 @@ FMDEFAULTLAYER = {
 
     /** TODO: handle multilanguage **/
     joinDefaultPopUp: function( layer ) {
+
         var measurementunit  = ( layer.measurementunit )? " " + layer.measurementunit +"": "";
         var joinlabel  = ( layer.joincolumnlabel )? "<div class='fm-popup-join-title'>{{" + layer.joincolumnlabel +"}}</div>": "";
         layer.customgfi = {

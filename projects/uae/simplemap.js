@@ -107,7 +107,7 @@
                     var _data = data;
                     $.ajax({
                         type: "GET",
-                        url: FMCONFIG.BASEURL+ '/js/plugins/gui/map-bs.html',
+                        url: '../../src/plugins/gui/map-bs.html',
                         success: function(data) {
                             var id = FM.Util.randomID();
                             var widget = FM.Util.replaceAll(data, '_REPLACE', id)

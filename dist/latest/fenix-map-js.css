@@ -28,6 +28,10 @@
     z-index: 999;
 }
 
+.fm-box label {
+    text-overflow: ellipsis;
+    max-width: 160px;
+}
 
 .fm-controller-box-title-icon {
     position: relative;
@@ -982,5 +986,20 @@ div.fm-controller-item-title {
 
 .fm-icon-baselayer-OSM_GRAYSCALE {
     background-image: url(images/baselayers/OSM_GRAYSCALE.png);
+}
+
+.cards-card {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 16px;
+    outline: medium none;
+    overflow: hidden;
+    position: absolute;
+    transition: background-color 200ms cubic-bezier(0.52, 0, 0.48, 1) 0s;
+    width: 400px;
+    z-index: 0;
 }
 

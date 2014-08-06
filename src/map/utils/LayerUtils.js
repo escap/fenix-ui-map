@@ -33,7 +33,7 @@ FM.LayerUtils = {
 
     _zoomToRequest: function(map, boundary, code, srs) {
         var _this = this;
-        var url = 'http://' + FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
+        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
         var xhr = new RequestHandler();
         xhr.open('GET', url);
         xhr.setContentType('application/x-www-form-urlencoded');
@@ -57,7 +57,7 @@ FM.LayerUtils = {
         if (l.leafletLayer) l.leafletLayer.setOpacity(opacity)
         l.layer.opacity = opacity;
         l.leafletLayer.options.opacity = opacity;
-        console.log( l.leafletLayer)
+        //console.log( l.leafletLayer)
     },
 
     filterLayerMinEqualThan:function(fenixMap, l, value) {

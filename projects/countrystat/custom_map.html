@@ -3,92 +3,37 @@
 <head>
     <link rel='icon' type='image/png' href='http://fenixapps.fao.org/repository/favicon/faostat.png'>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>CountrySTAT View</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
 
-    <!--Fenix Map -->
-    <!-- leaflet -->
+    <!-- Google fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,700,400italic|Roboto+Condensed' rel='stylesheet' type='text/css'>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.css" />
-
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.markecluster/1.0/MarkerCluster.Default.css" />
-
-    <!-- choosen css -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/css/jquery.power.tip/1.1.0/jquery.powertip.css" type="text/css" />
+    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.css" />
     <link href='http://fenixapps.fao.org/repository/js/chosen/1.0.0/chosen.min.css' rel='stylesheet'>
 
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.css" />
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/css/jquery.power.tip/1.1.0/jquery.powertip.css" type="text/css" />
-
-    <!-- Fenix Map CSS -->
-    <link rel="stylesheet" href="../../css/fenix-map-js.css" />
-    <link rel="stylesheet" href="../../css/leaflet-custom.css" />
+    <!-- JAVASCRIPT -->
 
     <!-- FENIX Map-->
-
-    <!-- fenix-map-js -->
-    <script type='text/javascript' src='../../dist/fenix-map-js-min-all.js'></script>
-    <script type='text/javascript' src='../../js/fenix-map-js-config.js'></script>
-
-    <!-- choosen JS -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.js"></script>
+    <script src="http://fenixapps.fao.org/repository/js/jquery.power.tip/1.1.0/jquery.powertip.min.js"></script>
+    <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.js'></script>
+    <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min.js'></script>
+    <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery.hoverIntent/1.0/jquery.hoverIntent.js'></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/chosen/1.0.0/chosen.jquery.min.js'></script>
 
-
-    <!-- Highchart -->
-    <script src="http://fenixapps.fao.org/repository/js/highcharts/3.0.7/js/highcharts.js"></script>
-    <script src="http://fenixapps.fao.org/repository/js/highcharts/3.0.7/js/modules/exporting.js"></script>
-
-    <!--bootstrap-->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-
-    <!-- dependencies -->
     <script src='http://fenixapps.fao.org/repository/js/FENIX/utils/import-dependencies-1.0.js'></script>
 
-
-
-    <!-- scatter chart -->
-    <script src="http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/js/plugins/ChartLibrary.js"></script>
-    <script src="http://fenixapps.fao.org/repository/js/highcharts/plugins/regression/1.0/regression.js"></script>
-
-    <script src="../../js/map/utils/LayerLegend.js"></script>
-
-    <script src="../../js/map/utils/SpatialQuery.js"></script>
-
-    <script src="../../js/map/gui/gui-controller.js"></script>
-    <script src="../../js/core/WMSUtils.js"></script>
-    <script src="../../js/core/Util.js"></script>
-
-    <script src="../../js/map/constants/DEFAULTLAYER.js"></script>
-
-<!--    <script src="../../js/core/WMSUtils.js"></script>
-
-    <script src="../../js/map/constants/WMSSERVERS.js"></script>
-
-    <script src="../../js/map/controller/LayerUtils.js"></script>
-    <script src="../../js/map/controller/MapControllerDraggable.js"></script>
-    <script src="../../js/map/controller/LayerLegend.js"></script>
-
-
-    <script src="../../js/map/layer/Layer.js"></script>
-
-
-    <script src="../../js/core/Util.js"></script>
-
-    <script src="../../js/map/Map.js"></script>-->
-
-
-    <script src='../../js/plugins/exportimage/leaflet-image.js'></script>
-
-    <script src="../../js/core/Util.js"></script>
-
-    <script src="../../js/map/Map.js"></script>
-
-    <script src="../../js/map/utils/Plugins.js"></script>
-
-    <script src="../../js/plugins/raster/Histogram.js"></script>
-
-
-
+    <!-- fenix map -->
+    <link rel="stylesheet" href="../../dist/css/fenix-map-js.css" />
+    <link rel="stylesheet" href="../../dist/css/leaflet-custom.css" />
+    <script type='text/javascript' src='../../dist/latest/fenix-map-config.js'></script>
+    <script type='text/javascript' src='../../dist/latest/fenix-map-min.js'></script>
 
 
 </head>
@@ -309,7 +254,7 @@ function createGUI(title, data, callback) {
     var _data = data;
     $.ajax({
         type: "GET",
-        url: FMCONFIG.BASEURL+ '/js/plugins/gui/map-bs.html',
+        url: '../../src/plugins/gui/map-bs.html',
         success: function(data) {
             var id = FM.Util.randomID();
             var widget = FM.Util.replaceAll(data, '_REPLACE', id)

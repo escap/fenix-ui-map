@@ -8,7 +8,6 @@ FM.WMSUtils = FM.Class.extend({
     _fenixMap: '',
     _wmsServers: '',
     _mapID: '',
-
     _lang: 'EN',
 
     // JSON
@@ -24,6 +23,7 @@ FM.WMSUtils = FM.Class.extend({
     },
 
     _createWMSDropDown: function(wmsServers, divID, dropdowndID, outputID, fenixmap) {
+        console.log(wmsServers);
 
         // TODO: dynamic width
         var html = '<select id="'+ dropdowndID+'" style="width:200px;" data-placeholder="'+ $.i18n.prop('_selectaWMSServer') +'" class="">';
@@ -42,7 +42,7 @@ FM.WMSUtils = FM.Class.extend({
         // enable on click
         var _this = this;
         $( "#" + dropdowndID ).change({},  function (event) {
-            _this._createWMSOutputRequest(outputID, fenixmap, $( this ).val(), null );
+            _this._createWMSOutputRequest(outputID, fenixmap, $( this ).val());
         });
     },
 
@@ -55,17 +55,17 @@ FM.WMSUtils = FM.Class.extend({
      * @param urlOptions
      * @private
      */
-    _createWMSOutputRequest: function(id, fenixmap, wmsServerURL, urlOptions ) {
+     /** TODO: urlOptions (urlParameters) non e' usato!!! **/
+    _createWMSOutputRequest: function(id, fenixmap, wmsServerURL) {
         $("#" + id).empty();
         FM.UIUtils.loadingPanel(id, '30px');
 
-        var url = 'http://' + FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
-        url += '?SERVICE=WMS';
+        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES
+        url += (url.contains('?'))? "&": "?";
+        url += 'SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&request=GetCapabilities';
         url += '&urlWMS=' + wmsServerURL;
-        if ( urlOptions )
-            url += '&=' + urlOptions;
 
         var _this = this;
         var xhr = new XMLHttpRequest();
@@ -155,15 +155,14 @@ FM.WMSUtils = FM.Class.extend({
     },
 
 
-    _WMSCapabilities: function(id, fenixmap, wmsServerURL, urlOptions) {
+    _WMSCapabilities: function(id, fenixmap, wmsServerURL) {
         // TODO: check it because in theory it shouldn't be needed
-        var url = 'http://' + FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
-        url += '?SERVICE=WMS';
+        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
+        url += (url.contains('?'))? "&": "?";
+        url += 'SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&request=GetCapabilities';
         url += '&urlWMS=' + wmsServerURL;
-        if ( urlOptions )
-            url += '&=' + urlOptions;
 
         var _this = this;
         var xhr = new XMLHttpRequest();
@@ -207,8 +206,9 @@ FM.WMSUtils = FM.Class.extend({
 
 
     WFSCapabilities: function(id, fenixmap, wmsServerURL) {
-        var url = 'http://' + FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
-        url += '?SERVICE=WFS';
+        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
+        url += (url.contains('?'))? "&": "?";
+        url += 'SERVICE=WFS';
         url += '&VERSION=1.0.0';
         url += '&request=GetCapabilities';
         url += '&urlWMS=' + wmsServerURL;
@@ -228,8 +228,6 @@ FM.WMSUtils = FM.Class.extend({
     },
 
     _createWFSDropwDown: function(id, fenixmap, xmlResponse, wmsServerURL ) {
-
-
         $(xmlResponse).find('Layer').each(function() {
             /** TODO: optimize ramdon function **/
             var rand = FM.Util.randomID();
@@ -257,5 +255,4 @@ FM.WMSUtils = FM.Class.extend({
             }
         });
     }
-
 });

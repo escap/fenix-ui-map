@@ -4,8 +4,13 @@ FM.WMSSERVERS = {
         {
             label: 'FENIX WMS Server',
             label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
-            url: 'http://fenixapps.fao.org/geoserver'
+            url: 'http://hqlprfenixapp2.hq.un.fao.org:12100/geoserver/wms'
         },
+//        {
+//            label: 'FENIX WMS Server',
+//            label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
+//            url: 'http://fenixapps.fao.org/geoserver'
+//        },
         {
             label: 'DATA FAO ORG',
             label_EN: 'DATA FAO ORG',
@@ -15,8 +20,37 @@ FM.WMSSERVERS = {
         {
             label: 'UNREDD Congo',
             label_EN: 'UNREDD Congo',
-            //url: 'http://rdc-snsf.org/diss_geoserver/gwc/service/wms'
             url: 'http://rdc-snsf.org/diss_geoserver/gwc/service/wms'
+        },
+        {
+            label: 'Wales OpenData',
+            label_EN:  'Wales OpenData',
+            url: 'http://inspire.wales.gov.uk/maps/ows'
+        },
+        {
+            label: 'Scotland OpenData',
+            label_EN:  'Scotland OpenData',
+            url: 'http://sedsh127.sedsh.gov.uk/arcgis/services/ScotGov/StatisticalUnits/MapServer/WMSServer'
+        },
+        {
+            label: 'Netherlands OpenData',
+            label_EN:  'Netherlands OpenData',
+            url: 'http://geodata.nationaalgeoregister.nl/ahn2/wcs'
+        },
+        {
+            label: 'German OpenData',
+            label_EN:  'German OpenData',
+            url: 'http://geo.sv.rostock.de/geodienste/verwaltung/wms'
+        },
+//        {
+//            label: 'De Agostini of',
+//            label_EN:  'De Agostini',
+//            url: 'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/de_agostini.map'
+//        },
+        {
+            label: 'ENVIRONMENT OpenData',
+            label_EN:  'Scotland OpenData',
+            url: 'http://lasigpublic.nerc-lancaster.ac.uk/ArcGIS/services/Biodiversity/GMFarmEvaluation/MapServer/WMSServer'
         },
         {
             label: 'OpenGeo Demo Server',
@@ -68,6 +102,17 @@ FM.WMSSERVERS = {
             label_EN: 'gp map service201',
             url: 'http://geoportal.logcluster.org:8081/gp_map_service201/wms'
         },
+        {
+            label: 'Vienna OpenData',
+            label_EN:  'Vienna OpenData',
+            url: 'http://data.wien.gv.at/daten/wms'
+        }
+        /*,
+        {
+            label: 'toscana',
+            label_EN: 'Cubewerx Map Service',
+            url: 'http://eusoils.jrc.ec.europa.eu/wrb/wms_Threats.asp'
+        }*/
 
 
 /*        ,{

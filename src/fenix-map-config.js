@@ -7,7 +7,8 @@ FMCONFIG = {
     BASEURL_LANG: 'http://localhost:63342/FENIX-MAPS/fenix-map-js/dist/I18N/',
 
     // MAPS Servicies config variables
-    BASEURL_MAPS: 'fenixapps2.fao.org/maps',
+    //BASEURL_MAPS: 'http://fenixapps2.fao.org/maps',
+    BASEURL_MAPS: 'http://fenixapps2.fao.org/maps',
 
     DEFAULT_WMS_SERVER: 'http://fenixapps.fao.org/geoserver',
 
@@ -20,6 +21,7 @@ FMCONFIG = {
     MAP_SERVICE_GFI_STANDARD: '/rest/service/request',
     MAP_SERVICE_ZOOM_TO_BOUNDARY: '/rest/service/bbox',
     MAP_SERVICE_WMS_GET_CAPABILITIES: '/rest/service/request',
+    MAP_SERVICE_PROXY: '/rest/service/request',
 
     MAP_SERVICE_WPS_HISTOGRAM: '/rest/wps/hist',
 

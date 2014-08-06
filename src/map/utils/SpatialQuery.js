@@ -26,22 +26,33 @@ FM.SpatialQuery = {
      * @param map
      */
     getFeatureInfoStandard: function(l, layerPoint, latlng, map) {
+
         // var latlngStr = '(' + latlng.lat.toFixed(3) + ', ' + latlng.lng.toFixed(3) + ')';
         var bounds = map.getBounds();
-        var sw = map.options.crs.project(bounds.getSouthWest()),ne = map.options.crs.project(bounds.getNorthEast());
-        var BBOX = sw.x + ',' + sw.y +',' + ne.x + ',' + ne.y;
+        var sw = map.options.crs.project(bounds.getSouthWest());
+        var ne = map.options.crs.project(bounds.getNorthEast());
+        var BBOX = (sw.x ) + ',' + (sw.y) +',' + (ne.x) + ',' + (ne.y);
+        /*
+         var BBOX2 = (sw.x % -20037787) + ',' + (sw.y % 20037787) +',' + (ne.x % -20037787) + ',' + (ne.y % 20037508);
+         console.log('BBOX: ' + BBOX);
+        console.log('BBOX2: ' + BBOX2);
+        //console.log('sw.x: ' + sw.x); //-20037787.81567391
+        console.log('sw.x: ' + sw.x); //-7954342
+        console.log('sw.y: ' + sw.y);
+        console.log('ne.x: ' + ne.x);
+        console.log('ne.y: ' + ne.y);
+         */
         var WIDTH = map.getSize().x;
         var HEIGHT = map.getSize().y;
         var X = map.layerPointToContainerPoint(layerPoint).x;
         var Y = map.layerPointToContainerPoint(layerPoint).y;
-
         // TODO: check it because in theory it shouldn't be needed
         X = new Number(X);
         X = X.toFixed(0) //13.3714
         Y = new Number(Y);
         Y = Y.toFixed(0) //13.3714
 
-        var url = 'http://' + FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
         url += '?SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&REQUEST=GetFeatureInfo';
@@ -58,7 +69,9 @@ FM.SpatialQuery = {
             url += '&LAYERS=' + l.layer.layers;
             url += '&QUERY_LAYERS=' + l.layer.layers;
             url += '&STYLES=';
-            url += '&SRS='+l.layer.srs; //EPSG:3857
+            // TODO: this should be loaded at runtime based on the projection used on the map?
+            url += '&SRS=EPSG:3857';
+            //l.layer.srs; //EPSG:3857
             url += '&urlWMS=' + l.layer.urlWMS;
             //  FM.SpatialQuery.getFeatureInfoJoinRequest(url, 'GET', null,latlng, map, outputID, l.layer.custompopup, l.layer.lang, l.layer.joindata);
             FM.SpatialQuery.getFeatureInfoJoinRequest(url, 'GET', latlng, map, l);
@@ -66,8 +79,8 @@ FM.SpatialQuery = {
         else {
             // alert('no layer selected')
         }
-
     },
+
 
     // TODO: use an isOnHover flag?
     getFeatureInfoJoinRequest: function(url, requestType, latlon, map, l) {
@@ -133,10 +146,10 @@ FM.SpatialQuery = {
 
     customPopup: function(response, custompopup, lang, joindata) {
         console.log('SpatialQuery.customPopup()')
-        //console.log(joindata)
-        //console.log(response)
-        //console.log(custompopup)
-        //console.log(lang)
+        console.log(joindata)
+        console.log(response)
+        console.log(custompopup)
+        console.log(lang)
         var values = this._parseHTML(custompopup.content[lang]);
         if ( values.id.length > 0 || values.joinid.length > 0) {
             var h = $('<div></div>').append(response);
@@ -183,6 +196,8 @@ FM.SpatialQuery = {
                 }
             }
         }
+        console.log("headersHTMLJOINIndexs");
+        console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
@@ -194,7 +209,8 @@ FM.SpatialQuery = {
 
         // create the response results
         var htmlresult = [];
-        //console.log(rowsData);
+        console.log("rowsData");
+        console.log(rowsData);
         for( var j=0; j < rowsData.length; j++) {
 
             // this is done for each row of result (They could be many rows)
@@ -210,7 +226,8 @@ FM.SpatialQuery = {
 
             // Replace joindata (if needed)
             if ( joindata ) {
-                //console.log(headersHTMLJOINIndexs);
+                console.log("headersHTMLJOINIndexs");
+                console.log(headersHTMLJOINIndexs);
 
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
                     //console.log(headersHTML[headersHTMLJOINIndexs[i]]);
@@ -225,6 +242,7 @@ FM.SpatialQuery = {
             // adding the row result to the outputcontent
             htmlresult.push(c)
         }
+        console.log(htmlresult)
         return htmlresult;
     },
 

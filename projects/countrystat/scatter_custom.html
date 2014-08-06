@@ -190,12 +190,7 @@
 <!-- scatter chart -->
 
 <script src="http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/js/plugins/ChartLibrary.js"></script>
-
-
 <script src="http://fenixapps.fao.org/repository/js/highcharts/plugins/regression/1.0/regression.js"></script>
-
-
-<script src="../../src/map/utils/SpatialQuery.js"></script>
 
 <script src="../../dist/latest/plugins/FMChartScatterRefactoring.js"></script>
 <script src="../../dist/latest/plugins/FMDrawing.js"></script>
@@ -281,7 +276,7 @@ function createScatter(csv) {
     var masterTextID = 'masterText-' + id;
     var masterIconID = 'masterIcon-' + id;
     var removeWidgetID = 'removeWidget-' + id;
-    var boxTitle = $("#INPUT-TITLE").val();
+    var boxTitle = ( $("#INPUT-TITLE").val() != '' )? $("#INPUT-TITLE").val(): "Map";
     var masterMapID = 'mapMaster-' + id;
     var widget =
             '<div class="row" id="'+ widgetID +'">' +
