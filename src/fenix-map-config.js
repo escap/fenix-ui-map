@@ -36,6 +36,12 @@ FMCONFIG = {
     D3SP_SERVICE_LOADMAP: 'http://fenixapps.fao.org/d3sp/service/msd/dm/',
 
 
-    WPS_SERVICE_HISTOGRAM: 'http://127.0.0.1:1235/wps/hist/'
+    // PGEO
+
+    WPS_SERVICE_STATS: 'http://127.0.0.1:5005/stats/raster/',
+    WPS_SERVICE_HISTOGRAM: 'http://127.0.0.1:5005/stats/raster/{{ID}}/hist/',
+
+    METADATA_GET_LAYERS: 'http://127.0.0.1:5005/search/layer/',
+    METADATA_GET_LAYERS_BY_PRODUCT: 'http://127.0.0.1:5005/search/layer/product/'
 
 };
