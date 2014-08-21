@@ -7,16 +7,22 @@
         var o = {
             chart: {
                 //color: ['rgba(0, 0, 0, .5)'],
-                id: '',
+                id: null,
                 series: '',
-                decimalvalues: 1,
+                decimalvalues: 4,
                 chart_title: '',
                 yaxis_title: '',
                 xaxis_title: '',
                 keyword: 'FAOSTAT_DEFAULT_LINE',
 
                 // Chart Obj
-                chartObj: ''
+                chartObj: '',
+
+                // colors
+                colors: ["#1f678a", "#92a8b7", "#5eadd5", "#6c79db", "#a68122", "#ffd569", "#439966", "#800432", "#067dcc", "#1f678a", "#92a8b7", "#5eadd5", "#6c79db", "#a68122", "#ffd569", "#439966", "#800432", "#067dcc"]
+            },
+            stats: {
+                id: null
             },
             l: '', // layer
             map: '', // map if we want interact with the map
@@ -30,14 +36,19 @@
         };
 
         var createHistogram = function(o) {
-            var url = FMCONFIG.WPS_SERVICE_HISTOGRAM + o.l.layer.layers;
-            console.log(url)
+            var url = FMCONFIG.WPS_SERVICE_STATS + o.l.layer.layers;
             $.ajax({
                 type : 'GET',
                 url : url,
                 success : function(response) {
                     response = (typeof response == 'string')? $.parseJSON(response): response;
-                    parseHistogramResponse(response);
+                    if (o.chart.id) {
+                        parseHistogramResponse(response.hist[0]);
+                    }
+                    if (o.stats.id) {
+                        parseStats(response.stats[0]);
+                    }
+
                 },
                 error : function(err, b, c) {}
             });
@@ -49,11 +60,28 @@
             o.l.layer.histogram.max = response.max;
             o.l.layer.histogram.buckets = response.buckets;
             o.l.layer.histogram.values = response.values;
-            console.log(response)
             o.chart.series = parseChartSeries(response.values);
             o.chart.categories = createCategories(response.min, response.max, response.buckets, o.chart.decimalvalues);
-
+            $("#" + o.chart.id).empty();
             createChart(o);
+        }
+
+        var parseStats = function(response) {
+            o.l.layer.stats = {};
+            o.l.layer.stats.min = response.min;
+            o.l.layer.stats.max = response.max;
+            o.l.layer.stats.mean = response.mean;
+            o.l.layer.stats.sd = response.sd;
+
+            // create summary
+            var html = "<div>min: "+ o.l.layer.stats.min +"</div>"
+            html += "<div>max: "+ o.l.layer.stats.max +"</div>"
+            html += "<div>mean: "+ o.l.layer.stats.mean +"</div>"
+            html += "<div>sd: "+ o.l.layer.stats.sd +"</div>"
+
+            $("#" + o.stats.id).empty();
+            $("#" + o.stats.id).html(html);
+
         }
 
         /** TODO: handle multiple raster bands **/
@@ -76,10 +104,6 @@
                 categories.push((decimalvalues)? min.toFixed(decimalvalues) : min);
                 min = min + step;
             }
-            //console.log(min)
-            //console.log(max)
-            //console.log(categories)
-            //console.log(categories.length)
             if ( categories.length < buckets )  { }
             return categories;
         }
@@ -102,7 +126,6 @@
             chart_payload.categories = o.chart.categories;
             chart_payload.chart = {};
             chart_payload.chart.events = {};
-            console.log(chart_payload);
             o.chart.chartObj = plotChart(chart_payload);
         }
 
@@ -114,7 +137,7 @@
                     type: 'line',
                     zoomType : 'xy'
                 },
-                colors : FENIXCharts.COLORS,
+                colors : o.chart.colors,
                 xAxis: {
                     categories: payload.categories,
                     minTickInterval: 10,

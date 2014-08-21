@@ -8,10 +8,9 @@ FMCONFIG = {
 
     // MAPS Servicies config variables
     //BASEURL_MAPS: 'http://fenixapps2.fao.org/maps',
-    BASEURL_MAPS: 'http://fenixapps2.fao.org/maps',
+    BASEURL_MAPS: 'http://localhost:7070/maps',
 
     DEFAULT_WMS_SERVER: 'http://fenixapps.fao.org/geoserver',
-
 
     // BASEURL_MAPS: 'fenixapps.fao.org/maps',
     //BASEURL_MAPS: '168.202.23.224:8081/maps',
@@ -36,6 +35,12 @@ FMCONFIG = {
     D3SP_SERVICE_LOADMAP: 'http://fenixapps.fao.org/d3sp/service/msd/dm/',
 
 
-    WPS_SERVICE_HISTOGRAM: 'http://127.0.0.1:1235/wps/hist/'
+    // PGEO
+
+    WPS_SERVICE_STATS: 'http://127.0.0.1:5005/stats/raster/',
+    WPS_SERVICE_HISTOGRAM: 'http://127.0.0.1:5005/stats/raster/{{ID}}/hist/',
+
+    METADATA_GET_LAYERS: 'http://127.0.0.1:5005/search/layer/',
+    METADATA_GET_LAYERS_BY_PRODUCT: 'http://127.0.0.1:5005/search/layer/product/'
 
 };

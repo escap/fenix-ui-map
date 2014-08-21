@@ -8,10 +8,9 @@ FMCONFIG = {
 
     // MAPS Servicies config variables
     //BASEURL_MAPS: 'http://fenixapps2.fao.org/maps',
-    BASEURL_MAPS: 'http://fenixapps2.fao.org/maps',
+    BASEURL_MAPS: 'http://localhost:7070/maps',
 
     DEFAULT_WMS_SERVER: 'http://fenixapps.fao.org/geoserver',
-
 
     // BASEURL_MAPS: 'fenixapps.fao.org/maps',
     //BASEURL_MAPS: '168.202.23.224:8081/maps',

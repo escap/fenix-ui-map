@@ -33,10 +33,6 @@ FM.Layer = FM.Class.extend({
         },
         KeywordList: [],
 
-
-
-
-
         layertitle: '',
         enablegfi: true,
         layertype: 'WMS', //['WMS', 'JOIN']

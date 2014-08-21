@@ -1,4 +1,4 @@
-FMWFS = function() {
+var FMWFS = function() {
 
     // PROXY used to load the requests
     var PROXY = (FMCONFIG.BASEURL_MAPS)? FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
@@ -40,7 +40,8 @@ FMWFS = function() {
             // creating the json with the names and type of the fields
             result.push({ name: $(this).attr('name'), type: $(this).attr('type')} )
         });
-        if ( callback) callback(result)
+        if ( callback)
+            callback(result)
     }
 
     /**

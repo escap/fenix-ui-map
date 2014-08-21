@@ -1,4 +1,4 @@
-FMWCS = function() {
+var FMWCS = function() {
 
     // PROXY used to load the requests
     var PROXY = (FMCONFIG.BASEURL_MAPS)? FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
