@@ -40,7 +40,8 @@ var FMWFS = function() {
             // creating the json with the names and type of the fields
             result.push({ name: $(this).attr('name'), type: $(this).attr('type')} )
         });
-        if ( callback) callback(result)
+        if ( callback)
+            callback(result)
     }
 
     /**

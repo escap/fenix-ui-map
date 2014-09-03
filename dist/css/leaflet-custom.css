@@ -8,15 +8,15 @@
 /* general toolbar styles */
 /* to keep */
 .leaflet-bar {
-    box-shadow: none;
-    background-color: #f9f7f3;
+    box-shadow: none  !important;;
+    background-color: #f9f7f3  !important;
     border: 1px solid #FFFFFF;
 }
 
 
 .leaflet-bar a, .leaflet-bar a:hover {
     border: none;
-    background-color: #f9f7f3;
+    background-color: #f9f7f3 !important;
 }
 
 .leaflet-bar a,
@@ -75,6 +75,11 @@
 
 /* zoom control */
 /* to keep */
+
+.leaflet-bottom .leaflet-control {
+    margin-bottom: 50px !important;
+}
+
 .leaflet-control-zoom-in {
     font: bold 0 'Lucida Console', Monaco, monospace;
     width:31px !important;
