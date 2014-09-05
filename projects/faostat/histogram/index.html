@@ -9,7 +9,7 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,700,400italic|Roboto+Condensed' rel='stylesheet' type='text/css'>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.css" />
+    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.3/leaflet.css" />
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="http://fenixapps.fao.org/repository/css/jquery.power.tip/1.1.0/jquery.powertip.css" type="text/css" />
     <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.css" />
@@ -17,7 +17,7 @@
 
     <!-- FENIX Map-->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.js"></script>
+    <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/0.7.3/leaflet.js"></script>
     <script src="http://fenixapps.fao.org/repository/js/jquery.power.tip/1.1.0/jquery.powertip.min.js"></script>
     <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.js'></script>
     <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min.js'></script>
@@ -59,14 +59,16 @@
                 <div id="dropdownID"></div>
             </div>
         </div>
-        <div class="row" style="display:none" id="statsContainer">
-            <div class="col-md-8 col-sm-3">
-                <h2 class="text-primary">Histogram</h2>
-                <div id="chartID"></div>
-            </div>
-            <div class="col-md-4 col-sm-3">
-                <h2 class="text-primary">Stats</h2>
-                <div id="statsID"></div>
+        <div class="row">
+            <div style="display:none;" id="statsContainer">
+                <div class="col-md-8 col-sm-3">
+                    <h2 class="text-primary">Histogram</h2>
+                    <div style="height:350px;" id="chartID"></div>
+                </div>
+                <div class="col-md-4 col-sm-3">
+                    <h2 class="text-primary">Stats</h2>
+                    <div id="statsID"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -80,7 +82,7 @@
 
     function initialize() {
 
-        var url = FMCONFIG.METADATA_GET_LAYERS_BY_PRODUCT + "EARTHSTAT";
+        var url = FMCONFIG.METADATA_GET_LAYERS_BY_PRODUCT + "MODIS";
         //var url = FMCONFIG.METADATA_GET_LAYERS + "";
         $.ajax({
             type : 'GET',

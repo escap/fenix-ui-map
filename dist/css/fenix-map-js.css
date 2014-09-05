@@ -647,7 +647,7 @@ div.fm-controller-item-title {
 
 /** CountrySTAT **/
 .fm-icon-box-background {
-    z-index:100000;
+    z-index:10;
     background-color: #f9f7f3;
     border: 1px solid #FFFFFF;
     -webkit-border-radius: 5px;

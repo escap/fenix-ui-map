@@ -19,6 +19,7 @@ cp fenix-map-min.js $DISTRIBUTION_FOLDER
 cp -r ../src/plugins/ $DISTRIBUTION_FOLDER
 cp -r ../dist/css/* $DISTRIBUTION_FOLDER
 cp -r ../dist/I18N $DISTRIBUTION_FOLDER
+cp -r ../vendors/ $DISTRIBUTION_FOLDER
 
 # this is the configuration file (usually should be at application level)
 cp ../src/fenix-map-config.js $DISTRIBUTION_FOLDER

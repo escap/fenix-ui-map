@@ -77,7 +77,7 @@
 /* to keep */
 
 .leaflet-bottom .leaflet-control {
-    margin-bottom: 50px !important;
+    margin-bottom: 10px !important;
 }
 
 .leaflet-control-zoom-in {
