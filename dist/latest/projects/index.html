@@ -1,131 +1,52 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 <head>
 
-    <link rel='icon' type='image/png' href='http://fenixapps.fao.org/repository/favicon/faostat.png'>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JS Geo</title>
 
-    <title>FENIX Map</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
 
-    <!-- Google fonts-->
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,700,400italic|Roboto+Condensed' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,900,700|Roboto+Condensed:400,300,700' rel='stylesheet' type='text/css'>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.css" />
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fenix-Map-Js -->
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fenix Map js -->
+    <link rel="stylesheet" href="http://localhost:7070/fenix-map-js/fenix-map-js.css" />
+    <link rel="stylesheet" href="http://localhost:7070/fenix-map-js/leaflet-custom.css" />
     <link rel="stylesheet" href="http://fenixapps.fao.org/repository/css/jquery.power.tip/1.1.0/jquery.powertip.css" type="text/css" />
     <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.css" />
+    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.3/leaflet.css" />
+
+    <link rel='icon' type='image/png' href='http://fenixapps.fao.org/repository/favicon/faostat.png'>
+    <link href='http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css' rel='stylesheet'>
     <link href='http://fenixapps.fao.org/repository/js/chosen/1.0.0/chosen.min.css' rel='stylesheet'>
-
-    <!-- JAVASCRIPT -->
-
-    <!-- FENIX Map-->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.js"></script>
-    <script src="http://fenixapps.fao.org/repository/js/jquery.power.tip/1.1.0/jquery.powertip.min.js"></script>
-    <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.js'></script>
-    <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min.js'></script>
-    <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery.hoverIntent/1.0/jquery.hoverIntent.js'></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type='text/javascript' src='http://fenixapps.fao.org/repository/js/chosen/1.0.0/chosen.jquery.min.js'></script>
-
-    <script src='http://fenixapps.fao.org/repository/js/FENIX/utils/import-dependencies-1.0.js'></script>
-
-    <!-- fenix map -->
-    <link rel="stylesheet" href="../fenix-map-js.css" />
-    <link rel="stylesheet" href="../leaflet-custom.css" />
-    <script type='text/javascript' src='../fenix-map-config.js'></script>
-    <script type='text/javascript' src='../fenix-map-min.js'></script>
+    <link href='css/js-geo.css' rel='stylesheet'>
 
 
+    <!-- fenix-map plugins TODO: move it to require-->
+    <link rel="stylesheet" href="http://localhost:7070/fenix-map-js/plugins/ogc/FMWFS.js" />
+
+
+    <script src='../vendors/js/require.js'></script>
 
 
 </head>
 
-<style>
-    /*
-     * Unlike other icons, you can style `L.divIcon` with CSS.
-     * These styles make each marker a circle with a border and centered text.
-     */
-    .count-icon {
-        background:#ff8888;
-        border:5px solid rgba(255,255,255,0.5);
-        color:#fff;
-        font-weight:bold;
-        text-align:center;
-        border-radius:50%;
-        line-height:30px;
-    }
-</style>
-
-<body>
-
-
-<div class="container">
-    <div class="page-header">
-        <h3>
-            <p class="text-primary">FENIX Map</p>
-        </h3>
-    </div>
-</div>
-
-
-<div class="container">
-    <div style='height: 15px; clear:both;'></div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div id='map' class='fm-box' style='overflow: hidden; margin: 0 auto; text-align: left; height: 600px;'></div>
-        </div>
-    </div>
-</div>
-
-<div style='height: 15px; clear:both;'></div>
-
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <div id="popup"></div>
-        </div>
-    </div>
-</div>
-
-
-
+<body id="fm_projects_container">
 </body>
 
-</html>
-
 <script>
-    $( document ).ready(function() {
-        var options = {
-            plugins: { geosearch : true, mouseposition: false, controlloading : true,zoomControl: 'bottomright'},
-            guiController: { overlay : true,  baselayer: true,  wmsLoader: true },
-            gui: {disclaimerfao: true }
-        }
+    //Load common code that includes config, then load the app
+    //logic for this page. Do the require calls here instead of
+    //a separate file so after a build there are only 2 HTTP
+    //requests instead of three.
+    require(["common/common"], function (common) {
+        require(["fm_projects_main" ], function () {
 
-        var mapOptions = { zoomControl:false,attributionControl: false };
-        var m = new FM.Map('map', options, mapOptions);
-        m.createMap();
-
-        var layer = {};
-        layer.layers = 'fenix:gaul0_line_3857'
-        layer.layertitle = 'Country Boundaries'
-        layer.urlWMS = 'http://fenixapps.fao.org/geoserver'
-        layer.opacity='1';
-        l = new FM.layer(layer);
-        m.addLayer(l);
+        });
     });
-
-    function createBaseLayer(layername, lang) {
-        var layer = {};
-        layer.layername =layername;
-        layer.layertype ='TILE';
-        layer.lang = lang;
-        var l = new FM.TileLayer(layer);
-        l.leafletLayer = l.createTileLayer(layer.layername);
-        return l;
-    }
-
-
 </script>
+
+</html>
