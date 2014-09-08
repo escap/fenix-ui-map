@@ -55,11 +55,9 @@ define(['jquery',
 
 
         var build = function(config) {
-            console.log(config);
             CONFIG = $.extend(true, {}, CONFIG, config);
             $('#' + CONFIG.placeholder).html(template);
 
-            console.log(files[0].url);
             $.get(files[0].url, files[0]).done(function( data ) {
                 createScatter(data, files[0]);
             });
@@ -67,8 +65,6 @@ define(['jquery',
 
 
         function createScatter(csv, obj) {
-            console.log(csv);
-            console.log(obj);
 
             var c = new FMChartScatter();
 
@@ -78,10 +74,7 @@ define(['jquery',
             var mapsArray = [];
 
             for ( var i=0; i <  obj.maps.length; i++) {
-                console.log(i);
                 var mapObj = obj.maps[i];
-                console.log(mapObj);
-
                 var mapID = mapObj.mapID;
 
                 // single map
@@ -108,7 +101,6 @@ define(['jquery',
             for(var i=0; i < mapsArray.length; i++) {
                 for(var j=0; j < mapsArray.length; j++) {
                     if ( i != j) {
-                        console.log(mapsArray[i]);
                         mapsArray[i].fenixMap.syncOnMove(mapsArray[j].fenixMap)
                     }
                 }

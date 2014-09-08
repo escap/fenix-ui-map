@@ -38,10 +38,10 @@ FMCONFIG = {
 
     // PGEO
 
-    WPS_SERVICE_STATS: 'http://127.0.0.1:5005/stats/raster/',
-    WPS_SERVICE_HISTOGRAM: 'http://127.0.0.1:5005/stats/raster/{{ID}}/hist/',
+    WPS_SERVICE_STATS: 'http://168.202.28.214:5005/stats/raster/',
+    WPS_SERVICE_HISTOGRAM: 'http://168.202.28.214:5005/stats/raster/{{ID}}/hist/',
 
-    METADATA_GET_LAYERS: 'http://127.0.0.1:5005/search/layer/',
-    METADATA_GET_LAYERS_BY_PRODUCT: 'http://127.0.0.1:5005/search/layer/product/'
+    METADATA_GET_LAYERS: 'http://168.202.28.214:5005/search/layer/',
+    METADATA_GET_LAYERS_BY_PRODUCT: 'http://168.202.28.214:5005/search/layer/product/'
 
 };

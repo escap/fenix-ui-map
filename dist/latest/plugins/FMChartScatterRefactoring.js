@@ -78,7 +78,7 @@
         };
 
         var createFromJSON = function(o, json) {
-            console.log(json);
+            //console.log(json);
             switch(o.type.toUpperCase()) {
                 case 'GEOCODE': createChartGEOCODE(o, json); break;
                 case 'LATLON': createChartLATLON(o, json); break;
@@ -139,8 +139,8 @@
             // create the chart
             createChart(o.chart.id, series);
 
-            console.log('series');
-            console.log(series);
+//            console.log('series');
+//            console.log(series);
         }
 
         var createChartLATLON = function(o, json) {
@@ -325,7 +325,7 @@
             o.chart.chartObj = FENIXCharts.plot(chart_payload);
 
             // check min max axi
-            console.log(o.chart.chartObj);
+            //console.log(o.chart.chartObj);
             o.chart.originalAxes.xmin = o.chart.chartObj.xAxis[0].min;
             o.chart.originalAxes.xmax = o.chart.chartObj.xAxis[0].max;
             o.chart.originalAxes.ymin = o.chart.chartObj.yAxis[0].min;
@@ -333,7 +333,7 @@
         };
 
         var mapsSpatialQueries = function(mapsObj, series, xAxisMin, xAxisMax, yAxisMin, yAxisMax ) {
-            console.log("mapsSpatialQueries()");
+            //console.log("mapsSpatialQueries()");
             var chartOriginalAxes = o.chart.originalAxes;
             if ( chartOriginalAxes.xmin == xAxisMin && chartOriginalAxes.xmax == xAxisMax && chartOriginalAxes.ymin ==  yAxisMin && chartOriginalAxes.ymax == yAxisMax ) {
                 mapsSpatialQueriesReset(mapsObj);
@@ -344,12 +344,12 @@
         };
 
         var mapsSpatialQueriesLoad = function(mapsObj, series, xAxisMin, xAxisMax, yAxisMin, yAxisMax ) {
-            console.log("mapsSpatialQueriesLoad()");
+            //console.log("mapsSpatialQueriesLoad()");
             for(var i=0; i < mapsObj.length; i++) {
                 var mapObj = mapsObj[i];
                 var fenixMap = mapObj.fenixMap;
                 for(var j=0; j < mapObj.layers.length; j++) {
-                    console.log(mapObj.layers[j]);
+                   // console.log(mapObj.layers[j]);
                     var l = mapObj.layers[j].l;
                     var layerHighlight = mapObj.layers[j].layerHighlight;
                     FM.SpatialQuery.scatterLayerFilterFaster(l, fenixMap, series, xAxisMin, xAxisMax, yAxisMin, yAxisMax, layerHighlight, l.layer.reclassify, l.layer.formula);
@@ -358,7 +358,7 @@
         };
 
         var mapsSpatialQueriesReset = function(mapsObj) {
-            console.log("mapsSpatialQueriesReset()");
+            //console.log("mapsSpatialQueriesReset()");
             for(var i=0; i < mapsObj.length; i++) {
                 var mapObj = mapsObj[i];
                 for(var j=0; j < mapObj.layers.length; j++) {
@@ -406,7 +406,7 @@
             var options = o.chart.chartObj.options;
             var mapsObj = o.maps;
             var series = options.series;
-            console.log( options.series);
+            //console.log( options.series);
             options.chart.events.redraw = function() {}
             o.chart.chartObj = new Highcharts.Chart(options);
         };

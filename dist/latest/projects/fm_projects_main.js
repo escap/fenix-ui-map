@@ -23,17 +23,22 @@ require(['jquery',
 
 
         routes: {
-            '(/)scatter(/):poverty_analysis': 'poverty_analysis',
-            '(/)distribution(/):lang': 'distribution',
-            '(/)scatter_analysis(/):lang': 'scatter_analysis',
+            '(/)scatter(/)poverty_analysis': 'poverty_analysis',
+            '(/)scatter(/)scatter_custom': 'scatter_custom',
             '': 'generic'
         },
 
         poverty_analysis: function() {
-            console.log("here");
             var placeholder_container = this.placeholder_container
-            require(['fm_poverty_analysis'], function() {
+            require(['FMPovertyAnalysis'], function() {
                 FMPovertyAnalysis().build( { "placeholder" : placeholder_container});
+            });
+        },
+
+        scatter_custom: function() {
+            var placeholder_container = this.placeholder_container
+            require(['FMScatterCustom'], function() {
+                FMScatterCustom().build( { "placeholder" : placeholder_container});
             });
         },
 

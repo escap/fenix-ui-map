@@ -44,8 +44,7 @@ FMDEFAULTLAYER = {
 
     /** TODO: handle multilanguage **/
     joinDefaultPopUp: function( layer ) {
-        console.log(layer);
-
+        //console.log(layer);
         var measurementunit  = ( layer.measurementunit )? " " + layer.measurementunit +"": "";
         var joinlabel  = ( layer.joincolumnlabel )? "<div class='fm-popup-join-title'>{{" + layer.joincolumnlabel +"}}</div>": "";
         layer.customgfi = {

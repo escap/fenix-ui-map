@@ -1,55 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-    <link rel='icon' type='image/png' href='http://fenixapps.fao.org/repository/favicon/faostat.png'>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>CountrySTAT View</title>
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
-
-    <!--Fenix Map -->
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.css" />
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.markecluster/1.0/MarkerCluster.Default.css" />
-
-    <!-- choosen css -->
-    <link href='http://fenixapps.fao.org/repository/js/chosen/1.0.0/chosen.min.css' rel='stylesheet'>
-
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.css" />
-    <link rel="stylesheet" href="http://fenixapps.fao.org/repository/css/jquery.power.tip/1.1.0/jquery.powertip.css" type="text/css" />
-
-    <!-- Fenix Map CSS -->
-    <link rel="stylesheet" href="../../fenix-map-js.css" />
-    <link rel="stylesheet" href="../../leaflet-custom.css" />
-
-</head>
-
-<body onload="initialize();">
+<link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.draw/0.2.3/leaflet.draw.css" />
+<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.draw/0.2.3/leaflet.draw.js"></script>
 
 
-<div class="container">
-    <div class="page-header">
-        <h3>
-            <p class="text-primary">FENIX Scatter Analysis</p>
-        </h3>
-        <h5>
-            <i>Please upload your CSV to analyze it</i>
-        </h5>
-    </div>
-</div>
-
-
-<div class="container">
+<div class="container-fluid">
 
     <!-- TITLE -->
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-xs-4">
             <div class="input-group">
                 <span class="input-group-addon">Title</span>
                 <input id='INPUT-TITLE' type="text" class="form-control" placeholder="Title">
             </div>
         </div>
-        <div class="col-lg-2">
+        <div class="col-xs-2">
             <div class="btn-group">
                 <a class='btn btn-primary' href='javascript:;'>
                     Choose a File...
@@ -59,21 +22,19 @@
                 <span class='label label-info' id="upload-file-info"></span>
             </div>
         </div>
-        <div class="col-lg-3">
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-default">
-                    <input type="radio" name="type" value="GEOCODE">GEOCODE
-                </label>
-                <label class="btn btn-default">
-                    <input type="radio" name="type" value="LATLON" >LATLON
-                </label>
-            </div>
-        </div>
-        <div class="col-lg-3" >
-        </div>
-        <div style='height: 15px; clear:both;'></div>
-        <div class="row" id="JOIN-GEOCODE">
-            <div class="col-lg-2" >
+    </div>
+        <!--<div class="col-lg-3">-->
+        <!--<div class="btn-group" data-toggle="buttons">-->
+        <!--<label class="btn btn-default">-->
+            <!--<input type="radio" name="type" value="GEOCODE">GEOCODE-->
+            <!--</label>-->
+            <!--<label class="btn btn-default">-->
+            <!--<input type="radio" name="type" value="LATLON" >LATLON-->
+            <!--</label>-->
+            <!--</div>-->
+        <!--</div>-->
+    <div class="row" id="JOIN-GEOCODE">
+            <div class="col-xs-3" >
                 <div class='fm-title'>GAUL TYPE</div>
                 <select id='GAUL-TYPE' style='width: 100%;' data-placeholder="Select a type of GAUL" class="chosen-select-no-single">
                     <option value='GAUL0' selected>GAUL0</option>
@@ -84,7 +45,7 @@
                     <option value='GAUL2'>GAUL2</option>
                 </select>
             </div>
-            <div class="col-lg-2" >
+            <div class="col-xs-3" >
                 <div class='fm-title'>Color</div>
                 <select id='colorramp' style='width: 100%;' data-placeholder="Select a color ramp" class="chosen-select-no-single">
                     <option value='YlOrBr' selected>YlOrBr</option>
@@ -94,7 +55,7 @@
                     <option value='RdBu' selected>RdBu</option>
                 </select>
             </div>
-            <div class="col-lg-1" >
+            <div class="col-xs-2" >
                 <div class='fm-title'>Intervals</div>
                 <select id='intervals' style='width: 100%;' data-placeholder="Select join intervals"  class="chosen-select-no-single">
                     <option value='2' selected>2</option>
@@ -107,7 +68,7 @@
                     <option value='9'>9</option>
                 </select>
             </div>
-            <div class="col-lg-2" >
+            <div class="col-xs-3" >
                 <div class='fm-title'>Formula</div>
                 <select id='formula' style='width: 100%;' data-placeholder="Select join intervals" class="chosen-select-no-single">
                     <option value='series[i].data[j].x / series[i].data[j].y' selected>Value X/Value Y</option>
@@ -118,104 +79,14 @@
                     <option value='series[i].data[j].y' selected>Value Y</option>
                 </select>
             </div>
-        </div>
-
-        <div style='height: 15px; clear:both;'></div>
-        <div id="exportimage"></div>
-        <div style='height: 15px; clear:both;'></div>
-
-        <div id="container-charts"></div>
     </div>
 
     <div style='height: 25px;'></div>
 
-    <div style='height: 25px;'></div>
-
-    <div id="output"></div>
-
-
-</body>
-
-<!-- FENIX Map-->
-<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/jquery/1.10.2/jquery-1.10.2.min.js"></script>
-<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/0.7.2/leaflet.js"></script>
-<script src="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.markecluster/1.0/leaflet.markercluster.js"></script>
-<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/jquery.power.tip/1.1.0/jquery.powertip.min.js"></script>
-<script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min.js'></script>
-<script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min.js'></script>
-
-<script type='text/javascript' src='http://fenixapps.fao.org/repository/js/jquery.hoverIntent/1.0/jquery.hoverIntent.js'></script>
-
-<!-- JSON Handler Old IE -->
-<script type='text/javascript' src='http://fenixapps.fao.org/repository/js/json2/1.0/json2.js'></script>
-
-<!-- console log wrapper -->
-<script src="http://fenixapps.fao.org/repository/js/console.log-wrapper/1.0/consolelog.min.js"></script>
-<script src="http://fenixapps.fao.org/repository/js/console.log-wrapper/1.0/consolelog.detailprint.min.js"></script>
-
-<!-- Highchart -->
-<script src="http://fenixapps.fao.org/repository/js/highcharts/4.0.1/js/highcharts.js"></script>
-<script src="http://fenixapps.fao.org/repository/js/highcharts/4.0.1/js/modules/exporting.js"></script>
-
-<!--bootstrap-->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-
-<!-- CSV reader -->
-<script src="http://fenixapps.fao.org/repository/js/csvjson/1.0/csvjson.min.1.0.js"></script>
-
-<!-- choosen JS -->
-<script type='text/javascript' src='http://fenixapps.fao.org/repository/js/chosen/1.0.0/chosen.jquery.min.js'></script>
-
-<!-- dependencies -->
-<script src='http://fenixapps.fao.org/repository/js/FENIX/utils/import-dependencies-1.0.js'></script>
+    <div id="container-objects"></div>
+</div>
 
 
-<!-- Drawing plugin -->
-<link rel="stylesheet" href="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.draw/0.2.3/leaflet.draw.css" />
-<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.draw/0.2.3/leaflet.draw.js"></script>
-
-
-
-<!-- fenix-map-js -->
-<script type='text/javascript' src='../../fenix-map-min.js'></script>
-<script type='text/javascript' src='../../fenix-map-config.js'></script>
-<script type='text/javascript' src='http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/wkt.js'></script>
-
-<!-- WKT Parser -->
-<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/terraformer/1.0.2/terraformer-1.0.2.min.js"></script>
-<script type='text/javascript' src="http://fenixapps.fao.org/repository/js/leaflet/terraformer/wkt-parser/1.0/terraformer-wkt-parser.min.js"></script>
-
-
-
-<!-- scatter chart -->
-
-<script src="http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/js/plugins/ChartLibrary.js"></script>
-<script src="http://fenixapps.fao.org/repository/js/highcharts/plugins/regression/1.0/regression.js"></script>
-
-<script src="../../plugins/FMChartScatterRefactoring.js"></script>
-<script src="../../plugins/FMDrawing.js"></script>
-<script src="../../plugins/FMPopUp.js"></script>
-<script src="../../plugins/FMFileHandler.js"></script>
-
-
-
-<!--<script src="../../js/map/controller/MapControllerDraggable.js"></script>-->
-<!--<script src="../../js/map/controller/LayerUtils.js"></script>-->
-<!--<script src="../../js/map/controller/LayerLegend.js"></script>-->
-
-<!--<script src="../../js/map/constants/WMSSERVERS.js"></script>-->
-<!--<script src="../../js/map/constants/DEFAULTLAYER.js"></script>-->
-
-
-
-<!--<script src="../../js/map/Map.js"></script>-->
-
-
-<script src='leaflet-image.js'></script>
-
-
-
-</html>
 
 <script type="text/javascript">
     var config = {
@@ -235,26 +106,9 @@ var slaveCharts = new Array();
 var slaveMaps = new Array();
 
 function initialize() {
+    //console.log($('input[name=type]:checked'));
+   // $('input[name=type]:checked').parent('label').addClass('active');
 }
-
-/*
- function handleFileSelect(evt) {
- var files = evt.target.files; // FileList object
-
- // Loop through the FileList and populate the 'outputTable' with the data
- for (var i = 0, f; f = files[i]; i++) {
-
- var reader = new FileReader();
-
- // Closure to capture the file information.
- reader.onload = (function(theFile) {
- return function(e) {
- createScatter(e.target.result);
- };
- })(f);
- reader.readAsText(f);
- }
- } */
 
 function createScatter(csv) {
     // console.log(csv)
@@ -270,27 +124,27 @@ function createScatter(csv) {
     var masterMapID = 'mapMaster-' + id;
     var widget =
             '<div class="row" id="'+ widgetID +'">' +
-                    '<div class="panel panel-default">' +
-                    '<div class="panel-heading">'+ boxTitle +'' +
-                    '<span id="'+ masterTextID +'"   style="padding-left:5px; display:none">(Master)</span>' +
-                    '<span id="'+ removeWidgetID +'" title="Remove Box" style="float:right;cursor: pointer;" class="glyphicon glyphicon-remove"></span>' +
-                    '<span id="'+ masterIconID +'"   title="Set as Master" style="float:right;cursor: pointer; margin-right:3px;" class="glyphicon glyphicon-ok-circle"></span>' +
-                    '</div>' +
-                    '<div class="panel-body">' +
-                    '<div class="col-lg-6">' +
-                    '<div id="'+ chartID +'" ></div>'+
-                    '</div>' +
-                    '<div class="col-lg-6"> '+
-                    '<div id='+ masterMapID+'>Master Map</div>' +
-                    '<div id="'+ mapID +'" class="fm-box" style="overflow: hidden; margin: 0 auto; text-align: left;height: 400px;"></div>'+
-                    '<div style="min-height:70px;" id='+ mapID + '-gfioutput></div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>'+
-                    '</div>';
+            '<div class="panel panel-default">' +
+            '<div class="panel-heading">'+ boxTitle +'' +
+            '<span id="'+ masterTextID +'"   style="padding-left:5px; display:none">(Master)</span>' +
+            '<span id="'+ removeWidgetID +'" title="Remove Box" style="float:right;cursor: pointer;" class="glyphicon glyphicon-remove"></span>' +
+            '<span id="'+ masterIconID +'"   title="Set as Master" style="float:right;cursor: pointer; margin-right:3px;" class="glyphicon glyphicon-ok-circle"></span>' +
+            '</div>' +
+            '<div class="panel-body">' +
+            '<div class="col-lg-6">' +
+            '<div id="'+ chartID +'" ></div>'+
+            '</div>' +
+            '<div class="col-lg-6"> '+
+            '<div id='+ masterMapID+'>Master Map</div>' +
+            '<div id="'+ mapID +'" class="fm-box" style="overflow: hidden; margin: 0 auto; text-align: left;height: 400px;"></div>'+
+            '<div style="min-height:70px;" id='+ mapID + '-gfioutput></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>'+
+            '</div>';
 
     widget += '<div style="height:25px;"></div>'
-    $('#container-charts').append(widget);
+    $('#container-objects').append(widget);
 
     // to handle multiple maps
     var maps = [];
@@ -320,7 +174,7 @@ function createScatter(csv) {
 
         },
         maps: maps,
-        type: $('input[name=type]:checked')[0].value,
+        type: 'GEOCODE', //$('input[name=type]:checked')[0].value,
         suffix: id
     });
 
@@ -395,52 +249,11 @@ function createMap(mapID, fullscrenID) {
     var m = new FM.Map(mapID, options, mapOptions);
     m.createMap();
 
-    // On Move
-   /* var _m = m;
-    var GFIchk = {};
-    GFIchk["lat-" + m.id] = 0;
-    GFIchk["lng-" + m.id] = 0;
-    GFIchk["globalID-" + m.id] = 0;
-    m.map.on('mousemove', function (e) {
-        var id = Date.now();
-        GFIchk["globalID-" + _m.id] = id;
-        var t = setTimeout(function() {
-            if ( id == GFIchk["globalID-" + _m.id]) {
-                //console.log(e);
-                if ((GFIchk["lat-" + _m.id] != e.latlng.lat) && (GFIchk["lng-" + _m.id] != e.latlng.lng)) {
-                    GFIchk["lat-" + _m.id] = e.latlng.lat;
-                    GFIchk["lng-" + _m.id] = e.latlng.lng;
-                    // call callback
-                    _m.getFeatureInfo(e, mapID +'-gfioutput');
-                    //_m.getFeatureInfo(e);
-                }
-            }
-        }, 100);
-    });
-    m.map.on('mouseout', function (e) {
-        GFIchk["lat-" + m.id] = 0;
-        GFIchk["lng-" + m.id] = 0;
-        GFIchk["globalID-" + m.id] = 0;
-        $('#' + mapID +'-gfioutput').empty();
-    });*/
-
-
-    /*document.getElementById(m.id).addEventListener("test", function(event){
-     var l = event.detail.id;
-     console.log('l: ' + l);
-
-     }, false);
-
-     FM.Util.fire(document.getElementById(m.id), "test", {id: "1"});
-     FM.Util.fire(document.getElementById(m.id), "test", {id: "3"});
-     FM.Util.fire(document.getElementById(m.id), "test", {id: "2"});
-     FM.Util.fire(document.getElementById(m.id), "test", {id: "5"}); */
-
-
     return m;
 }
 
 function createLayer() {
+    console.log($('#GAUL-TYPE').val());
     var layer = FMDEFAULTLAYER.getLayer($('#GAUL-TYPE').val(), true, $('#formula option:selected').text())
     layer.layertitle="Scatter Analysis"
     layer.joindata=''
@@ -458,7 +271,6 @@ function createLayer() {
     layer.formula=formula.val();
 
     //layer.cql_filter="adm0_code IN (182)";
-    layer.mu = 'Index';
     layer.srs = 'EPSG:3857';
     layer.layertype = 'JOIN';
     layer.lang='en';
@@ -485,8 +297,8 @@ function createLayer() {
 function createHighlightLayer(m) {
     var layer = FMDEFAULTLAYER.getLayer($('#GAUL-TYPE').val(), false)
     layer.layertitle="Scatter Analysis (Highlight)"
-    layer.urlWMS = 'http://fenixapps.fao.org/geoserver'
-    layer.style = 'highlight_features';
+    layer.urlWMS = 'http://fenixapps2.fao.org/geoserver-demo'
+    layer.style = 'gaul_highlight_polygon';
     layer.enablegfi = false;
     layer.opacity='0.7';
     // layer.hideLayerInControllerList = true; // this to hide the layer from the controller list
@@ -547,7 +359,7 @@ function swapMasterChart(chartToSwap) {
 }
 
 function updateObjects() {
-   // console.log('updateObjects');
+    // console.log('updateObjects');
     var masterChart = masterCharts[0];
     if ( masterCharts.length < 1 ) {
         // do nothing
@@ -575,6 +387,5 @@ function setMapAsMaster(scatterChart, fenixMap) {
 
 
 document.getElementById('files').addEventListener('change', FMFileHandler.handlefilescatter, false);
-//document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
 </script>

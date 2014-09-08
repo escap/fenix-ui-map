@@ -23,7 +23,7 @@ FM.WMSUtils = FM.Class.extend({
     },
 
     _createWMSDropDown: function(wmsServers, divID, dropdowndID, outputID, fenixmap) {
-        console.log(wmsServers);
+        //console.log(wmsServers);
 
         // TODO: dynamic width
         var html = '<select id="'+ dropdowndID+'" style="width:200px;" data-placeholder="'+ $.i18n.prop('_selectaWMSServer') +'" class="">';

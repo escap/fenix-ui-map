@@ -30,17 +30,30 @@ requirejs.config({
         'FMChartLibrary'        :   'http://168.202.28.214:7070/fenix-map-js/plugins/ChartLibrary',
         'FMChartScatter'        :   'http://168.202.28.214:7070/fenix-map-js/plugins/FMChartScatterRefactoring',
         'regression'            :   'http://fenixapps.fao.org/repository/js/highcharts/plugins/regression/1.0/regression',
+
         // TODO: change link
         'wkt'                   :   'http://fenixapps.fao.org/repository/js/FENIX/fenix-map-js/2.1/wkt',
+        'terraformer'           :   "http://fenixapps.fao.org/repository/js/leaflet/terraformer/1.0.2/terraformer-1.0.2.min",
+        'terraformer-wkt-parser':   "http://fenixapps.fao.org/repository/js/leaflet/terraformer/wkt-parser/1.0/terraformer-wkt-parser.min",
+
+
+        // fenix-map-plugins
+        <!-- Drawing plugin -->
+        'leaflet.draw' :    "http://fenixapps.fao.org/repository/js/leaflet/plugins/leaflet.draw/0.2.3/leaflet.draw",
+
+        'FMDrawing'        :   'http://168.202.28.214:7070/fenix-map-js/plugins/FMDrawing',
+        'FMPopUp'        :   'http://168.202.28.214:7070/fenix-map-js/plugins/FMPopUp',
+        'FMFileHandler'        :   'http://168.202.28.214:7070/fenix-map-js/plugins/FMFileHandler',
+
 
         'fenix-map'             :   'http://168.202.28.214:7070/fenix-map-js/fenix-map-min',
         'fenix-map-config'      :   'http://168.202.28.214:7070/fenix-map-js/fenix-map-config',
         'fenix-map-scatter-analysis'      :   'http://168.202.28.214:7070/fenix-map-js/fenix-map-config',
 
         // project modules
-        fm_projects_main      :      'fm_projects_main',
-        fm_poverty_analysis      :   'scatter/poverty_analysis/poverty_analysis'
-
+        'fm_projects_main'      :   'fm_projects_main',
+        'FMPovertyAnalysis'   :   'scatter/poverty_analysis/poverty_analysis',
+        'FMScatterCustom'     :   'scatter/scatter_custom/scatter_custom'
     },
 
     shim: {
@@ -65,14 +78,27 @@ requirejs.config({
                 'jquery-ui',
                 'fenix-map-config', 'import-dependencies',
                 'jquery.power.tip', 'jquery.i18n.properties',
-                'jquery.hoverIntent', 'chosen']
+                'jquery.hoverIntent', 'chosen'
+            ]
         },
         'FMChartScatter': {
             deps: ['fenix-map',
                 'csvjson',
                 'FMChartLibrary',
                 'regression',
-                'wkt']
+                'wkt'
+            ]
+        },
+        'FMScatterCustom' : {
+            deps: ['fenix-map',
+                'leaflet.draw',
+                'FMChartScatter',
+                'terraformer',
+                'terraformer-wkt-parser',
+                'FMDrawing',
+                'FMFileHandler',
+                'FMPopUp'
+            ]
         }
     }
 });
