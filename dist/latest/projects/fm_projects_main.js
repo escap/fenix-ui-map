@@ -33,7 +33,6 @@ require(['jquery',
             console.log("here");
             var placeholder_container = this.placeholder_container
             require(['fm_poverty_analysis'], function() {
-                console.log("here");
                 FMPovertyAnalysis().build( { "placeholder" : placeholder_container});
             });
         },

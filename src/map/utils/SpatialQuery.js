@@ -84,8 +84,6 @@ FM.SpatialQuery = {
 
     // TODO: use an isOnHover flag?
     getFeatureInfoJoinRequest: function(url, requestType, latlon, map, l) {
-        console.log('SpatialQuery.getFeatureInfoJoinRequest()')
-        console.log(l.layer)
         var lang = ( l.layer.lang )? l.layer.lang.toLocaleLowerCase(): null;
         var _map = map;
         var _l = l;
@@ -145,11 +143,6 @@ FM.SpatialQuery = {
     },
 
     customPopup: function(response, custompopup, lang, joindata) {
-        console.log('SpatialQuery.customPopup()')
-        console.log(joindata)
-        console.log(response)
-        console.log(custompopup)
-        console.log(lang)
         var values = this._parseHTML(custompopup.content[lang]);
         if ( values.id.length > 0 || values.joinid.length > 0) {
             var h = $('<div></div>').append(response);
@@ -167,7 +160,7 @@ FM.SpatialQuery = {
     },
 
     _customizePopUp:function(content, values, responsetable, joindata) {
-        console.log('SpatialQuery._customizePopUp()')
+        //console.log('SpatialQuery._customizePopUp()')
         //console.log(joindata)
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
@@ -196,21 +189,18 @@ FM.SpatialQuery = {
                 }
             }
         }
-        console.log("headersHTMLJOINIndexs");
-        console.log(headersHTMLJOINIndexs);
+//        console.log("headersHTMLJOINIndexs");
+//        console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
             rowsData.push($(tableHTML[i]).find('td'))
         }
 
-        //console.log(rowsData);
-        //console.log(headersHTML);
-
         // create the response results
         var htmlresult = [];
-        console.log("rowsData");
-        console.log(rowsData);
+//        console.log("rowsData");
+//        console.log(rowsData);
         for( var j=0; j < rowsData.length; j++) {
 
             // this is done for each row of result (They could be many rows)
@@ -226,8 +216,8 @@ FM.SpatialQuery = {
 
             // Replace joindata (if needed)
             if ( joindata ) {
-                console.log("headersHTMLJOINIndexs");
-                console.log(headersHTMLJOINIndexs);
+//                console.log("headersHTMLJOINIndexs");
+//                console.log(headersHTMLJOINIndexs);
 
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
                     //console.log(headersHTML[headersHTMLJOINIndexs[i]]);
@@ -242,22 +232,21 @@ FM.SpatialQuery = {
             // adding the row result to the outputcontent
             htmlresult.push(c)
         }
-        console.log(htmlresult)
+        //console.log(htmlresult)
         return htmlresult;
     },
 
 
     _getJoinValueFromCode: function(code, joindata) {
-        //console.log("SpatialQuery._getJoinValueFromCode()");
-
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
         var integerCode = ( parseInt(code) )? parseInt(code): null
-        //console.log(joindata);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
-                if ( json[i][code] ) json[i][code];
-                else return json[i][integerCode];
+                if ( json[i][code] )
+                    return json[i][code];
+                else return
+                    json[i][integerCode];
             }
         }
         return '';
@@ -477,7 +466,7 @@ FM.SpatialQuery = {
 
 
         l.layer.cql_filter = l.layer.joincolumn + " IN (" + codes + ")";
-        console.log(l.layerAdded)
+//        console.log(l.layerAdded)
         if ( l.layerAdded )
             l.redraw();
         else
@@ -530,8 +519,8 @@ FM.SpatialQuery = {
                 //console.log(response);
                 var wkt = new Wkt.Wkt();
                 wkt.read(response)
-                console.log("WKT:");
-                console.log(wkt)
+//                console.log("WKT:");
+//                console.log(wkt)
                 map.panTo([wkt.components[0].y,wkt.components[0].x]);
             },
             error : function(err, b, c) { }
