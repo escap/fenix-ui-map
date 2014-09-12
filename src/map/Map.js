@@ -82,7 +82,6 @@ FM.Map = FM.Class.extend({
         this.map.fire('data:loaded', {layer: 'test'});
         **/
 
-
     },
 
     createMap: function(lat, lng, zoom){

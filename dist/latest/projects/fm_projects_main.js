@@ -25,6 +25,8 @@ require(['jquery',
         routes: {
             '(/)scatter(/)poverty_analysis': 'poverty_analysis',
             '(/)scatter(/)scatter_custom': 'scatter_custom',
+            '(/)timeserie(/)ndvi': 'timeserie_ndvi',
+            '(/)hungermap': 'hungermap',
             '': 'generic'
         },
 
@@ -41,6 +43,24 @@ require(['jquery',
                 FMScatterCustom().build( { "placeholder" : placeholder_container});
             });
         },
+
+        timeserie_ndvi: function() {
+            console.log("timeserie_ndvi");
+            var placeholder_container = this.placeholder_container
+            require(['FMTimeserieNDVI'], function() {
+                console.log("timeserie_ndvi");
+                FMTimeserieNDVI().build( { "placeholder" : placeholder_container});
+            });
+        },
+
+        hungermap: function() {
+            var placeholder_container = this.placeholder_container
+            require(['FMHungerMap'], function() {
+                FMHungerMap().build( { "placeholder" : placeholder_container});
+            });
+        },
+
+
 
         _init: function (lang) {
 

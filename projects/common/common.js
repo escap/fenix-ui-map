@@ -51,9 +51,11 @@ requirejs.config({
         'fenix-map-scatter-analysis'      :   'http://168.202.28.214:7070/fenix-map-js/fenix-map-config',
 
         // project modules
-        'fm_projects_main'      :   'fm_projects_main',
+        'fm_projects_main'    :   'fm_projects_main',
         'FMPovertyAnalysis'   :   'scatter/poverty_analysis/poverty_analysis',
-        'FMScatterCustom'     :   'scatter/scatter_custom/scatter_custom'
+        'FMScatterCustom'     :   'scatter/scatter_custom/scatter_custom',
+        'FMTimeserieNDVI'     :   'timeserie/ndvi/ndvi',
+        'FMHungerMap'         :   'hungermap/hungermap'
     },
 
     shim: {
