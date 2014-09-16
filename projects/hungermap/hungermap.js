@@ -9,7 +9,7 @@ define([
         var CONFIG = {
             lang: 'EN',
             placeholder: 'main_content_placeholder',
-            url_geoserver_wms: 'http://hqlprfenixapp2.hq.un.fao.org:12200/geoserver/wms',
+            url_geoserver_wms: 'http://fenixapps2.fao.org/geo',
             year: '2014'
         }
 
@@ -30,17 +30,17 @@ define([
             // add labels
             add_labels(CONFIG.lang)
 
-            $(".hm-timeline-year").click({l: l}, function(event) {
+            $(".hm-timeline-year").click({l: l, m: fenixMap}, function(event) {
                 CONFIG.year = $(this).data('year')
                 $('.hm-timeline-selected').removeClass('hm-timeline-selected');
                 $(this).addClass('hm-timeline-selected');
+                event.data.m.map.closePopup()
                 switch_layer(event.data.l, CONFIG.year)
             });
 
             fenixMap.map.on('click', function (e) {
-                getFeatureInfo(e, fenixMap, l);
+                getFeatureInfo(e, fenixMap, l, CONFIG.year, CONFIG.lang);
             });
-
             // On Move
 //            var _m = fenixMap;
 //            var GFIchk = {};
@@ -62,10 +62,6 @@ define([
 //                GFIchk["globalID-" + fenixMap.id] = 0;
 //                $('#hm-gfi').hide();
 //            });
-        }
-
-        var getFeatureInfo = function(e, fenixMap, l) {
-            FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap.map);
         }
 
         var add_labels = function(lang) {
@@ -132,8 +128,8 @@ define([
                 usedefaultbaselayers : false
             }
 
-            var fenixMap = new FM.Map(id, options, {  zoom: 2, zoomControl: false, attributionControl: false });
-            fenixMap.createMap();
+            var fenixMap = new FM.Map(id, options, {  minZoom: 1,  zoom: 1, zoomControl: false, attributionControl: false });
+            fenixMap.createMap(4,0, 1);
             fenixMap.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDSTREETMAP', 'EN'), true);
             return fenixMap;
         }
@@ -146,40 +142,32 @@ define([
             layer.styles = 'hungermap_' + year;
             layer.srs = 'EPSG:3857';
             layer.defaultgfi = true;
-
+            var l = new FM.layer(layer, fenixMap);
             // popup
-            layer.popuptitle = "adm0_name";
-            layer.popuppercentage = "u_"+ lang.toLocaleLowerCase()+"_" + year;
-            var joinlabel  = "<div class='hm-popup-title'>{{" + layer.popuptitle +"}}</div>";
-            layer.customgfi = {
+            l = setPopup(l, year, lang);
+            fenixMap.addLayer(l)
+            return l;
+        }
+
+        var setPopup = function(l,  year, lang) {
+            l.layer.popuptitle = "adm0_name";
+            l.layer.popuppercentage = "u_" + lang.toLocaleLowerCase() + "_" + year;
+            var joinlabel  = "<div class='hm-popup-title'>{{" +  l.layer.popuptitle +"}}</div>";
+            l.layer.customgfi = {
                 content : {
-                    en: "<div class='hm-popup-content'>" + joinlabel + "<div class='hm-popup-values'>{{" + layer.popuppercentage +"}} <i></i></div></div>"
+                    en: "<div class='hm-popup-content'>" + joinlabel + "<div class='hm-popup-values'>{{" + l.layer.popuppercentage +"}} <i></i></div></div>"
                 }
                 ,showpopup: true
             }
+            return l
+        }
 
-//            layer.popuptitle = "adm0_name";
-//            layer.popuppercentage = "u_"+ lang.toLocaleLowerCase()+"_" + year;
-//            var joinlabel  = "<div class='hm-popup-title'>{{" + layer.popuptitle +"}}</div>";
-//            layer.customgfi = {
-//                content : {
-//                    en: "<div class='hm-popup-content'>" + joinlabel + "<div class='hm-popup-values'>{{" + layer.popuppercentage +"}} <i></i></div></div>"
-//                }
-//                ,showpopup: false
-//                ,output: {
-//                    show: true,
-//                    id: 'hm-gfi'
-//                }
-//                ,callback : function(response, custompopup) {
-//                    $('#hm-gfi').empty();
-//                    $('#hm-gfi').append(response);
-//                    $('#hm-gfi').show();
-//                }
-//            }
-
-            var l = new FM.layer(layer, fenixMap);
-            fenixMap.addLayer(l)
-            return l;
+        var getFeatureInfo = function(e, fenixMap, l, year, lang) {
+            // popup
+            l = setPopup(l, year, lang);
+            //if (fenixMap.map.getZoom() >= 2 ) {
+            FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap.map);
+            //}
         }
 
         var switch_layer = function(l, year) {

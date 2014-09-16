@@ -111,7 +111,6 @@ FM.Layer = FM.Class.extend({
     // this is just to use with the WMS Layers // check layer type
     redraw: function(fenixmap) {
         var l = this;
-        console.log(l)
         if (l.layer.layertype ) {
             switch(l.layer.layertype ) {
                 case 'JOIN':

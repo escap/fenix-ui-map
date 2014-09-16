@@ -9,6 +9,7 @@ FM.Map = FM.Class.extend({
     controller : '', // controller of the map
 
     mapOptions: {
+        center: [0, 0],
         lat: 0,
         lng: 0,
         zoom: 1
@@ -88,7 +89,7 @@ FM.Map = FM.Class.extend({
         if ( lat )  this.mapOptions.lat = lat;
         if ( lng )   this.mapOptions.lon = lng;
         if ( zoom ) this.mapOptions.zoom = zoom;
-        this.map.setView(new L.LatLng(this.mapOptions.lat,this.mapOptions.lng), this.mapOptions.zoom);
+        this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
         L.control.scale('bottomright').addTo(this.map);
         this.initializePlugins();
         this.initializeMapGUI();
