@@ -3,7 +3,7 @@ require(['jquery',
     'backbone',
     'loglevel',
     'chosen',
-    'bootstrap',
+    'bootstrap',,
     'domReady!'], function($, Mustache, Backbone, log) {
 
     log.setLevel(0);

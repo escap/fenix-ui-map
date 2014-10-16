@@ -216,16 +216,20 @@ FM.SpatialQuery = {
 
             // Replace joindata (if needed)
             if ( joindata ) {
-//                console.log("headersHTMLJOINIndexs");
-//                console.log(headersHTMLJOINIndexs);
+                console.log("headersHTMLJOINIndexs");
+                console.log(headersHTMLJOINIndexs);
 
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
-                    //console.log(headersHTML[headersHTMLJOINIndexs[i]]);
+                    console.log(headersHTML[headersHTMLJOINIndexs[i]].innerHTML);
                     var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
+                    console.log("header");
+                    console.log(header);
+
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
                     var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
-                    //console.log(v);
+                    console.log(v);
                     c = FM.Util.replaceAll(c, header, v);
+                    console.log(c);
                 }
             }
 
@@ -238,15 +242,23 @@ FM.SpatialQuery = {
 
 
     _getJoinValueFromCode: function(code, joindata) {
+        console.log(code);
+        console.log(joindata);
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
         var integerCode = ( parseInt(code) )? parseInt(code): null
+        console.log(integerCode);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
+        console.log(json);
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
-                if ( json[i][code] )
+                if ( json[i][code] ) {
+                    console.log( json[i][code]);
                     return json[i][code];
-                else return
-                    json[i][integerCode];
+                }
+                else {
+                    console.log( json[i][integerCode]);
+                    return json[i][integerCode];
+                }
             }
         }
         return '';

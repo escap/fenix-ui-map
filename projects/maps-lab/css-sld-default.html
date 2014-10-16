@@ -94,7 +94,7 @@
             <button type="submit" class="btn btn-primary" onclick="getFields()">Check Fields</button>
         </div>
         <!--<div class="col-lg-1">-->
-            <!--<button type="submit" class="btn btn-primary" onclick="getFieldsValues()">Check Values</button>-->
+        <!--<button type="submit" class="btn btn-primary" onclick="getFieldsValues()">Check Values</button>-->
         <!--</div>-->
     </div>
     <div style="margin-top: 20px;" class="row">
@@ -118,19 +118,19 @@
     var m =''
     var cssPanel = new FMStyleCSSPanel();
     var css_text =
-'* {\n\
-    mark: symbol(circle);\n\
-    mark-size: [cat/10];\n\
-    label: [cat] "-" [str1]\n\
-}\n\
-\n\
-:mark {\n\
-    fill: grey;\n\
-    fill-opacity: 0.1;\n\
-    stroke: grey;\n\
-    stroke-width: 1px;\n\
-    stroke-opacity: 0.7;\n\
-}'
+            '* {\n\
+                mark: symbol(circle);\n\
+                mark-size: [cat/10];\n\
+                label: [cat] "-" [str1]\n\
+            }\n\
+            \n\
+            :mark {\n\
+                fill: grey;\n\
+                fill-opacity: 0.1;\n\
+                stroke: grey;\n\
+                stroke-width: 1px;\n\
+                stroke-opacity: 0.7;\n\
+            }'
     cssPanel.init({id: "style_editor", defaultText: css_text})
 
     var addLayer = function() {
@@ -141,6 +141,18 @@
         layer.opacity='1';
         layer.srs='EPSG:3857' //TODO: the srs is foundamental to the GFI
         layer.defaultgfi=true;
+
+        layer.lang = "en"
+        layer.joincolumn = "iso3"
+        layer.joindata='[{"AFG":"testtt<br>iuahsiduh"},{"ITA":"11"}]'
+        layer.joincolumnlabel = "areanamee"
+        var joinlabel  = "<div class='fm-popup-join-title'>{{" + layer.joincolumnlabel +"}}</div>"
+        layer.customgfi = {
+            content : {
+                en: "<div class='fm-popup'>" + joinlabel + "<div class='fm-popup-join-content'><i>{{{" + layer.joincolumn +"}}}</i></div></div>"                    }
+            ,showpopup: true
+        }
+
 
         var l = new FM.layer(layer);
         m.addLayer(l);

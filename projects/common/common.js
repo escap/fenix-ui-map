@@ -2,6 +2,7 @@ requirejs.config({
 
     baseUrl: '',
 
+
     paths: {
         bootstrap               :   '//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min',
         backbone                :   '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min',
