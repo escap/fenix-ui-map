@@ -23,8 +23,6 @@ FM.WMSUtils = FM.Class.extend({
     },
 
     _createWMSDropDown: function(wmsServers, divID, dropdowndID, outputID, fenixmap) {
-        //console.log(wmsServers);
-
         // TODO: dynamic width
         var html = '<select id="'+ dropdowndID+'" style="width:200px;" data-placeholder="'+ $.i18n.prop('_selectaWMSServer') +'" class="">';
         html += '<option value=""></option>';
@@ -60,8 +58,8 @@ FM.WMSUtils = FM.Class.extend({
         $("#" + id).empty();
         FM.UIUtils.loadingPanel(id, '30px');
 
-        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES
-        url += (url.contains('?'))? "&": "?";
+        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
+        url += (url.indexOf('?') > 0)? "&": "?";
         url += 'SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&request=GetCapabilities';
@@ -158,7 +156,7 @@ FM.WMSUtils = FM.Class.extend({
     _WMSCapabilities: function(id, fenixmap, wmsServerURL) {
         // TODO: check it because in theory it shouldn't be needed
         var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
-        url += (url.contains('?'))? "&": "?";
+        url += (url.indexOf('?') > 0)? "&": "?";
         url += 'SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&request=GetCapabilities';
@@ -207,7 +205,7 @@ FM.WMSUtils = FM.Class.extend({
 
     WFSCapabilities: function(id, fenixmap, wmsServerURL) {
         var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_WMS_GET_CAPABILITIES;
-        url += (url.contains('?'))? "&": "?";
+        url += (url.indexOf('?') > 0)? "&": "?";
         url += 'SERVICE=WFS';
         url += '&VERSION=1.0.0';
         url += '&request=GetCapabilities';
