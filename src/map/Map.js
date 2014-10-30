@@ -87,7 +87,7 @@ FM.Map = FM.Class.extend({
 
     createMap: function(lat, lng, zoom){
         if ( lat )  this.mapOptions.lat = lat;
-        if ( lng )   this.mapOptions.lon = lng;
+        if ( lng )   this.mapOptions.lng = lng;
         if ( zoom ) this.mapOptions.zoom = zoom;
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
         L.control.scale('bottomright').addTo(this.map);
