@@ -331,12 +331,12 @@ FM.Map = FM.Class.extend({
 
     // TODO: add other parameters in the request: I.E.
     getFeatureInfo: function(e, l) {
-        var fenixMap = e.target._fenixMap;
+        // var fenixMap = e.target._fenixMap;
+        var fenixMap = this;
 //        this.addClickEffect(e.latlng, fenixMap.map);
         // get the layer that is been passed or the one that is selected in the Controller
         var l = (l) ? l: fenixMap.controller.selectedLayer;
         if ( l ) {
-
             if (l.layer.layertype != null && l.layer.layertype == 'JOIN') {
                 FM.SpatialQuery.getFeatureInfoJoin(l, e.layerPoint, e.latlng, fenixMap.map);
             }

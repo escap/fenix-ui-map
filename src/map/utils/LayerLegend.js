@@ -37,7 +37,7 @@ FM.LayerLegend = {
             if (l.layer.sldurl )
                  url +=  '&sld=' + l.layer.sldurl;
 
-            var alternativeUrl = new String(url);
+            var alternativeUrl = url;
             url += '&LEGEND_OPTIONS=forceLabels:on;forceRule:True;dx:0;dy:0;mx:0;my:0;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3';
 
             FM.LayerLegend._loadLegend(url, alternativeUrl, toRendedID)

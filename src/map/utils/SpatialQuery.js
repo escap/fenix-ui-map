@@ -105,11 +105,11 @@ FM.SpatialQuery = {
                 if (_l.layer.customgfi) {
                     var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
                     // TODO: handle multiple outputs
-                    r =  ( result != null )? result[0]: response;
+                    r = (result != null)? result[0]: response;
                 }
                 else {
                     var result = FM.SpatialQuery.transposeHTMLTable(response);
-                    r =  ( result != null )? result[0]: response;
+                    r = (result != null)? result[0]: response;
                 }
 
                 // check if the output is an empty (geoserver) output
@@ -160,8 +160,8 @@ FM.SpatialQuery = {
     },
 
     _customizePopUp:function(content, values, responsetable, joindata) {
-        //console.log('SpatialQuery._customizePopUp()')
-        //console.log(joindata)
+//        console.log('SpatialQuery._customizePopUp()')
+//        joindata = $.parseJSON(joindata)
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
         var rowsData = [];
@@ -169,12 +169,18 @@ FM.SpatialQuery = {
         // get only useful headers
         var headersHTMLIndexs = [];
         for ( var i=0;  i < headersHTML.length; i ++) {
+            console.log("-----")
+            console.log(headersHTML[i])
             for (var j=0; j< values.id.length; j++) {
+                console.log(values.id)
                 if ( values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
                     headersHTMLIndexs.push(i); break;
                 }
             }
         }
+
+//        console.log("here");
+//        console.log(headersHTMLIndexs)
 
         // this is in case the joinid is not empty TODO: split the code
         if ( joindata ) {
@@ -189,8 +195,8 @@ FM.SpatialQuery = {
                 }
             }
         }
-//        console.log("headersHTMLJOINIndexs");
-//        console.log(headersHTMLJOINIndexs);
+        console.log("headersHTMLJOINIndexs");
+        console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
@@ -199,8 +205,8 @@ FM.SpatialQuery = {
 
         // create the response results
         var htmlresult = [];
-//        console.log("rowsData");
-//        console.log(rowsData);
+        console.log("rowsData");
+        console.log(rowsData);
         for( var j=0; j < rowsData.length; j++) {
 
             // this is done for each row of result (They could be many rows)

@@ -78,7 +78,8 @@ FM.guiController = {
                     '</div>',
 
 
-    legend: '<div class="fm-box-zindex fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
+    legend: '<div class="fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
+            //'<div class="fm-box-zindex fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
 //            '<div class="fm-box-zindex fm-box fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
             '<div class="fm-legend-title-content">' +
                 '<div id="REPLACE-controller-item-getlegend-legend-layertitle" class="fm-legend-layertitle"></div>' +

@@ -25,7 +25,8 @@
 
 
 .fm-box-zindex {
-    z-index: 999;
+    /* workaround to cover the leaflet-scale plugin */
+    z-index: 1000 !important;
 }
 
 .fm-box label {
@@ -339,6 +340,7 @@ div.fm-controller-item-title {
     margin: 10px 10px 5px 0px;
     background-color:white;
     display:none;
+    z-index: 1 !important;
 }
 
 .fm-legend-layertitle {
