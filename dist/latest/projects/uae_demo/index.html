@@ -97,6 +97,17 @@
         layer.opacity='0.7';
         var l = new FM.layer(layer);
         m.addLayer(l);
+
+        // Boundaries UAE
+        var layer = {};
+        layer.layers = "fenix:gaul0_faostat_3857"
+        layer.layertitle = "UAE"
+        layer.urlWMS = "http://fenixapps2.fao.org/geoserver-demo"
+        layer.styles = "gaul0_highlight_polygon"
+        layer.opacity='0.7';
+        layer.cql_filter="adm0_code IN (255)";
+        var l = new FM.layer(layer);
+        m.addLayer(l);
     }
 
 </script>
