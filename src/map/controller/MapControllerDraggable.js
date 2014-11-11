@@ -233,8 +233,6 @@ FM.MAPController = FM.Class.extend({
             $( '#'+ l.id  + '-controller-item-box' ).data( "layer", l );
 
             var index = $('#'+ l.id  + '-controller-item-box').index() + 1;
-            //console.log(index);
-
 
             // setting up the layer GUI options
             this._layerGUIOptions(l);
@@ -666,11 +664,17 @@ FM.MAPController = FM.Class.extend({
      * @param id
      */
     showHide: function(id, isReload) {
-        var l = this.layersMap.get(id);
-        if ( l.layer.jointype && l.layer.jointype.toLowerCase() == 'point')
-            this.showHidePointLayer(id);
-        else
-            this.showHideLayer(id, isReload);
+        try {
+            var l = this.layersMap.get(id);
+            if (l) {
+                if (l.layer.jointype && l.layer.jointype.toLowerCase() == 'point')
+                    this.showHidePointLayer(id);
+                else
+                    this.showHideLayer(id, isReload);
+            }
+        }catch (e) {
+            console.warn("showHide warn:" + e);
+        }
     },
 
     /***
@@ -705,33 +709,38 @@ FM.MAPController = FM.Class.extend({
      * @param id
      */
     showHideLayer:function(id, isReload) {
-        var l = this.layersMap.get(id);
-        if (isReload != null && !isReload) {
-            if ( l.layer.visibility == false ) {
-                $('#'+ id+ '-controller-item-enabledisable').removeClass('fm-icon-enable');
-                $('#'+ id+ '-controller-item-enabledisable').addClass('fm-icon-disable');
-                this._map.removeLayer(l.leafletLayer)
+        try {
+            var l = this.layersMap.get(id);
+            if (isReload != null && !isReload) {
+                if (l.layer.visibility == false) {
+                    $('#' + id + '-controller-item-enabledisable').removeClass('fm-icon-enable');
+                    $('#' + id + '-controller-item-enabledisable').addClass('fm-icon-disable');
+                    this._map.removeLayer(l.leafletLayer)
+                }
             }
-        }
-        else if (isReload != null && isReload) {
-            // do nothing (this will maintain the old status
-        }
-        else {
-            if (l.layer.visibility == null || l.layer.visibility) {
-                l.layer.visibility = false;;
-                $('#'+ id+ '-controller-item-enabledisable').removeClass('fm-icon-enable');
-                $('#'+ id+ '-controller-item-enabledisable').addClass('fm-icon-disable');
-                //document.getElementById(id).style.display = 'none';
-                this._map.removeLayer(l.leafletLayer)
+            else if (isReload != null && isReload) {
+                // do nothing (this will maintain the old status
             }
             else {
-                l.layer.visibility = true;
-                $('#'+ id+ '-controller-item-enabledisable').removeClass('fm-icon-disable');
-                $('#'+ id+ '-controller-item-enabledisable').addClass('fm-icon-enable');
-                //document.getElementById(id).style.display = 'block';
-                this._map.addLayer(l.leafletLayer);
-                this.setZIndex(l) // this method assigns the Z-Index and the ID to the layer
+                if (l.layer.visibility == null || l.layer.visibility) {
+                    l.layer.visibility = false;
+                    ;
+                    $('#' + id + '-controller-item-enabledisable').removeClass('fm-icon-enable');
+                    $('#' + id + '-controller-item-enabledisable').addClass('fm-icon-disable');
+                    //document.getElementById(id).style.display = 'none';
+                    this._map.removeLayer(l.leafletLayer)
+                }
+                else {
+                    l.layer.visibility = true;
+                    $('#' + id + '-controller-item-enabledisable').removeClass('fm-icon-disable');
+                    $('#' + id + '-controller-item-enabledisable').addClass('fm-icon-enable');
+                    //document.getElementById(id).style.display = 'block';
+                    this._map.addLayer(l.leafletLayer);
+                    this.setZIndex(l) // this method assigns the Z-Index and the ID to the layer
+                }
             }
+        }catch (e) {
+            console.warn("showHideLayer error:"  + e);
         }
     },
 
@@ -760,24 +769,19 @@ FM.MAPController = FM.Class.extend({
      * @param l
      */
     setZIndex: function (l) {
-        //console.log('setZIndex: ' + l.id + ' - ' + l.layer.layertitle + ' - ' + l.layer.zindex);
-        var layers = document.getElementById(this._fenixMap.tilePaneID).childNodes;
-        for (i = 0, len = layers.length; i < len; i++) {
-            //console.log(layers[i]);
-            if (layers[i] !== this._container) {
-                var zIndex = parseInt(layers[i].style.zIndex, 10);
-                //var id = parseInt(layers[i].id, 10);
-                if ( isNaN(zIndex))  {
-                   // console.log('isNaN(zIndex) ------------------> ' + l.id + ' - ' + l.layer.layertitle);
-                    layers[i].style.zIndex = l.layer.zindex;
-                    layers[i].id = l.id;
+        try {
+            var layers = document.getElementById(this._fenixMap.tilePaneID).childNodes;
+            for (i = 0, len = layers.length; i < len; i++) {
+                if (layers[i] !== this._container) {
+                    var zIndex = parseInt(layers[i].style.zIndex, 10);
+                    if ( isNaN(zIndex))  {
+                        layers[i].style.zIndex = l.layer.zindex;
+                        layers[i].id = l.id;
+                    }
                 }
-                /*                else if (isNaN(id))  {
-                 console.log('isNaN(id) ------------------> ' + l.id + ' - ' + l.layer.layertitle);
-                 layers[i].style.zIndex = l.layer.zindex;
-                 layers[i].id = l.id;
-                 }*/
             }
+        } catch (e) {
+            console.warn("setZIndex error:"  + e);
         }
     },
 

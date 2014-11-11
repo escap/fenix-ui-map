@@ -48,7 +48,7 @@
 
 <body onload="initialize();">
 
-    <div class='fm-box' style='overflow: hidden; margin: 0 auto; text-align: left;' id='map'><div>
+<div class='fm-box' style='overflow: hidden; margin: 0 auto; text-align: left;' id='map'><div>
 
 </body>
 
@@ -58,7 +58,7 @@
 <script>
 
     function initialize() {
-        createMap('map', 24.186179, 53.975830, 7)
+        createMap('map', 24.186179, 53.975830, 6)
     }
 
     function createMap(id, lat, lng, zoom){
@@ -100,7 +100,7 @@
 
         // Boundaries UAE
         var layer = {};
-        layer.layers = "fenix:gaul0_faostat_3857"
+        layer.layers = "fenix:gaul0_3857"
         layer.layertitle = "UAE"
         layer.urlWMS = "http://fenixapps2.fao.org/geoserver-demo"
         layer.styles = "gaul0_highlight_polygon"

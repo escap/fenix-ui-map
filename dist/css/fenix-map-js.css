@@ -1006,3 +1006,6 @@ div.fm-controller-item-title {
     z-index: 0;
 }
 
+#powerTip {
+    z-index:1000;
+}
