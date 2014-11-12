@@ -108,7 +108,7 @@ FM.SpatialQuery = {
                     r = (result != null)? result[0]: response;
                 }
                 else {
-                    var result = FM.SpatialQuery.transposeHTMLTable(response);
+                    var result = FM.SpatialQuery.transposeHTMLTable(response, _l.layer.layertitle);
                     r = (result != null)? result[0]: response;
                 }
 
@@ -169,18 +169,15 @@ FM.SpatialQuery = {
         // get only useful headers
         var headersHTMLIndexs = [];
         for ( var i=0;  i < headersHTML.length; i ++) {
-            console.log("-----")
-            console.log(headersHTML[i])
+//            console.log("-----")
+//            console.log(headersHTML[i])
             for (var j=0; j< values.id.length; j++) {
-                console.log(values.id)
+//                console.log(values.id)
                 if ( values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
                     headersHTMLIndexs.push(i); break;
                 }
             }
         }
-
-//        console.log("here");
-//        console.log(headersHTMLIndexs)
 
         // this is in case the joinid is not empty TODO: split the code
         if ( joindata ) {
@@ -195,8 +192,8 @@ FM.SpatialQuery = {
                 }
             }
         }
-        console.log("headersHTMLJOINIndexs");
-        console.log(headersHTMLJOINIndexs);
+//        console.log("headersHTMLJOINIndexs");
+//        console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
@@ -205,8 +202,8 @@ FM.SpatialQuery = {
 
         // create the response results
         var htmlresult = [];
-        console.log("rowsData");
-        console.log(rowsData);
+//        console.log("rowsData");
+//        console.log(rowsData);
         for( var j=0; j < rowsData.length; j++) {
 
             // this is done for each row of result (They could be many rows)
@@ -222,20 +219,20 @@ FM.SpatialQuery = {
 
             // Replace joindata (if needed)
             if ( joindata ) {
-                console.log("headersHTMLJOINIndexs");
-                console.log(headersHTMLJOINIndexs);
+//                console.log("headersHTMLJOINIndexs");
+//                console.log(headersHTMLJOINIndexs);
 
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
-                    console.log(headersHTML[headersHTMLJOINIndexs[i]].innerHTML);
+//                    console.log(headersHTML[headersHTMLJOINIndexs[i]].innerHTML);
                     var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
-                    console.log("header");
-                    console.log(header);
+//                    console.log("header");
+//                    console.log(header);
 
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
                     var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
-                    console.log(v);
+//                    console.log(v);
                     c = FM.Util.replaceAll(c, header, v);
-                    console.log(c);
+//                    console.log(c);
                 }
             }
 
@@ -300,28 +297,25 @@ FM.SpatialQuery = {
         return values;
     },
 
-    transposeHTMLTable: function(response){
+    transposeHTMLTable: function(response, layertitle){
         /** TODO: make it nicer **/
         var h = $('<div></div>').append(response);
         var table = h.find('table');
         var result = [];
         if ( table ) {
-            var r = FM.SpatialQuery.transposeHTML(table)
-            //console.log(r);
+            var r = FM.SpatialQuery.transposeHTML(table, layertitle)
+//            console.log(r);
             if ( r != null ) return r;
         }
         return null;
     },
 
-    transposeHTML:function(table) {
+    transposeHTML:function(table, layertitle) {
         var div = $('<div class="fm-transpose-popup"></div>');
-
         var titleHTML = table.find('caption');
-
-        //console.log(table)
-
         try {
-            div.append(titleHTML[0].innerHTML)
+//            div.append(titleHTML[0].innerHTML)
+            div.append(layertitle)
 
             var tableHTML = table.find('tr');
 
