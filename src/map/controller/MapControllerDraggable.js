@@ -103,23 +103,6 @@ FM.MAPController = FM.Class.extend({
         this.$boxIcons.append(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
         this.$menuBoxContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
 
-
-        /**$('#' + this.suffix + '-controller-' + toLoad + 'Icon').hover(
-            // on mouse hover
-            function(event) {
-                $(_this._selectedIcon).hide();
-                _this._selectedIcon = $('#' + _this.suffix + '-controller-' + toLoad + '-box');
-                $('#' + _this.suffix + '-controller-' + toLoad + '-box').show();
-                $('#' + _this.suffix + '-controller-box').slideDown("slow");
-            },
-            function(event) {
-            }
-        ); **/
-
-
-         /*this.$menuBoxContainer.attr( "title", $.i18n.prop('_baselayer'));
-        try {this.$menuBoxContainer.powerTip({placement: 'n'}); } catch (e) {} */
-
         var boxIcon = $('#' + this.suffix + '-controller-' + toLoad + 'Icon');
         boxIcon.attr( "title", $.i18n.prop('_' + toLoad));
         try {boxIcon.powerTip({placement: 'ne'}); } catch (e) {}
@@ -159,8 +142,6 @@ FM.MAPController = FM.Class.extend({
             $('#' + suffix + '-controller-box').slideUp("slow");
             $id.hide();
         });
-
-
     },
 
     /**
