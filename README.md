@@ -1,4 +1,4 @@
-fenix-map-js
+fenix-ui-map
 ============
 
-FENIX Map
+FENIX map component
