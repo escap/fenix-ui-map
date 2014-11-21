@@ -57,7 +57,6 @@ grunt.initConfig({
 		imageslayers: {
 			nonull: true,
 			expand: true,
-			//flatten: true,
 			cwd: "src/css/images/",
 			src: '**',
 			dest: "dist/images/"
@@ -80,14 +79,18 @@ grunt.initConfig({
 		},
 		lib: {
 			src: [
-				'lib/jquery.min.js',
+				'node_modules/jquery/dist/jquery.min.js',
+				'node_modules/hoverintent/dist/hoverintent.min.js',
+				'node_modules/leaflet/dist/leaflet.js',
+				'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
+				'node_modules/jquery-powertip/dist/jquery.powertip.min.js',
+				//TODO https://github.com/stevenbenner/jquery-powertip
+				//TODO https://github.com/stefanocudini/jquery-powertip
+				'node_modules/csvjson/csvjson.min.js',
+				//TODO https://github.com/aaronsnoswell/csvjson.js
+				//TODO https://github.com/stefanocudini/csvjson.js
 				'lib/jquery.i18n.properties-min.js',
 				'lib/jquery-ui.custom.min.js',
-				'lib/jquery.hoverIntent.js',
-				'lib/leaflet.js',
-				'lib/leaflet.markercluster.js',
-				'lib/json2.js',
-				'lib/csvjson.min.1.0.js'
 			],
 			dest: 'dist/fenix-ui-map-lib.js'
 		},
@@ -97,9 +100,11 @@ grunt.initConfig({
 				'src/core/Class.js',
 				'src/core/Util.js',
 				'src/core/HashMap.js',
+				//TODO move to lib
 				'src/core/UIUtils.js',
 				'src/core/WMSUtils.js',
 				'src/core/fullScreenApi.js',
+				//TODO move to lib
 				'src/map/config/*.js',
 				'src/map/Map.js',
 				'src/map/utils/LayerLegend.js',
