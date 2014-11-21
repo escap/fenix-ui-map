@@ -84,7 +84,7 @@
     font: bold 0 'Lucida Console', Monaco, monospace;
     width:31px !important;
     height: 30px !important;
-    background-image: url(images/icons-countrystat/fenix-map-sprite.png);
+    background-image: url(images/fenix-map-sprite.png);
     background-position: -120px 0 !important;
 }
 
@@ -97,7 +97,7 @@
     font: bold 0 'Lucida Console', Monaco, monospace;
     width:31px !important;
     height: 30px !important;
-    background-image: url(images/icons-countrystat/fenix-map-sprite.png);
+    background-image: url(images/fenix-map-sprite.png);
     background-position: -150px 0 !important;
 }
 

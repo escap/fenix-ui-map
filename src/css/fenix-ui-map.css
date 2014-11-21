@@ -666,7 +666,7 @@ div.fm-controller-item-title {
 .fm-icon-sprite {
     width:30px;
     height: 30px;
-    background-image: url(images/icons-countrystat/fenix-map-sprite.png);
+    background-image: url(images/fenix-map-sprite.png);
     cursor: pointer;
 }
 
@@ -788,7 +788,7 @@ div.fm-controller-item-title {
 .fm-icon-layer-panel-sprite {
     width:11px;
     height: 11px;
-    background-image: url(images/icons-countrystat/layer-panel-icons-sprite.png);
+    background-image: url(images/layer-panel-icons-sprite.png);
     cursor: pointer;
     margin-left: 7px;
 }
@@ -822,8 +822,8 @@ div.fm-controller-item-title {
     background-position: -33px -11px;
 }
 
-.fm-icon-enable { background-image: url(images/icons-countrystat/layer-on.png); width: 19px; height: 19px;}
-.fm-icon-disable { background-image: url(images/icons-countrystat/layer-off.png); width: 19px; height: 19px;}
+.fm-icon-enable { background-image: url(images/layer-on.png); width: 19px; height: 19px;}
+.fm-icon-disable { background-image: url(images/layer-off.png); width: 19px; height: 19px;}
 
 
 .fm-opacity-slider {
@@ -850,7 +850,7 @@ div.fm-controller-item-title {
 }
 
 .ui-slider-handle {
-    background: url(images/icons-countrystat/slider-handler.png) !important;
+    background: url(images/slider-handler.png) !important;
     width: 29px !important;
     height: 29px !important;
     border: none !important;
@@ -876,7 +876,7 @@ div.fm-controller-item-title {
 .fm-icon-layer-subicons-sprite {
     width: 30px;
     height: 25px;
-    background-image: url(images/icons-countrystat/fenix-map-add-sprite.png);
+    background-image: url(images/fenix-map-add-sprite.png);
     cursor: pointer;
     display: inline-block;
     border-left:1px solid #428BCA;
@@ -955,7 +955,7 @@ div.fm-controller-item-title {
 /** close panel **/
 
 .fm-icon-close-panel-sprite {
-    background-image: url(images/icons-countrystat/close-panel-sprite.png);
+    background-image: url(images/close-panel-sprite.png);
     width: 12px;
     height: 12px;
     margin-top:3px;
