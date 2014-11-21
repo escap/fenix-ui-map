@@ -47,18 +47,18 @@ grunt.initConfig({
 		sample: {
 			src: [ 'i18n/*.json' ]
 		}
-	},	
+	},
 	copy: {
 		fenixmapconfig: {
 			nonull: true,
-			src: 'src/fenix-ui-map-config.js',
+			src: 'src/FenixMapConfig.js',
 			dest: 'dist/fenix-ui-map-config.js'
 		},
 		imageslayers: {
 			nonull: true,
 			expand: true,
 			//flatten: true,
-			cwd: "src/images/",
+			cwd: "src/css/images/",
 			src: '**',
 			dest: "dist/images/"
 		},
@@ -93,23 +93,19 @@ grunt.initConfig({
 		},
 		fenixmap: {
 			src: [
-				'src/FENIXMap.js',
+				'src/FenixMap.js',
 				'src/core/Class.js',
 				'src/core/Util.js',
-				'src/core/hashmap.js',
-				'src/core/RequestHandler.js',
+				'src/core/HashMap.js',
 				'src/core/UIUtils.js',
 				'src/core/WMSUtils.js',
-				'src/core/fullscreen.js',
-				'src/map/config/DEPENDENCIES.js',
-				'src/map/constants/*.js',
+				'src/core/fullScreenApi.js',
+				'src/map/config/*.js',
 				'src/map/Map.js',
 				'src/map/utils/LayerLegend.js',
 				'src/map/controller/MapControllerDraggable.js',
 				'src/map/utils/*.js ',
-				'src/map/layer/*.js',
-				'src/map/gui/*.js',
-				'src/plugins/FMPopUp.js'
+				'src/map/layer/*.js'
 			],
 			dest: 'dist/fenix-ui-map.src.js'
 		}
