@@ -77,7 +77,7 @@ grunt.initConfig({
 				block: true
 			}
 		},
-		lib: {
+/*		lib: {	//unuseful with requirejs
 			src: [
 				'node_modules/jquery/dist/jquery.min.js',
 				'node_modules/hoverintent/dist/hoverintent.min.js',
@@ -89,11 +89,11 @@ grunt.initConfig({
 				'node_modules/csvjson/csvjson.min.js',
 				//TODO https://github.com/aaronsnoswell/csvjson.js
 				//TODO https://github.com/stefanocudini/csvjson.js
-				'lib/jquery.i18n.properties-min.js',
+				'node_modules/jquery.i18n.properties-min.js',
 				'lib/jquery-ui.custom.min.js',
 			],
 			dest: 'dist/fenix-ui-map-lib.js'
-		},
+		},*/
 		fenixmap: {
 			src: [
 				'src/FenixMap.js',
