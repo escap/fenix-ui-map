@@ -5,12 +5,12 @@
 
 FM.Util = {
 
-    loadedModules: [],
-
-    dependencies: null,
-
     initializeLangProperties: function(lang) {
         var I18NLang = '';
+
+        //TODO swith to requirejs i18n
+        //TODO lowercase lang code
+
         switch (lang) {
             case 'FR' : I18NLang = 'fr'; break;
             case 'ES' : I18NLang = 'es'; break;
@@ -200,89 +200,20 @@ FM.Util = {
         return layerRequest;
     },
 
+    FM.Util.randomID = function() {
+        var randLetter = Math.random().toString(36).substring(7);
+        return (randLetter + Date.now()).toLocaleLowerCase();
+    },
 
-    /**
-     * @param module    The name of the module
-     *
-     * Each module has its own libraries, the full list is in the <code>libs.json</code> file.
-     */
-        FM.Util.loadModuleLibs = function(module, callback) {
+    FM.Util.fire = function(item , type, data){
+        var evt = document.createEvent("CustomEvent");
+        evt.initCustomEvent(type, true, true, data);
+        item.dispatchEvent(evt);
+    }
 
-            if  ( !FM.Util.isModuleLoaded(module) ) {
-
-                if ( FM.Util.dependencies == null ) {
-
-                    if ( FM.DEPENDENCIES[module] ) {
-//                        console.log(FM.DEPENDENCIES[module]);
-/*                        FM.Util.dependencies = FM.DEPENDENCIES[module];*/
-                        FM.Util.loadDependencies(module, callback);
-                    }
-                    else {
-                        callback();
-                    }
-                }
-                else {
-                    FM.Util.loadDependencies(module, callback);
-                }
-            }
-            else {
-                //console.log('JS libraries for module ' + module + ' won\'t be loaded again it\' executed directly the callback');
-            }
-        },
-
-        FM.Util.loadDependencies = function(module, callback) {
-
-                var data = FM.DEPENDENCIES[module];
-
-                if(typeof data == 'string')
-                    data = $.parseJSON(data);
-
-                if ( data )  {
-                    var requests = []
-                    if ( data.css != null )
-                        for (var i = 0 ; i < data.css.length ; i++) {
-                            requests.push(data.css[i]);
-                        }
-
-                    if ( data.js != null )
-                        for (var i = 0 ; i < data.js.length ; i++) {
-                            requests.push(data.js[i]);
-                        }
-
-                   // console.log(' ImportDependencies.importSequentially(: ' + requests);
-                    //ImportDependencies.importAsync(requests, callback);
-                    ImportDependencies.importSequentially(requests, callback );
-
-                }
-        },
-
-        FM.Util.isModuleLoaded = function(module) {
-
-            for (var i = 0 ; i <  FM.Util.loadedModules.length ; i++) {
-                if (  FM.Util.loadedModules[i] == module) {
-                    //console.log('FM.Util.isModuleLoaded: ' + module);
-                    return true;
-                }
-            }
-            // console.log('loadedmodules: ' + FM.Util.loadedModules)
-            return false;
-
-        },
-
-        FM.Util.randomID = function() {
-            var randLetter = Math.random().toString(36).substring(7);
-            return (randLetter + Date.now()).toLocaleLowerCase();
-        },
-
-        FM.Util.fire = function(item , type, data){
-            var evt = document.createEvent("CustomEvent");
-            evt.initCustomEvent(type, true, true, data);
-            item.dispatchEvent(evt);
-        }
-
-        FM.Util.on = function(item , type, data, callback){
-            item.addEventListener(type, callback, false);
-        }
+    FM.Util.on = function(item , type, data, callback){
+        item.addEventListener(type, callback, false);
+    }
 
 }());
 

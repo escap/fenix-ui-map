@@ -19,7 +19,7 @@ FM.Plugins = {
     },
 
     _addgeosearch: function(_fenixmap, show) {
-        if ( show ) {
+        if ( show && L.GeoSearch) {
             new L.Control.GeoSearch({
                 provider: new L.GeoSearch.Provider.OpenStreetMap()
             }).addTo(_fenixmap.map);
@@ -28,7 +28,7 @@ FM.Plugins = {
 
     _addgeocoder: function(_fenixmap, show) {
         // TODO: should be load here dinamically the requires JS
-        if ( show ) {
+        if ( show && L.Control.OSMGeocoder) {
             var osmGeocoder = new L.Control.OSMGeocoder();
             _fenixmap.map.addControl(osmGeocoder);
         }
@@ -162,7 +162,7 @@ FM.Plugins = {
     },
 
     _addcontrolloading: function( _fenixmap, show) {
-        if ( show ) {
+        if ( show && L.Control.loading) {
             var loadingControl = L.Control.loading({
                 separate: true,
                 position: 'topright'

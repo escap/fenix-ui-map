@@ -405,13 +405,11 @@ FM.Map = FM.Class.extend({
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
                  var invoke = '_add' + key.toLowerCase();
-                FM.loadModuleLibs(
-                    key.toLowerCase(),
-                    //function() { _this[invoke](_this, value) }
-                    function() {
-                        FM.Plugins[invoke](_this, value)
-                    }
-                );
+
+                /*FM.loadModuleLibs(key.toLowerCase(), function() {
+                    FM.Plugins[invoke](_this, value)
+                });*/
+                FM.Plugins[invoke](_this, value)
             });
         }
     },
