@@ -109,6 +109,8 @@ grunt.initConfig({
 				'src/map/Map.js',
 				'src/map/utils/LayerLegend.js',
 				'src/map/controller/MapControllerDraggable.js',
+				'src/map/html/gui-controller.js',
+				'src/map/html/gui-map.js',
 				'src/map/utils/*.js ',
 				'src/map/layer/*.js'
 			],

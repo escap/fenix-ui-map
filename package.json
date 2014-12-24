@@ -40,11 +40,12 @@
     "underscore": "~1.7.0",
     "leaflet": "~0.7.3",
     "leaflet.markercluster": "~0.4.0",
+    "chosen-jquery": "~0.1.1",
     "text": "https://github.com/requirejs/text/tarball/master",
     "i18n": "https://github.com/requirejs/i18n/tarball/master",
     "domReady": "https://github.com/requirejs/domReady/tarball/master",
     "jquery-powertip": "https://github.com/stefanocudini/jquery-powertip/tarball/master",
     "csvjson": "https://github.com/stefanocudini/csvjson.js/tarball/master",
-    "chosen-jquery": "~0.1.1"
+    "jquery-ui": "//fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min"
   }
 }

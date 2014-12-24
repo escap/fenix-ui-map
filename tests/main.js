@@ -41,6 +41,7 @@ require.config({
 		'fenix-map': [
 			'i18n',
 			'jquery',
+			'jquery-ui',
 			'chosen',
 			'leaflet',
 			//'leaflet.markercluster'
@@ -48,6 +49,7 @@ require.config({
 			//'jquery-ui',
 			'hoverintent',
 			'powertip',
+
 			'jquery.i18n.properties',
 			'fenix-map-config'
 		]
@@ -61,23 +63,48 @@ require([
 	'domready!'
 ], function($,_,bts,Handlebars,
 	FenixMap, FenixMapConf) {
+	
+	_.extend(FenixMapConf, {
+		BASEURL: 'http://stefcud.device.fao.org/fenix-ui-map/dist',
+		BASEURL_LANG: 'http://stefcud.device.fao.org/fenix-ui-map/dist/i18n/'
+	});
 
-	var options = {
-		plugins: { geosearch : true, mouseposition: false, controlloading : true,zoomControl: 'bottomright'},
-		guiController: { overlay : true,  baselayer: true,  wmsLoader: true },
-		gui: {disclaimerfao: true }
-	}
-
-	var mapOptions = { zoomControl:false,attributionControl: false };
-	var m = new FM.Map('map', options, mapOptions);
+	var m = new FM.Map('map', {
+		plugins: {
+			geosearch: true,
+			mouseposition: false,
+			controlloading : true,
+			zoomControl: 'bottomright'
+		},
+		guiController: {
+			overlay: true,
+			baselayer: true,
+			wmsLoader: true
+		},
+		gui: {
+			disclaimerfao: true
+		}
+	}, {
+		zoomControl: false,
+		attributionControl: false
+	});
+	
 	m.createMap();
 
-	var layer = {};
-	layer.layers = 'fenix:gaul0_line_3857'
-	layer.layertitle = 'Country Boundaries'
-	layer.urlWMS = 'http://fenixapps.fao.org/geoserver'
-	layer.opacity='1';
-	l = new FM.layer(layer);
-	m.addLayer(l);
-
+	m.addLayer( new FM.layer({
+		layers: 'fenix:gaul0_line_3857',
+		layertitle: 'Country Boundaries',
+		urlWMS: 'http://fenixapps.fao.org/geoserver',
+		opacity: '1',
+		lang: 'en'
+	}) );
 });
+
+
+
+
+
+
+
+
+
