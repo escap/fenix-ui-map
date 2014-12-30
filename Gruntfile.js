@@ -80,23 +80,6 @@ grunt.initConfig({
 				block: true
 			}
 		},
-/*		lib: {	//unuseful with requirejs
-			src: [
-				'node_modules/jquery/dist/jquery.min.js',
-				'node_modules/hoverintent/dist/hoverintent.min.js',
-				'node_modules/leaflet/dist/leaflet.js',
-				'node_modules/leaflet.markercluster/dist/leaflet.markercluster.js',
-				'node_modules/jquery-powertip/dist/jquery.powertip.min.js',
-				//TODO https://github.com/stevenbenner/jquery-powertip
-				//TODO https://github.com/stefanocudini/jquery-powertip
-				'node_modules/csvjson/csvjson.min.js',
-				//TODO https://github.com/aaronsnoswell/csvjson.js
-				//TODO https://github.com/stefanocudini/csvjson.js
-				'node_modules/jquery.i18n.properties-min.js',
-				'lib/jquery-ui.custom.min.js',
-			],
-			dest: 'dist/fenix-ui-map-lib.js'
-		},*/
 		fenixmap: {
 			src: [
 				'src/FenixMap.js',
@@ -126,7 +109,7 @@ grunt.initConfig({
 		},
 		fenixmap: {
 			files: {
-				'dist/fenix-ui-map.min.js': ['<%= concat.fenixmap.dest %>']
+				'dist/fenix-ui-map.min.js': ['dist/fenix-ui-map.src.js']
 			}
 		}
 	},
@@ -155,6 +138,7 @@ grunt.initConfig({
 		}		
 	}
 });
+
 grunt.registerTask('default', [
 	//'jshint',
 	'clean',

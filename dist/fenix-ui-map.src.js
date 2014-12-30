@@ -2718,7 +2718,6 @@ FM.WCS = function() {
         '1.1.1' : 'identifiers',
         '2.0'   : 'identifiers'
     }
-
     /**
      * Return the description of the columns
      * @param obj
