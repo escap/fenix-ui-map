@@ -43,7 +43,7 @@
         fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
 
         fullScreenApi.isFullScreen = function() {
-            console.log('fullScreenApi.isFullScreen');
+            //console.log('fullScreenApi.isFullScreen');
             switch (this.prefix) {
                 case '':
                     return document.fullScreen;

@@ -103,20 +103,6 @@ FM.WMSUtils = FM.Class.extend({
                 layer.srs = fenixmap.map.options.crs.code;
                 layer.openlegend = true; //this will open the legend by on preview (choose on add if we want to leave it open **/
 
-                /** TODO: save legengdURL **/
-                //.legendurl = $(this).children("Style").children("LegendURL");
-                //console.log(layer.legendurl);
-
-                /** TODO: save getLegendURl http://gis.stackexchange.com/questions/21912/how-to-get-wms-legendgraphics-using-geoserver-and-geowebcache **/
-
-
-                /*
-                 console.log($(this).children("EX_GeographicBoundingBox").children("westBoundLongitude").text())
-                 console.log($(this).children("westBoundLongitude").text());
-                 console.log($(this).children("eastBoundLongitude").text());
-                 console.log($(this).children("southBoundLatitude").text());
-                 console.log($(this).children("northBoundLatitude").text());*/
-
                 // TODO: get bounding box with the current CRS
                 $("#" + rand + "-WMSLayer-box").click({fenixmap:fenixmap, layer: layer}, function(event) {
                     event.data.layer.openlegend = false; // if on add we want to close the legend

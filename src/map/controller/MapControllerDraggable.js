@@ -738,7 +738,7 @@ FM.MAPController = FM.Class.extend({
         try {
             document.getElementById(l.id).style.zIndex=updatedZIndex;
         }catch (e) {
-            console.log('error updateZIndex: ' + l.id + ' doesnt exists');
+           // console.log('error updateZIndex: ' + l.id + ' doesnt exists');
         }
 
     },
@@ -777,7 +777,7 @@ FM.MAPController = FM.Class.extend({
     },
 
     exportOverlays:function() {
-        console.log('exportOverlays');
+        //console.log('exportOverlays');
 
         /* TODO: make it simpler **/
         var arrayZindex = [];
@@ -786,7 +786,7 @@ FM.MAPController = FM.Class.extend({
         });
         arrayZindex = arrayZindex.sort()
 
-        console.log(arrayZindex);
+        //console.log(arrayZindex);
 
         /** get the id based on the zIndex **/
         var arrayLayers = [];

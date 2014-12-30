@@ -35,11 +35,15 @@ FM.Plugins = {
     },
 
     _addmouseposition: function(_fenixmap, show) {
-        if ( show ) { L.control.mousePosition().addTo(_fenixmap.map); }
+        if ( show && L.control.mousePosition) {
+        	L.control.mousePosition().addTo(_fenixmap.map);
+        }
     },
 
     _addexport: function(_fenixmap, show) {
-        if ( show ) { _fenixmap.map.addControl(new L.Control.Export()) }
+        if ( show && L.Control.Export) {
+        	_fenixmap.map.addControl(new L.Control.Export())
+        }
     },
 
     _addzoomcontrol: function(_fenixmap, position) {
@@ -49,7 +53,7 @@ FM.Plugins = {
     },
 
     _addprintmodule: function(_fenixmap, show) {
-        if ( show )
+        if ( show && L.print)
             /** TODO: install print module **/
             var printProvider = L.print.provider({
                 method: 'GET',
@@ -100,7 +104,7 @@ FM.Plugins = {
      *
      **/
     _adddrawcontrol: function(_fenixmap, show) {
-        if ( show ) {
+        if ( show && L.Control.Draw) {
 
             var drawnItems = new L.FeatureGroup();
             _fenixmap.map.addLayer(drawnItems);

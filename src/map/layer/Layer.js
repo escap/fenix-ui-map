@@ -14,7 +14,6 @@ FM.Layer = FM.Class.extend({
         format: "image/png", // ["image/png", "image/gif"]
         transparent: 'TRUE', //[TRUE, FALSE]
         opacity: 1,
-
         // Other Options
         name: '',
         tiitle: '',
@@ -51,7 +50,7 @@ FM.Layer = FM.Class.extend({
     initialize: function(layer, fenixmap, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
-        console.log(layer);
+        //console.log(layer);
         if ( options) this.options = options;
 
         this.id = FM.Util.randomID();

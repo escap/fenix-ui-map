@@ -27,9 +27,12 @@ grunt.initConfig({
 		' */\n'
 	},
 	clean: {
-		dist: {
-			src: ['dist/*']
-		}
+		js: {
+			src: ['dist/*.js']
+		},
+		images: {
+			src: ['dist/images/*']
+		}		
 	},
 	jshint: {
 		options: {
@@ -134,7 +137,7 @@ grunt.initConfig({
 		combine: {
 			src: [
 				'src/css/fenix-ui-leaflet.css',
-				'src/css/fenix-ui-map.css'				
+				'src/css/fenix-ui-map.css'
 			],
 			dest: 'dist/fenix-ui-map.min.css'
 		},
@@ -147,12 +150,11 @@ grunt.initConfig({
 	watch: {
 		dist: {
 			options: { livereload: true },
-			files: ['src/*'],
-			tasks: ['clean','concat','cssmin','jshint']
+			files: ['src/**/*','Gruntfile.js'],
+			tasks: ['clean:js','copy:fenixmapconfig','concat','cssmin','jshint']
 		}		
 	}
 });
-
 grunt.registerTask('default', [
 	//'jshint',
 	'clean',
