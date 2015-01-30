@@ -88,58 +88,58 @@ FM.SpatialQuery = {
         var _map = map;
         var _l = l;
         /** TODO: use JQuery? **/
-        var r = new RequestHandler();
-        r.open(requestType, url);
-        r.setContentType('application/x-www-form-urlencoded');
-        r.onload(function () {
-            // do something to response
-            var response = this.responseText
-            if ( response != null ) {
-                // rendering the output
-                var maxWidth = $('#' + _map._fenixMap.id).width() - 15;
-                var maxHeight = $('#' + _map._fenixMap.id).height() - 15;
-                var popup = new L.Popup({ maxWidth: maxWidth, maxHeight: maxHeight });
+        $.ajax({
+            type: "GET",
+            url: url,
+            //dataType: 'application/x-www-form-urlencoded',
+            success: function(response) {
+                // do something to response
+                if ( response != null ) {
+                    // rendering the output
+                    var maxWidth = $('#' + _map._fenixMap.id).width() - 15;
+                    var maxHeight = $('#' + _map._fenixMap.id).height() - 15;
+                    var popup = new L.Popup({maxWidth: maxWidth, maxHeight: maxHeight});
 
-                /** TODO: do it MUCH nicer **/
-                var r = response;
-                if (_l.layer.customgfi) {
-                    var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
-                    // TODO: handle multiple outputs
-                    r = (result != null)? result[0]: response;
-                }
-                else {
-                    var result = FM.SpatialQuery.transposeHTMLTable(response, _l.layer.layertitle);
-                    r = (result != null)? result[0]: response;
-                }
+                    /** TODO: do it MUCH nicer **/
+                    var r = response;
+                    if (_l.layer.customgfi) {
+                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
+                        // TODO: handle multiple outputs
+                        r = (result != null) ? result[0] : response;
+                    }
+                    else {
+                        var result = FM.SpatialQuery.transposeHTMLTable(response, _l.layer.layertitle);
+                        r = (result != null) ? result[0] : response;
+                    }
 
-                // check if the output is an empty (geoserver) output
-                r = FM.SpatialQuery._checkGeoserverDefaultEmptyOutput(r);
+                    // check if the output is an empty (geoserver) output
+                    r = FM.SpatialQuery._checkGeoserverDefaultEmptyOutput(r);
 
-                // how to handle custom callback
-                if ( _l.layer.customgfi ) {
-                    if ( _l.layer.customgfi && _l.layer.customgfi.callback) ( _l.layer.customgfi.callback(r, _l.layer) )
-                    if ( _l.layer.customgfi && _l.layer.customgfi.output && _l.layer.customgfi.output.show ) {
-                        $('#' + _l.layer.customgfi.output.id).empty();
-                        if ( r ) {
-                            $('#' + _l.layer.customgfi.output.id).append(r);
+                    // how to handle custom callback
+                    if (_l.layer.customgfi) {
+                        if (_l.layer.customgfi && _l.layer.customgfi.callback) ( _l.layer.customgfi.callback(r, _l.layer) )
+                        if (_l.layer.customgfi && _l.layer.customgfi.output && _l.layer.customgfi.output.show) {
+                            $('#' + _l.layer.customgfi.output.id).empty();
+                            if (r) {
+                                $('#' + _l.layer.customgfi.output.id).append(r);
+                            }
+                        }
+                        if (_l.layer.customgfi && _l.layer.customgfi.showpopup) {
+                            if (r) {
+                                popup.setLatLng(latlon).setContent(r);
+                                _map.openPopup(popup);
+                            }
                         }
                     }
-                    if ( _l.layer.customgfi && _l.layer.customgfi.showpopup) {
-                        if ( r ) {
+                    else {
+                        if (r) {
                             popup.setLatLng(latlon).setContent(r);
                             _map.openPopup(popup);
                         }
                     }
                 }
-                else {
-                    if ( r ) {
-                        popup.setLatLng(latlon).setContent(r);
-                        _map.openPopup(popup);
-                    }
-                }
             }
         });
-        r.send();
     },
 
     customPopup: function(response, custompopup, lang, joindata) {
@@ -245,13 +245,13 @@ FM.SpatialQuery = {
 
 
     _getJoinValueFromCode: function(code, joindata) {
-        console.log(code);
-        console.log(joindata);
+        //console.log(code);
+        //console.log(joindata);
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
         var integerCode = ( parseInt(code) )? parseInt(code): null
-        console.log(integerCode);
+        //console.log(integerCode);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
-        console.log(json);
+        //console.log(json);
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
                 if ( json[i][code] ) {
@@ -259,7 +259,7 @@ FM.SpatialQuery = {
                     return json[i][code];
                 }
                 else {
-                    console.log( json[i][integerCode]);
+                    //console.log( json[i][integerCode]);
                     return json[i][integerCode];
                 }
             }

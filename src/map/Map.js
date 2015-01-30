@@ -171,19 +171,22 @@ FM.Map = FM.Class.extend({
         }
         var _this = this;
         var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
-        var r = new RequestHandler();
-        r.open('POST', url);
-        r.setContentType('application/x-www-form-urlencoded');
-        r.request.onload= function () {
-            _this._createShadeLayer(l, this.responseText, isReload);
-        };
-        r.send(FM.Util.parseLayerRequest(l.layer));
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: FM.Util.parseLayerRequest(l.layer),
+            success: function(response) {
+                _this._createShadeLayer(l, response, isReload);
+            }
+        });
     },
 
     _createShadeLayer: function(l, response, isReload){
+        console.log("_createShadeLayer")
+        console.log(response)
         if (typeof response == 'string')
             response = $.parseJSON(response);
-
+        console.log(response)
         l.layer.sldurl = response.sldurl;
         l.layer.urlWMS = response.geoserverwms;
         l.layer.legendHTML = response.legendHTML;

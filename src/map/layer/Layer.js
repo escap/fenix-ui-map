@@ -122,7 +122,8 @@ FM.Layer = FM.Class.extend({
                         if ( fenixmap ) fenixmap.addLayer(this);
                         else if ( this._fenixmap ) this._fenixmap.addLayer(this);
                     }
-                    else if (l.layer.jointype.toLocaleUpperCase() == 'POINT') console.log('TODO: handle redraw point');
+                    else if (l.layer.jointype.toLocaleUpperCase() == 'POINT')
+                        console.log('TODO: handle redraw point');
                     break;
                 case 'WMS':
                     this.createLayerWMS();
