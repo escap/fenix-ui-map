@@ -46,6 +46,6 @@
     "domReady": "https://github.com/requirejs/domReady/tarball/master",
     "jquery-powertip": "https://github.com/stefanocudini/jquery-powertip/tarball/master",
     "csvjson": "https://github.com/stefanocudini/csvjson.js/tarball/master",
-    "jquery-ui": "//fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min"
+    "jquery-ui": "http://fenixapps.fao.org/repository/js/jquery-ui/jquery-ui-1.10.3.tgz"
   }
 }
