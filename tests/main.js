@@ -98,6 +98,28 @@ require([
 		opacity: '1',
 		lang: 'en'
 	}) );
+
+
+	var joincolumnlabel = 'adm0_name';
+	var joincolumn =  'adm0_code';
+	m.addLayer( new FM.layer({
+		layers: 'fenix:gaul0_3857',
+		layertitle: 'Join Dataset',
+		opacity: '1',
+		joincolumn: joincolumn,
+		joincolumnlabel: joincolumnlabel,
+		joindata: '[{"1":"1"},{"2":"110"},{"3":"120"},{"4":"130"}]',
+		layertype: 'JOIN',
+		jointype: 'shaded',
+		defaultgfi: true,
+		lang: 'en',
+	    customgfi: {
+			content: {
+				en: "<div class='fm-popup'> {{" + joincolumnlabel + "}} <div class='fm-popup-join-content'>{{{" + joincolumn + "}}}</div></div>"
+			},
+			showpopup: true
+		}
+	}) );
 });
 
 
