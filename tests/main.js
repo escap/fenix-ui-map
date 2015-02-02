@@ -65,8 +65,8 @@ require([
 	FenixMap, FenixMapConf) {
 	
 	_.extend(FenixMapConf, {
-		BASEURL: 'http://stefcud.device.fao.org/fenix-ui-map/dist',
-		BASEURL_LANG: 'http://stefcud.device.fao.org/fenix-ui-map/dist/i18n/'
+		BASEURL: '../dist',
+		BASEURL_LANG: '../dist/i18n/'
 	});
 
 	var m = new FM.Map('map', {
