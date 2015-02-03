@@ -119,7 +119,13 @@ require([
 			},
 			showpopup: true
 		}
+
 	}) );
+
+    m.zoomTo("country", "iso2", ["IT"]);
+    m.zoomTo("country", "iso2", "IT");
+
+   // m.zoomToCountry("iso2", ["IT","GER"]);
 });
 
 

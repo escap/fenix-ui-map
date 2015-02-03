@@ -34,23 +34,20 @@ FM.LayerUtils = {
     _zoomToRequest: function(map, boundary, code, srs) {
         var _this = this;
         var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
-        var xhr = new RequestHandler();
-        xhr.open('GET', url);
-        xhr.setContentType('application/x-www-form-urlencoded');
-        xhr.request.onload = function () {
-            // do something to response
-            var response = this.responseText;
-            // console.log(response);
-            if (typeof response == 'string')
-                response = $.parseJSON(response);
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: FM.Util.parseLayerRequest(l.layer),
+            success: function(response) {
+                if (typeof response == 'string')
+                    response = $.parseJSON(response);
 
-            var southWest = new L.LatLng(response.ymin,response.xmin);
-            var northEast = new L.LatLng(response.ymax, response.xmax);
-            var bounds = new L.LatLngBounds(southWest, northEast);
-            map.fitBounds(bounds);
-
-        };
-        xhr.send(null);
+                var southWest = new L.LatLng(response.ymin,response.xmin);
+                var northEast = new L.LatLng(response.ymax, response.xmax);
+                var bounds = new L.LatLngBounds(southWest, northEast);
+                map.fitBounds(bounds);
+            }
+        });
     },
 
     setLayerOpacity: function(l, opacity) {

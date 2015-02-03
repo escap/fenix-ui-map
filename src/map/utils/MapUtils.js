@@ -15,10 +15,29 @@ FM.MapUtils = function() {
         //console.log(fenixmap);
     }
 
+    var zoomTo = function(m, layer, column, codes) {
+        var url = FMCONFIG.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(response) {
+                if (m.hasOwnProperty("map"))
+                    m.map.fitBounds(response);
+                else
+                    m.fitBounds(response);
+            }
+        });
+    }
+
+    var zoomToCountry = function(m, column, codes) {
+        zoomTo(m, "country", column, codes)
+    }
 
     return {
         syncMapsOnMove: syncMapsOnMove,
-        exportLayers: exportLayers
+        exportLayers: exportLayers,
+        zoomTo: zoomTo,
+        zoomToCountry: zoomToCountry
     }
 
 }();

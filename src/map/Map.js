@@ -487,8 +487,15 @@ FM.Map = FM.Class.extend({
             var l = new FM.layer(overlays[i]);
             this.addLayer(l);
         }
-    }
+    },
 
+    zoomTo: function(layer, column, codes) {
+        FM.MapUtils.zoomTo(this, layer, column, codes)
+    },
+
+    zoomToCountry: function(column, codes) {
+        FM.MapUtils.zoomToCountry(this, column, codes)
+    }
 });
 
 FM.map = function (id, options, mapOptions) {
