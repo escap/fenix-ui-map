@@ -243,11 +243,11 @@ require([
         intervals:9,
         openlegend: true,
         defaultgfi: true,
-        colorramp: 'Greens',
+        colorramp: 'RdPu',
         addborders:'true',
         borderscolor:'FFFFFF',
-        bordersstroke:'0.4',
-        bordersopacity:'0.3',
+        bordersstroke:'0.1',
+        bordersopacity:'0.7',
         lang: 'en',
         customgfi: {
             content: {
