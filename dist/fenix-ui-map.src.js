@@ -1,6 +1,6 @@
 /* 
- * fenix-ui-map v0.0.1 - 2014-12-30 
- * Copyright 2014  
+ * fenix-ui-map v0.0.1 - 2015-02-10 
+ * Copyright 2015  
  * FENIX Development Team 
  * 
  * Licensed under the GPL3 license. 
@@ -1281,6 +1281,7 @@ FM.Map = FM.Class.extend({
 
     /** TODO: make it nicer **/
     addLayer:function (l) {
+        l._fenixmap = this;
         if (l.layer.layertype ) {
            switch(l.layer.layertype ) {
                case 'JOIN':
@@ -1326,19 +1327,22 @@ FM.Map = FM.Class.extend({
         }
         var _this = this;
         var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
-        var r = new RequestHandler();
-        r.open('POST', url);
-        r.setContentType('application/x-www-form-urlencoded');
-        r.request.onload= function () {
-            _this._createShadeLayer(l, this.responseText, isReload);
-        };
-        r.send(FM.Util.parseLayerRequest(l.layer));
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: FM.Util.parseLayerRequest(l.layer),
+            success: function(response) {
+                _this._createShadeLayer(l, response, isReload);
+            }
+        });
     },
 
     _createShadeLayer: function(l, response, isReload){
+        console.log("_createShadeLayer")
+        console.log(response)
         if (typeof response == 'string')
             response = $.parseJSON(response);
-
+        console.log(response)
         l.layer.sldurl = response.sldurl;
         l.layer.urlWMS = response.geoserverwms;
         l.layer.legendHTML = response.legendHTML;
@@ -1639,8 +1643,15 @@ FM.Map = FM.Class.extend({
             var l = new FM.layer(overlays[i]);
             this.addLayer(l);
         }
-    }
+    },
 
+    zoomTo: function(layer, column, codes) {
+        FM.MapUtils.zoomTo(this, layer, column, codes)
+    },
+
+    zoomToCountry: function(column, codes) {
+        FM.MapUtils.zoomToCountry(this, column, codes)
+    }
 });
 
 FM.map = function (id, options, mapOptions) {
@@ -2718,6 +2729,7 @@ FM.WCS = function() {
         '1.1.1' : 'identifiers',
         '2.0'   : 'identifiers'
     }
+
     /**
      * Return the description of the columns
      * @param obj
@@ -2930,23 +2942,20 @@ FM.LayerUtils = {
     _zoomToRequest: function(map, boundary, code, srs) {
         var _this = this;
         var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
-        var xhr = new RequestHandler();
-        xhr.open('GET', url);
-        xhr.setContentType('application/x-www-form-urlencoded');
-        xhr.request.onload = function () {
-            // do something to response
-            var response = this.responseText;
-            // console.log(response);
-            if (typeof response == 'string')
-                response = $.parseJSON(response);
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: FM.Util.parseLayerRequest(l.layer),
+            success: function(response) {
+                if (typeof response == 'string')
+                    response = $.parseJSON(response);
 
-            var southWest = new L.LatLng(response.ymin,response.xmin);
-            var northEast = new L.LatLng(response.ymax, response.xmax);
-            var bounds = new L.LatLngBounds(southWest, northEast);
-            map.fitBounds(bounds);
-
-        };
-        xhr.send(null);
+                var southWest = new L.LatLng(response.ymin,response.xmin);
+                var northEast = new L.LatLng(response.ymax, response.xmax);
+                var bounds = new L.LatLngBounds(southWest, northEast);
+                map.fitBounds(bounds);
+            }
+        });
     },
 
     setLayerOpacity: function(l, opacity) {
@@ -3069,10 +3078,29 @@ FM.MapUtils = function() {
         //console.log(fenixmap);
     }
 
+    var zoomTo = function(m, layer, column, codes) {
+        var url = FMCONFIG.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(response) {
+                if (m.hasOwnProperty("map"))
+                    m.map.fitBounds(response);
+                else
+                    m.fitBounds(response);
+            }
+        });
+    }
+
+    var zoomToCountry = function(m, column, codes) {
+        zoomTo(m, "country", column, codes)
+    }
 
     return {
         syncMapsOnMove: syncMapsOnMove,
-        exportLayers: exportLayers
+        exportLayers: exportLayers,
+        zoomTo: zoomTo,
+        zoomToCountry: zoomToCountry
     }
 
 }();;
@@ -3344,58 +3372,58 @@ FM.SpatialQuery = {
         var _map = map;
         var _l = l;
         /** TODO: use JQuery? **/
-        var r = new RequestHandler();
-        r.open(requestType, url);
-        r.setContentType('application/x-www-form-urlencoded');
-        r.onload(function () {
-            // do something to response
-            var response = this.responseText
-            if ( response != null ) {
-                // rendering the output
-                var maxWidth = $('#' + _map._fenixMap.id).width() - 15;
-                var maxHeight = $('#' + _map._fenixMap.id).height() - 15;
-                var popup = new L.Popup({ maxWidth: maxWidth, maxHeight: maxHeight });
+        $.ajax({
+            type: "GET",
+            url: url,
+            //dataType: 'application/x-www-form-urlencoded',
+            success: function(response) {
+                // do something to response
+                if ( response != null ) {
+                    // rendering the output
+                    var maxWidth = $('#' + _map._fenixMap.id).width() - 15;
+                    var maxHeight = $('#' + _map._fenixMap.id).height() - 15;
+                    var popup = new L.Popup({maxWidth: maxWidth, maxHeight: maxHeight});
 
-                /** TODO: do it MUCH nicer **/
-                var r = response;
-                if (_l.layer.customgfi) {
-                    var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
-                    // TODO: handle multiple outputs
-                    r = (result != null)? result[0]: response;
-                }
-                else {
-                    var result = FM.SpatialQuery.transposeHTMLTable(response, _l.layer.layertitle);
-                    r = (result != null)? result[0]: response;
-                }
+                    /** TODO: do it MUCH nicer **/
+                    var r = response;
+                    if (_l.layer.customgfi) {
+                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
+                        // TODO: handle multiple outputs
+                        r = (result != null) ? result[0] : response;
+                    }
+                    else {
+                        var result = FM.SpatialQuery.transposeHTMLTable(response, _l.layer.layertitle);
+                        r = (result != null) ? result[0] : response;
+                    }
 
-                // check if the output is an empty (geoserver) output
-                r = FM.SpatialQuery._checkGeoserverDefaultEmptyOutput(r);
+                    // check if the output is an empty (geoserver) output
+                    r = FM.SpatialQuery._checkGeoserverDefaultEmptyOutput(r);
 
-                // how to handle custom callback
-                if ( _l.layer.customgfi ) {
-                    if ( _l.layer.customgfi && _l.layer.customgfi.callback) ( _l.layer.customgfi.callback(r, _l.layer) )
-                    if ( _l.layer.customgfi && _l.layer.customgfi.output && _l.layer.customgfi.output.show ) {
-                        $('#' + _l.layer.customgfi.output.id).empty();
-                        if ( r ) {
-                            $('#' + _l.layer.customgfi.output.id).append(r);
+                    // how to handle custom callback
+                    if (_l.layer.customgfi) {
+                        if (_l.layer.customgfi && _l.layer.customgfi.callback) ( _l.layer.customgfi.callback(r, _l.layer) )
+                        if (_l.layer.customgfi && _l.layer.customgfi.output && _l.layer.customgfi.output.show) {
+                            $('#' + _l.layer.customgfi.output.id).empty();
+                            if (r) {
+                                $('#' + _l.layer.customgfi.output.id).append(r);
+                            }
+                        }
+                        if (_l.layer.customgfi && _l.layer.customgfi.showpopup) {
+                            if (r) {
+                                popup.setLatLng(latlon).setContent(r);
+                                _map.openPopup(popup);
+                            }
                         }
                     }
-                    if ( _l.layer.customgfi && _l.layer.customgfi.showpopup) {
-                        if ( r ) {
+                    else {
+                        if (r) {
                             popup.setLatLng(latlon).setContent(r);
                             _map.openPopup(popup);
                         }
                     }
                 }
-                else {
-                    if ( r ) {
-                        popup.setLatLng(latlon).setContent(r);
-                        _map.openPopup(popup);
-                    }
-                }
             }
         });
-        r.send();
     },
 
     customPopup: function(response, custompopup, lang, joindata) {
@@ -3501,13 +3529,13 @@ FM.SpatialQuery = {
 
 
     _getJoinValueFromCode: function(code, joindata) {
-        console.log(code);
-        console.log(joindata);
+        //console.log(code);
+        //console.log(joindata);
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
         var integerCode = ( parseInt(code) )? parseInt(code): null
-        console.log(integerCode);
+        //console.log(integerCode);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
-        console.log(json);
+        //console.log(json);
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
                 if ( json[i][code] ) {
@@ -3515,7 +3543,7 @@ FM.SpatialQuery = {
                     return json[i][code];
                 }
                 else {
-                    console.log( json[i][integerCode]);
+                    //console.log( json[i][integerCode]);
                     return json[i][integerCode];
                 }
             }
@@ -3861,7 +3889,7 @@ FM.Layer = FM.Class.extend({
 
     leafletLayer: '',
 
-    initialize: function(layer, fenixmap, options) { // (HTMLElement or String, Object)
+    initialize: function(layer, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
         //console.log(layer);
@@ -3870,7 +3898,6 @@ FM.Layer = FM.Class.extend({
         this.id = FM.Util.randomID();
 
         if ( layer.joindata ) layer.defaultdata = layer.joindata;
-        if ( fenixmap ) this._fenixmap = fenixmap;
     },
 
     createLayerWMS: function() {
@@ -3936,7 +3963,8 @@ FM.Layer = FM.Class.extend({
                         if ( fenixmap ) fenixmap.addLayer(this);
                         else if ( this._fenixmap ) this._fenixmap.addLayer(this);
                     }
-                    else if (l.layer.jointype.toLocaleUpperCase() == 'POINT') console.log('TODO: handle redraw point');
+                    else if (l.layer.jointype.toLocaleUpperCase() == 'POINT')
+                        console.log('TODO: handle redraw point');
                     break;
                 case 'WMS':
                     this.createLayerWMS();

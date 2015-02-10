@@ -126,6 +126,7 @@ FM.Map = FM.Class.extend({
 
     /** TODO: make it nicer **/
     addLayer:function (l) {
+        l._fenixmap = this;
         if (l.layer.layertype ) {
            switch(l.layer.layertype ) {
                case 'JOIN':

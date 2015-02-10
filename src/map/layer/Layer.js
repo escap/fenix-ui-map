@@ -47,7 +47,7 @@ FM.Layer = FM.Class.extend({
 
     leafletLayer: '',
 
-    initialize: function(layer, fenixmap, options) { // (HTMLElement or String, Object)
+    initialize: function(layer, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
         //console.log(layer);
@@ -56,7 +56,6 @@ FM.Layer = FM.Class.extend({
         this.id = FM.Util.randomID();
 
         if ( layer.joindata ) layer.defaultdata = layer.joindata;
-        if ( fenixmap ) this._fenixmap = fenixmap;
     },
 
     createLayerWMS: function() {

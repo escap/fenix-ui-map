@@ -122,8 +122,8 @@ require([
 
 	}) );
 
-    m.zoomTo("country", "iso2", ["IT"]);
-    m.zoomTo("country", "iso2", "IT");
+    m.zoomTo("country", "iso3", ["ITA"]);
+    //m.zoomTo("country", "iso2", "GE");
 
    // m.zoomToCountry("iso2", ["IT","GER"]);
 });

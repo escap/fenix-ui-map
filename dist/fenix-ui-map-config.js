@@ -3,7 +3,7 @@ define(function() {
 	return window.FMCONFIG = {
 
 		// fenix-maps-js config variables
-		BASEURL: 'http://168.202.28.214:7070/fenix-map-js',
+		//BASEURL: 'http://168.202.28.214:7070/fenix-map-js',
 
 		//BASEURL_DEPENDENCIES: 'config/DEPENDENCIES.json',
 		BASEURL_LANG: 'http://168.202.28.214:7070/fenix-map-js/I18N/',
@@ -42,6 +42,10 @@ define(function() {
 		WPS_SERVICE_HISTOGRAM: 'http://168.202.28.214:5005/stats/raster/{{ID}}/hist/',
 
 		METADATA_GET_LAYERS: 'http://168.202.28.214:5005/search/layer/',
-		METADATA_GET_LAYERS_BY_PRODUCT: 'http://168.202.28.214:5005/search/layer/product/'
+		METADATA_GET_LAYERS_BY_PRODUCT: 'http://168.202.28.214:5005/search/layer/product/',
+
+        // ZOOM TO BBOX
+        ZOOM_TO_BBOX: 'http://fenix.fao.org/geo/fenix/spatialquery/db/spatial/bbox/layer/' //country/iso2/IT'
+
 	};
 });
