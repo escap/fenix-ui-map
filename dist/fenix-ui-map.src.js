@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.0.1 - 2015-02-10 
+ * fenix-ui-map v0.0.1 - 2015-02-11 
  * Copyright 2015  
  * FENIX Development Team 
  * 
@@ -3072,11 +3072,11 @@ FM.MapUtils = function() {
                 mToSync.setView(m.getCenter(), m.getZoom());
             }
         });
-    }
+    };
 
     var exportLayers = function(fenixmap) {
         //console.log(fenixmap);
-    }
+    };
 
     var zoomTo = function(m, layer, column, codes) {
         var url = FMCONFIG.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
@@ -3090,17 +3090,35 @@ FM.MapUtils = function() {
                     m.fitBounds(response);
             }
         });
-    }
+    };
 
     var zoomToCountry = function(m, column, codes) {
-        zoomTo(m, "country", column, codes)
-    }
+        zoomTo(m, "country", column, codes);
+    };
+
+    var getSLDfromCSS = function(layername, css) {
+        var sld = '';
+        $.ajax({
+            url: FMCONFIG.CSS_TO_SLD,
+            data: {
+                stylename: layername,
+                style: css
+            },
+            async: false,
+            type: 'POST',
+            success: function(response) {
+                sld = response;
+            }
+        });
+        return sld;
+    };
 
     return {
         syncMapsOnMove: syncMapsOnMove,
         exportLayers: exportLayers,
         zoomTo: zoomTo,
-        zoomToCountry: zoomToCountry
+        zoomToCountry: zoomToCountry,
+        getSLDfromCSS: getSLDfromCSS
     }
 
 }();;
