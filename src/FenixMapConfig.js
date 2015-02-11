@@ -47,5 +47,7 @@ define(function() {
         // ZOOM TO BBOX
         ZOOM_TO_BBOX: 'http://fenix.fao.org/geo/fenix/spatialquery/db/spatial/bbox/layer/' //country/iso2/IT'
 
-	};
+        CSS_TO_SLD: 'http://fenix.fao.org/geo/fenix/spatialquery/db/spatial/bbox/layer/' //country/iso2/IT'
+
+    };
 });
