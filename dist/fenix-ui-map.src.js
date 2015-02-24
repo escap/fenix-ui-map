@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.0.1 - 2015-02-11 
+ * fenix-ui-map v0.0.1 - 2015-02-24 
  * Copyright 2015  
  * FENIX Development Team 
  * 
@@ -3113,12 +3113,43 @@ FM.MapUtils = function() {
         return sld;
     };
 
+    var fitWorldByScreen = function(m) {
+    	//http://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
+
+		var worldBB = L.latLngBounds([[-90, -180], [90, 180]]),
+			GLOBE_WIDTH = 190, // a constant in Google's map projection
+			GLOBE_HEIGHT = 190, // a constant in Google's map projection
+
+			west = worldBB.getSouthWest().lng,
+			east = worldBB.getNorthEast().lng,
+			angleW = east - west,
+
+			north = worldBB.getNorthEast().lat,
+			south = worldBB.getSouthWest().lat,
+			angleH = north - south,
+
+			mapW = m.getSize().x,
+			mapH = m.getSize().y;
+
+		if (angleW < 0)
+			angleW += 360;
+		if (angleH < 0)
+			angleH += 360;			
+
+		var zoomW = Math.round(Math.log(mapW * 360 / angleW / GLOBE_WIDTH) / Math.LN2),
+			zoomH = Math.round(Math.log(mapH * 360 / angleH / GLOBE_HEIGHT) / Math.LN2),
+			zoom = Math.max(zoomW, zoomH) - 1;
+
+		m.setZoom(zoom, { animate: false });
+    };
+
     return {
         syncMapsOnMove: syncMapsOnMove,
         exportLayers: exportLayers,
         zoomTo: zoomTo,
         zoomToCountry: zoomToCountry,
-        getSLDfromCSS: getSLDfromCSS
+        getSLDfromCSS: getSLDfromCSS,
+        fitWorldByScreen: fitWorldByScreen
     }
 
 }();;
