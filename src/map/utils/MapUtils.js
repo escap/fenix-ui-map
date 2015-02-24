@@ -50,19 +50,21 @@ FM.MapUtils = function() {
         return sld;
     };
 
-    var fitWorldByScreen = function(m) {
+    var fitWorldByScreen = function(m, bounds) {
     	//http://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
 
-		var worldBB = L.latLngBounds([[-90, -180], [90, 180]]),
+		var worldBounds = L.latLngBounds([[-90, -180], [90, 180]]),
+			targetBounds = bounds instanceof L.LatLngBounds ? bounds : worldBounds,
+
 			GLOBE_WIDTH = 190, // a constant in Google's map projection
 			GLOBE_HEIGHT = 190, // a constant in Google's map projection
 
-			west = worldBB.getSouthWest().lng,
-			east = worldBB.getNorthEast().lng,
+			west = targetBounds.getSouthWest().lng,
+			east = targetBounds.getNorthEast().lng,
 			angleW = east - west,
 
-			north = worldBB.getNorthEast().lat,
-			south = worldBB.getSouthWest().lat,
+			north = targetBounds.getNorthEast().lat,
+			south = targetBounds.getSouthWest().lat,
 			angleH = north - south,
 
 			mapW = m.getSize().x,
