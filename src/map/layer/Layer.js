@@ -50,7 +50,6 @@ FM.Layer = FM.Class.extend({
     initialize: function(layer, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
-        //console.log(layer);
         if ( options) this.options = options;
 
         this.id = FM.Util.randomID();
@@ -65,9 +64,7 @@ FM.Layer = FM.Class.extend({
             this.leafletLayer.setParams(wmsParameters);
         }
         else {
-            console.log(this.options);
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
-            console.log(wmsParameters);
             this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
         }
         return this.leafletLayer;

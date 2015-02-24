@@ -13,7 +13,7 @@ require.config({
         'underscore'            :'node_modules/underscore/underscore-min',
         'handlebars'            :'node_modules/handlebars/dist/handlebars.min',
 
-        'hoverintent'           :'node_modules/hoverintent/dist/hoverintent.min',
+        'jquery.hoverIntent'           :'node_modules/jquery.hoverIntent/dist/jquery.hoverIntent.min',
         'leaflet'               :'node_modules/leaflet/dist/leaflet',
         //'leaflet.markercluster' :'node_modules/leaflet.markercluster/dist/leaflet.markercluster',
         'powertip'              :'node_modules/jquery-powertip/dist/jquery.powertip.min',
@@ -22,6 +22,7 @@ require.config({
         'chosen'                :'node_modules/chosen-jquery/lib/chosen.jquery.min',
         'jquery-ui'             :'//fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min',
         'jquery.i18n.properties':'//fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min',
+
 
         'fenix-map'             :'dist/fenix-ui-map.src',
         'fenix-map-config'      :'dist/fenix-ui-map-config'
@@ -47,7 +48,7 @@ require.config({
             //'leaflet.markercluster'
             //'import-dependencies',
             //'jquery-ui',
-            'hoverintent',
+            //'jquery.hoverIntent',
             'powertip',
 
             'jquery.i18n.properties',

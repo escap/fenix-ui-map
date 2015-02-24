@@ -4,6 +4,8 @@
  */
 
 var FM, originalFM;
+if (!window.console) {var console = {};}
+if (!console.log) {console.log = function() {};}
 
 if (typeof exports !== undefined + '') {
     FM = exports;

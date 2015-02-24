@@ -13,7 +13,7 @@ require.config({
 		'underscore'            :'node_modules/underscore/underscore-min',
 		'handlebars'            :'node_modules/handlebars/dist/handlebars.min',
 		
-		'hoverintent'           :'node_modules/hoverintent/dist/hoverintent.min',		
+		'hoverintent'           :'node_modules/hoverintent/dist/hoverintent.min',
 		'leaflet'               :'node_modules/leaflet/dist/leaflet',
 		//'leaflet.markercluster' :'node_modules/leaflet.markercluster/dist/leaflet.markercluster',
 		'powertip'              :'node_modules/jquery-powertip/dist/jquery.powertip.min',
@@ -34,7 +34,7 @@ require.config({
 		'jquery-ui' : ['jquery'],
 		'powertip'  : ['jquery'],
 		'jquery.i18n.properties': ['jquery'],
-		'jquery.hoverIntent'    : ['jquery'],
+        'hoverintent'    : ['jquery'],
 		'underscore': {
 			exports: '_'
 		},
@@ -47,7 +47,7 @@ require.config({
 			//'leaflet.markercluster'
 			//'import-dependencies',				
 			//'jquery-ui',
-			'hoverintent',
+			//'hoverintent',
 			'powertip',
 
 			'jquery.i18n.properties',
@@ -105,7 +105,7 @@ require([
 	m.addLayer( new FM.layer({
 		layers: 'fenix:gaul0_3857',
 		layertitle: 'Join Dataset',
-		opacity: '1',
+		opacity: '0.8',
 		joincolumn: joincolumn,
 		joincolumnlabel: joincolumnlabel,
 		joindata: '[{"1":"1"},{"2":"110"},{"3":"120"},{"4":"130"}]',
