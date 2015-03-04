@@ -111,7 +111,9 @@ FM.WMSUtils = FM.Class.extend({
 
                     // TODO: multilanguage PopUp onAdd
                     var content = 'The Layer <b>' + event.data.layer.layertitle + '</b><br> has been added to the map';
-                    FMPopUp.init({ parentID: event.data.fenixmap.id, content: content})
+                    try {
+                        FMPopUp.init({parentID: event.data.fenixmap.id, content: content})
+                    }catch(e) {}
 
                 });
 
@@ -119,11 +121,11 @@ FM.WMSUtils = FM.Class.extend({
                 var _fenixMap = fenixmap;
                 var _layer =  $.extend(true, {}, layer);
                 //_layer.hideLayerInControllerList = true;
-                var _tmpLayer = new FM.layer(_layer, _fenixMap);
+                var _tmpLayer = new FM.layer(_layer);
                 try {
                     $("#" + rand + "-WMSLayer-box").hoverIntent({
-                        over: function () { _tmpLayer.addLayer();    },
-                        out:  function () { _tmpLayer.removeLayer(); },
+                        over: function () { _fenixMap.addLayer(_tmpLayer);},
+                        out:  function () { _fenixMap.removeLayer(_tmpLayer);},
                         timeout: 500
                     });
                 }catch(e) {
@@ -149,16 +151,17 @@ FM.WMSUtils = FM.Class.extend({
         url += '&urlWMS=' + wmsServerURL;
 
         var _this = this;
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            // do something to response
-            var response = this.responseText;
-            var xmlResponse = $.parseXML( response );
-            _this._createWMSDropwDown(id, fenixmap, xmlResponse, wmsServerURL)
-        };
-        xhr.send();
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: FM.Util.parseLayerRequest(l.layer),
+            success: function() {
+                // do something to response
+                var response = this.responseText;
+                var xmlResponse = $.parseXML( response );
+                _this._createWMSDropwDown(id, fenixmap, xmlResponse, wmsServerURL)
+            }
+        });
     },
 
     _createWMSDropwDown: function(id, fenixmap, xmlResponse, wmsServerURL ) {

@@ -22,8 +22,10 @@ require.config({
 		'chosen'                :'node_modules/chosen-jquery/lib/chosen.jquery.min',
 		'jquery-ui'             :'//fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min',
 		'jquery.i18n.properties':'//fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min',
+        'jquery.hoverIntent': 'node_modules/jquery.hoverIntent/jquery.hoverIntent.min',
 
-		'fenix-map'             :'dist/fenix-ui-map.src',
+
+        'fenix-map'             :'dist/fenix-ui-map.src',
 		'fenix-map-config'      :'dist/fenix-ui-map-config'
 		//'import-dependencies'   :'//fenixapps.fao.org/repository/js/FENIX/utils/import-dependencies-1.0',
 	},
@@ -51,7 +53,8 @@ require.config({
 			'powertip',
 
 			'jquery.i18n.properties',
-			'fenix-map-config'
+			'fenix-map-config',
+            'jquery.hoverIntent'
 		]
 	}
 });

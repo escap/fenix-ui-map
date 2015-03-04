@@ -2,9 +2,9 @@ FM.WMSSERVERS = {
 
     DEFAULT_EXTERNAL_WMS_SERVERS: [
         {
-            label: 'FENIX WMS Server',
+            label: 'FENIX Crops Area',
             label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
-            url: 'http://hqlprfenixapp2.hq.un.fao.org:12100/geoserver/wms'
+            url: 'http://fenix.fao.org:20200/geoserver/earthstat/wms'
         },
 //        {
 //            label: 'FENIX WMS Server',
@@ -12,8 +12,8 @@ FM.WMSSERVERS = {
 //            url: 'http://fenixapps.fao.org/geoserver'
 //        },
         {
-            label: 'DATA FAO ORG',
-            label_EN: 'DATA FAO ORG',
+            label: 'DATA.FAO.ORG',
+            label_EN: 'data.fao.org WMS Server',
             //url: 'http://data.fao.org/maps/wms?AUTHKEY=d30aebf0-ab2a-11e1-afa6-0800200c9a66'
             url: 'http://data.fao.org/maps/wms'
         },
@@ -57,36 +57,36 @@ FM.WMSSERVERS = {
             label_EN: 'OpenGeo Demo Server',
             url: 'http://demo.opengeo.org/geoserver/ows'
         },
-        {
-            label: 'HarvestChoice 1',
-            label_EN: 'HarvestChoice 1',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_1/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 2',
-            label_EN: 'HarvestChoice 2',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_2/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 3',
-            label_EN: 'HarvestChoice 3',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_3/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 4',
-            label_EN: 'HarvestChoice 4',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_4/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 5',
-            label_EN: 'HarvestChoice 5',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_5/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 6',
-            label_EN: 'HarvestChoice 6',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_6/MapServer/WMSServer'
-        },
+        //{
+        //    label: 'HarvestChoice 1',
+        //    label_EN: 'HarvestChoice 1',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_1/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 2',
+        //    label_EN: 'HarvestChoice 2',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_2/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 3',
+        //    label_EN: 'HarvestChoice 3',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_3/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 4',
+        //    label_EN: 'HarvestChoice 4',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_4/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 5',
+        //    label_EN: 'HarvestChoice 5',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_5/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 6',
+        //    label_EN: 'HarvestChoice 6',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_6/MapServer/WMSServer'
+        //},
         {
             label: 'Alberts Map Service',
             url: 'http://maps.gov.bc.ca/arcserver/services/Province/albers_cache/MapServer/WMSServer',

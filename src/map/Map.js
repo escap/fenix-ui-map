@@ -183,11 +183,8 @@ FM.Map = FM.Class.extend({
     },
 
     _createShadeLayer: function(l, response, isReload){
-        console.log("_createShadeLayer")
-        console.log(response)
         if (typeof response == 'string')
             response = $.parseJSON(response);
-        console.log(response)
         l.layer.sldurl = response.sldurl;
         l.layer.urlWMS = response.geoserverwms;
         l.layer.legendHTML = response.legendHTML;
