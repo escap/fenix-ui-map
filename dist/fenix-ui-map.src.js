@@ -555,18 +555,15 @@ FM.WMSUtils = FM.Class.extend({
         url += '&request=GetCapabilities';
         url += '&urlWMS=' + wmsServerURL;
 
-        var _this = this;
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            // do something to response
-            var response = this.responseText;
-            var xmlResponse = $.parseXML( response );
-            _this._createWMSOutput(id, fenixmap, xmlResponse, wmsServerURL)
-        };
-        xhr.send();
-
+         var _this = this;
+         $.ajax({
+             type: "GET",
+             url: url,
+             success: function(response) {
+                 var xmlResponse = $.parseXML( response );
+                 _this._createWMSOutput(id, fenixmap, xmlResponse, wmsServerURL)
+             }
+         });
     },
 
     _createWMSOutput: function(id, fenixmap, xmlResponse, wmsServerURL ) {
@@ -575,23 +572,31 @@ FM.WMSUtils = FM.Class.extend({
         $(xmlResponse).find('Layer').each(function() {
 
             if ($(this).children("Name").text() && $(this).children("Name").text() != '') {
-                var rand = FM.Util.randomID();
-                var layerPanel = FM.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
-                $("#" + id).append(layerPanel);
-                $('#' + rand + '-WMSLayer-title').append($(this).children("Title").text());
-                $('#' + rand + '-WMSLayer-title').attr( "title", $(this).children("Title").text());
-                try { $('#' + rand + '-WMSLayer-title').powerTip({placement: 'n'}); } catch (e) {}
-
 
                 var layer = {};
                 layer.layers= $(this).children("Name").text();
                 layer.layername= $(this).children("Name").text();
                 layer.layertitle=$(this).children("Title").text();
-                layer.style = $(this).children("Style").children("Name").text();
+
+                //TODO: dirty quick TITLE fix for DEMO
+                layer.layertitle = layer.layertitle.replace(/_/g,' ');
+                layer.layertitle = layer.layertitle.replace(/3857/g,' ');
+
+                layer.styles = $(this).children("Style").children("Name").text();
                 layer.urlWMS = wmsServerURL;
                 // setting the default CRS of the map
                 layer.srs = fenixmap.map.options.crs.code;
                 layer.openlegend = true; //this will open the legend by on preview (choose on add if we want to leave it open **/
+
+
+                var rand = FM.Util.randomID();
+                var layerPanel = FM.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
+
+                $("#" + id).append(layerPanel);
+                $('#' + rand + '-WMSLayer-title').append(layer.layertitle);
+                $('#' + rand + '-WMSLayer-title').attr( "title",layer.layertitle);
+                try { $('#' + rand + '-WMSLayer-title').powerTip({placement: 'n'}); } catch (e) {}
+
 
                 // TODO: get bounding box with the current CRS
                 $("#" + rand + "-WMSLayer-box").click({fenixmap:fenixmap, layer: layer}, function(event) {
@@ -644,11 +649,8 @@ FM.WMSUtils = FM.Class.extend({
         $.ajax({
             type: "GET",
             url: url,
-            data: FM.Util.parseLayerRequest(l.layer),
-            success: function() {
-                // do something to response
-                var response = this.responseText;
-                var xmlResponse = $.parseXML( response );
+            success: function(response) {
+                var xmlResponse = $.parseXML(response);
                 _this._createWMSDropwDown(id, fenixmap, xmlResponse, wmsServerURL)
             }
         });
@@ -660,15 +662,15 @@ FM.WMSUtils = FM.Class.extend({
             var rand = FM.Util.randomID();
             if ($(this).children("Name").text()) {
 
-                $("#" + id).append("<div id='WMSLayer-"+ rand +"'>" + $(this).children("Title").text() + " + " +  $(this).children("Style").children("Name").text() + " <div>");
-
                 var layer = {};
-                layer.layers= $(this).children("Name").text();
-                layer.layername= $(this).children("Name").text();
-                layer.layertitle=$(this).children("Title").text();
-                layer.style = $(this).children("Style").children("Name").text();
+                layer.layers = $(this).children("Name").text();
+                layer.layername = $(this).children("Name").text();
+                layer.layertitle =$(this).children("Title").text();
+                layer.styles = $(this).children("Style").children("Name").text();
                 layer.urlWMS = wmsServerURL;
                 layer.openlegend = true;
+
+                $("#" + id).append("<div id='WMSLayer-"+ rand +"'>ddd" + layer.layertitle + " + " +  layer.styles + " <div>");
 
                 // setting the default CRS of the map
                 layer.srs = fenixmap.map.options.crs.code;
@@ -690,18 +692,15 @@ FM.WMSUtils = FM.Class.extend({
         url += '&request=GetCapabilities';
         url += '&urlWMS=' + wmsServerURL;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            // do something to response
-            var response = this.responseText;
-
-            var xmlResponse = $.parseXML( response );
-
-            FM.WMSUtils._createWMSDropwDown(id, fenixmap, xmlResponse, wmsServerURL)
-        };
-        xhr.send();
+        var _this = this;
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(response) {
+                var xmlResponse = $.parseXML(response);
+                FM.WMSUtils._createWMSDropwDown(id, fenixmap, xmlResponse, wmsServerURL)
+            }
+        });
     },
 
     _createWFSDropwDown: function(id, fenixmap, xmlResponse, wmsServerURL ) {
@@ -709,6 +708,7 @@ FM.WMSUtils = FM.Class.extend({
             /** TODO: optimize ramdon function **/
             var rand = FM.Util.randomID();
             if ($(this).children("Name").text()) {
+
                 //console.log($(this).children("Name").text() + ' | ' +  $(this).children("Title").text());
                 $("#" + id).append("<div id='WMSLayer-"+ rand +"'>" + $(this).children("Title").text() + " + " +  $(this).children("Style").children("Name").text() + " <div>");
                 //$("#" + id).append("<li> <a href='#'>" + $(this).children("Title").text() + " + " +  $(this).children("Style").children("Name").text() + "</a><li>");
