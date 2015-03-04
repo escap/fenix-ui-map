@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.0.1 - 2015-02-24 
+ * fenix-ui-map v0.0.1 - 2015-03-04 
  * Copyright 2015  
  * FENIX Development Team 
  * 
@@ -601,7 +601,9 @@ FM.WMSUtils = FM.Class.extend({
 
                     // TODO: multilanguage PopUp onAdd
                     var content = 'The Layer <b>' + event.data.layer.layertitle + '</b><br> has been added to the map';
-                    FMPopUp.init({ parentID: event.data.fenixmap.id, content: content})
+                    try {
+                        FMPopUp.init({parentID: event.data.fenixmap.id, content: content})
+                    }catch(e) {}
 
                 });
 
@@ -609,11 +611,11 @@ FM.WMSUtils = FM.Class.extend({
                 var _fenixMap = fenixmap;
                 var _layer =  $.extend(true, {}, layer);
                 //_layer.hideLayerInControllerList = true;
-                var _tmpLayer = new FM.layer(_layer, _fenixMap);
+                var _tmpLayer = new FM.layer(_layer);
                 try {
                     $("#" + rand + "-WMSLayer-box").hoverIntent({
-                        over: function () { _tmpLayer.addLayer();    },
-                        out:  function () { _tmpLayer.removeLayer(); },
+                        over: function () { _fenixMap.addLayer(_tmpLayer);},
+                        out:  function () { _fenixMap.removeLayer(_tmpLayer);},
                         timeout: 500
                     });
                 }catch(e) {
@@ -639,16 +641,17 @@ FM.WMSUtils = FM.Class.extend({
         url += '&urlWMS=' + wmsServerURL;
 
         var _this = this;
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            // do something to response
-            var response = this.responseText;
-            var xmlResponse = $.parseXML( response );
-            _this._createWMSDropwDown(id, fenixmap, xmlResponse, wmsServerURL)
-        };
-        xhr.send();
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: FM.Util.parseLayerRequest(l.layer),
+            success: function() {
+                // do something to response
+                var response = this.responseText;
+                var xmlResponse = $.parseXML( response );
+                _this._createWMSDropwDown(id, fenixmap, xmlResponse, wmsServerURL)
+            }
+        });
     },
 
     _createWMSDropwDown: function(id, fenixmap, xmlResponse, wmsServerURL ) {
@@ -706,7 +709,6 @@ FM.WMSUtils = FM.Class.extend({
             /** TODO: optimize ramdon function **/
             var rand = FM.Util.randomID();
             if ($(this).children("Name").text()) {
-
                 //console.log($(this).children("Name").text() + ' | ' +  $(this).children("Title").text());
                 $("#" + id).append("<div id='WMSLayer-"+ rand +"'>" + $(this).children("Title").text() + " + " +  $(this).children("Style").children("Name").text() + " <div>");
                 //$("#" + id).append("<li> <a href='#'>" + $(this).children("Title").text() + " + " +  $(this).children("Style").children("Name").text() + "</a><li>");
@@ -1031,9 +1033,9 @@ FM.WMSSERVERS = {
 
     DEFAULT_EXTERNAL_WMS_SERVERS: [
         {
-            label: 'FENIX WMS Server',
+            label: 'FENIX Crops Area',
             label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
-            url: 'http://hqlprfenixapp2.hq.un.fao.org:12100/geoserver/wms'
+            url: 'http://fenix.fao.org:20200/geoserver/earthstat/wms'
         },
 //        {
 //            label: 'FENIX WMS Server',
@@ -1041,8 +1043,8 @@ FM.WMSSERVERS = {
 //            url: 'http://fenixapps.fao.org/geoserver'
 //        },
         {
-            label: 'DATA FAO ORG',
-            label_EN: 'DATA FAO ORG',
+            label: 'DATA.FAO.ORG',
+            label_EN: 'data.fao.org WMS Server',
             //url: 'http://data.fao.org/maps/wms?AUTHKEY=d30aebf0-ab2a-11e1-afa6-0800200c9a66'
             url: 'http://data.fao.org/maps/wms'
         },
@@ -1086,36 +1088,36 @@ FM.WMSSERVERS = {
             label_EN: 'OpenGeo Demo Server',
             url: 'http://demo.opengeo.org/geoserver/ows'
         },
-        {
-            label: 'HarvestChoice 1',
-            label_EN: 'HarvestChoice 1',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_1/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 2',
-            label_EN: 'HarvestChoice 2',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_2/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 3',
-            label_EN: 'HarvestChoice 3',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_3/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 4',
-            label_EN: 'HarvestChoice 4',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_4/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 5',
-            label_EN: 'HarvestChoice 5',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_5/MapServer/WMSServer'
-        },
-        {
-            label: 'HarvestChoice 6',
-            label_EN: 'HarvestChoice 6',
-            url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_6/MapServer/WMSServer'
-        },
+        //{
+        //    label: 'HarvestChoice 1',
+        //    label_EN: 'HarvestChoice 1',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_1/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 2',
+        //    label_EN: 'HarvestChoice 2',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_2/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 3',
+        //    label_EN: 'HarvestChoice 3',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_3/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 4',
+        //    label_EN: 'HarvestChoice 4',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_4/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 5',
+        //    label_EN: 'HarvestChoice 5',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_5/MapServer/WMSServer'
+        //},
+        //{
+        //    label: 'HarvestChoice 6',
+        //    label_EN: 'HarvestChoice 6',
+        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_6/MapServer/WMSServer'
+        //},
         {
             label: 'Alberts Map Service',
             url: 'http://maps.gov.bc.ca/arcserver/services/Province/albers_cache/MapServer/WMSServer',
@@ -1340,11 +1342,8 @@ FM.Map = FM.Class.extend({
     },
 
     _createShadeLayer: function(l, response, isReload){
-        console.log("_createShadeLayer")
-        console.log(response)
         if (typeof response == 'string')
             response = $.parseJSON(response);
-        console.log(response)
         l.layer.sldurl = response.sldurl;
         l.layer.urlWMS = response.geoserverwms;
         l.layer.legendHTML = response.legendHTML;
@@ -3163,8 +3162,6 @@ FM.Plugins = {
         if ( show ) {
             //$("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
            // FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn", _fenixmap.mapContainerID);
-
-            console.log(_fenixmap.options.gui.fullscreenID);
             $("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
             FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn", _fenixmap.options.gui.fullscreenID);
         }

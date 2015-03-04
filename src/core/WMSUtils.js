@@ -219,7 +219,6 @@ FM.WMSUtils = FM.Class.extend({
             /** TODO: optimize ramdon function **/
             var rand = FM.Util.randomID();
             if ($(this).children("Name").text()) {
-
                 //console.log($(this).children("Name").text() + ' | ' +  $(this).children("Title").text());
                 $("#" + id).append("<div id='WMSLayer-"+ rand +"'>" + $(this).children("Title").text() + " + " +  $(this).children("Style").children("Name").text() + " <div>");
                 //$("#" + id).append("<li> <a href='#'>" + $(this).children("Title").text() + " + " +  $(this).children("Style").children("Name").text() + "</a><li>");
