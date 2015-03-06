@@ -119,3 +119,14 @@
 .leaflet-container .leaflet-control-attribution{
     background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
 }
+
+.leaflet-control-attribution a, .leaflet-control-attribution a:hover{
+    color: #666666;
+    text-decoration: none;
+}
+
+
+.leaflet-container a, .leaflet-container a:focus, .leaflet-container a:hover, .leaflet-container a:visited, {
+    color: #666666;
+    text-decoration: none;
+}
