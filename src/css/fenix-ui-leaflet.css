@@ -5,6 +5,12 @@
     bottom: 40px;
 }
 
+
+.leaflet-container a, .leaflet-container a:focus, .leaflet-container a:hover, .leaflet-container a:visited, {
+    color: #666666;
+}
+
+
 /* general toolbar styles */
 /* to keep */
 .leaflet-bar {
@@ -77,7 +83,7 @@
 /* to keep */
 
 .leaflet-bottom .leaflet-control {
-    margin-bottom: 10px !important;
+    /*margin-bottom: 10px !important;*/
 }
 
 .leaflet-control-zoom-in {
@@ -108,4 +114,8 @@
 .leaflet-control-scale {
     top: 35px;
     left: 60px;
+}
+
+.leaflet-container .leaflet-control-attribution{
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
 }
