@@ -1,11 +1,5 @@
 /* required styles */
 
-/** Tokeep **/
-.leaflet-bottom {
-    bottom: 40px;
-}
-
-
 .leaflet-container a, .leaflet-container a:focus, .leaflet-container a:hover, .leaflet-container a:visited, {
     color: #666666;
 }
