@@ -111,7 +111,7 @@ require([
 		layers: 'fenix:gaul0_3857',
 		//layertitle: 'Join Dataset',
 		layertype: 'JOIN',
-		jointype: 'shaded'
+		jointype: 'shaded',
 		defaultgfi: true,
 		openlegend: true,
 		lang: "EN",
