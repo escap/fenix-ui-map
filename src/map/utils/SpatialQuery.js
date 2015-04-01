@@ -11,7 +11,7 @@ FM.SpatialQuery = {
      */
     getFeatureInfoJoin: function(l, layerPoint, latlng, map) {
         // setting a custom popup if it's not available
-        if (l.layer.custompopup == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
+        if (l.layer.customgfi == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
         FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, map);
     },
 
@@ -32,16 +32,6 @@ FM.SpatialQuery = {
         var sw = map.options.crs.project(bounds.getSouthWest());
         var ne = map.options.crs.project(bounds.getNorthEast());
         var BBOX = (sw.x ) + ',' + (sw.y) +',' + (ne.x) + ',' + (ne.y);
-        /*
-         var BBOX2 = (sw.x % -20037787) + ',' + (sw.y % 20037787) +',' + (ne.x % -20037787) + ',' + (ne.y % 20037508);
-         console.log('BBOX: ' + BBOX);
-        console.log('BBOX2: ' + BBOX2);
-        //console.log('sw.x: ' + sw.x); //-20037787.81567391
-        console.log('sw.x: ' + sw.x); //-7954342
-        console.log('sw.y: ' + sw.y);
-        console.log('ne.x: ' + ne.x);
-        console.log('ne.y: ' + ne.y);
-         */
         var WIDTH = map.getSize().x;
         var HEIGHT = map.getSize().y;
         var X = map.layerPointToContainerPoint(layerPoint).x;
@@ -52,7 +42,8 @@ FM.SpatialQuery = {
         Y = new Number(Y);
         Y = Y.toFixed(0) //13.3714
 
-        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        var url = FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        //var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
         url += '?SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&REQUEST=GetFeatureInfo';
@@ -84,14 +75,12 @@ FM.SpatialQuery = {
 
     // TODO: use an isOnHover flag?
     getFeatureInfoJoinRequest: function(url, requestType, latlon, map, l) {
-        var lang = ( l.layer.lang )? l.layer.lang.toLocaleLowerCase(): null;
+        var lang = l.layer.lang != null? l.layer.lang : map.options.lang;
         var _map = map;
         var _l = l;
-        /** TODO: use JQuery? **/
         $.ajax({
             type: "GET",
             url: url,
-            //dataType: 'application/x-www-form-urlencoded',
             success: function(response) {
                 // do something to response
                 if ( response != null ) {
@@ -103,7 +92,8 @@ FM.SpatialQuery = {
                     /** TODO: do it MUCH nicer **/
                     var r = response;
                     if (_l.layer.customgfi) {
-                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
+                        var joindata = _l.layer.joindata != null? _l.layer.joindata : _l.layer.data;
+                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, lang, joindata)
                         // TODO: handle multiple outputs
                         r = (result != null) ? result[0] : response;
                     }
@@ -143,6 +133,9 @@ FM.SpatialQuery = {
     },
 
     customPopup: function(response, custompopup, lang, joindata) {
+        //console.log(custompopup);
+        //console.log(lang);
+        //console.log(custompopup.content[lang]);
         var values = this._parseHTML(custompopup.content[lang]);
         if ( values.id.length > 0 || values.joinid.length > 0) {
             var h = $('<div></div>').append(response);
@@ -160,21 +153,24 @@ FM.SpatialQuery = {
     },
 
     _customizePopUp:function(content, values, responsetable, joindata) {
-//        console.log('SpatialQuery._customizePopUp()')
-//        joindata = $.parseJSON(joindata)
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
+        //console.log(tableHTML);
+        //console.log(headersHTML);
+        //console.log(joindata);
         var rowsData = [];
 
         // get only useful headers
         var headersHTMLIndexs = [];
         for ( var i=0;  i < headersHTML.length; i ++) {
-//            console.log("-----")
-//            console.log(headersHTML[i])
+            //console.log("-----")
+            //console.log(headersHTML[i])
             for (var j=0; j< values.id.length; j++) {
-//                console.log(values.id)
-                if ( values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
-                    headersHTMLIndexs.push(i); break;
+                //console.log("values.id")
+                //console.log(values.id)
+                if (values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
+                    headersHTMLIndexs.push(i);
+                    break;
                 }
             }
         }
@@ -182,8 +178,8 @@ FM.SpatialQuery = {
         // this is in case the joinid is not empty TODO: split the code
         if ( joindata ) {
             var headersHTMLJOINIndexs = [];
-            //console.log( 'values.joinid');
-            //console.log( values.joinid);
+            //console.log('values.joinid');
+            //console.log(values.joinid);
             for ( var i=0;  i < headersHTML.length; i ++) {
                 for (var j=0; j< values.joinid.length; j++) {
                     if ( values.joinid[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
@@ -192,8 +188,8 @@ FM.SpatialQuery = {
                 }
             }
         }
-//        console.log("headersHTMLJOINIndexs");
-//        console.log(headersHTMLJOINIndexs);
+        //console.log("headersHTMLJOINIndexs");
+        //console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
@@ -245,6 +241,7 @@ FM.SpatialQuery = {
 
 
     _getJoinValueFromCode: function(code, joindata) {
+        //console.log("_getJoinValueFromCode");
         //console.log(code);
         //console.log(joindata);
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
@@ -255,7 +252,7 @@ FM.SpatialQuery = {
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
                 if ( json[i][code] ) {
-                    console.log( json[i][code]);
+                    //console.log( json[i][code]);
                     return json[i][code];
                 }
                 else {
@@ -498,7 +495,8 @@ FM.SpatialQuery = {
         data.where = layer.joincolumn + " IN (" + spCodes + ") " ;
         $.ajax({
             type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
+            // url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
+            url :  map.options.url.WDS_SERVICE_SPATIAL_QUERY,
             data : data,
             success : function(response) {
                 //console.log(response);
@@ -525,7 +523,7 @@ FM.SpatialQuery = {
         data.where = "faost_code IN (" + spCodes + ") "
         $.ajax({
             type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
+            url :  map.config.url.WDS_SERVICE_SPATIAL_QUERY,
             data : data,
             success : function(response) {
                 //console.log(response);

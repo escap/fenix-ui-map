@@ -41,7 +41,7 @@ FM.Layer = FM.Class.extend({
         switchjointype: false,
 
         // language
-        lang: 'en' //ISO2
+        lang: 'EN' //ISO2
 
     },
 
@@ -192,10 +192,10 @@ FM.Layer = FM.Class.extend({
 
       if ( this._fenixmap )
             fenixmap = this._fenixmap;
-
+      //  TODO: change to jquery
       var l = this;
         var r = new RequestHandler();
-        var url = 'http://'+ FM.CONFIG.BASEURL_MAPS + FM.CONFIG.MAP_SERVICE_SHADED;
+        var url = fenixmap.options.url.MAP_SERVICE_SHADED;
         r.open('POST', url);
         r.setContentType('application/x-www-form-urlencoded');
         r.onload(function () {

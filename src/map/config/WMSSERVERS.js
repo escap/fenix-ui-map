@@ -106,6 +106,11 @@ FM.WMSSERVERS = {
             label: 'Vienna OpenData',
             label_EN:  'Vienna OpenData',
             url: 'http://data.wien.gv.at/daten/wms'
+        },
+        {
+            label: 'Vienna OpenData',
+            label_EN:  'Vienna OpenData',
+            url: 'http://data.wien.gv.at/daten/wms'
         }
         /*,
         {

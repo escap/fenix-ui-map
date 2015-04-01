@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.0.1 - 2015-03-06 
+ * fenix-ui-map v0.0.1 - 2015-04-01 
  * Copyright 2015  
  * FENIX Development Team 
  * 
@@ -11,6 +11,9 @@
 var FM, originalFM;
 if (!window.console) {var console = {};}
 if (!console.log) {console.log = function() {};}
+if (!console.warn) {console.warn = function() {};}
+if (!console.error) {console.error = function() {};}
+if (!console.info) {console.info = function() {};}
 
 if (typeof exports !== undefined + '') {
     FM = exports;
@@ -26,8 +29,7 @@ if (typeof exports !== undefined + '') {
 }
 
 FM.version = '0.0.1';
-FM.author = 'Simone Murzilli - simone.murzilli@gmail.com; simone.murzilli@fao.org';
-;
+FM.author = 'Simone Murzilli - simone.murzilli@gmail.com; simone.murzilli@fao.org';;
 FM.Class = function () {};
 
 FM.Class.extend = function (props) {
@@ -912,10 +914,8 @@ FMDEFAULTLAYER = {
             case "GAUL0_ISO3"           : return FMDEFAULTLAYER._getGAUL('gaul0_faostat_3857_2', 'iso3_code', 'the_geom', isjoin, 'faost_n', measurementunit, 'ISO3'); break;
             case "GAUL0_BOUNDARIES"     : return FMDEFAULTLAYER._getWMSLayer('gaul0_line_3857'); break;
             case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
-
 //            case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
 //            case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
-
             // TODO: change to a standard GAUL2 layer. 'gaul2_3857_2'is another GAUL2 used with the new popup (the old gaul2 as content.ftl used by countrystat)
             case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
         }
@@ -930,7 +930,7 @@ FMDEFAULTLAYER = {
         layer.measurementunit=(measurementunit )? measurementunit: null;
         layer.srs = 'EPSG:3857';
         layer.geometrycolumn =(geometrycolumn )? geometrycolumn: '';
-        if ( isjoin ) {
+        if (isjoin) {
             FMDEFAULTLAYER.joinDefaultPopUp(layer);
             layer.joinboundary = joinboundary;
         }
@@ -938,19 +938,20 @@ FMDEFAULTLAYER = {
     },
 
     _getWMSLayer:function(layername, urlWMS, styles, srs) {
+        // TODO: remove FMCONFIG from here!
         var layer = {};
         layer.layers = layername;
         layer.styles = (styles)?styles:'';
         layer.srs = (srs)?srs:'EPSG:3857';
-        layer.urlWMS = (urlWMS)?urlWMS:FMCONFIG.DEFAULT_WMS_SERVER;
+        layer.urlWMS = (urlWMS)?urlWMS: FMCONFIG.DEFAULT_WMS_SERVER;
         return layer;
     },
 
     /** TODO: handle multilanguage **/
     joinDefaultPopUp: function( layer ) {
         //console.log(layer);
-        var measurementunit  = ( layer.measurementunit )? " " + layer.measurementunit +"": "";
-        var joinlabel  = ( layer.joincolumnlabel )? "<div class='fm-popup-join-title'>{{" + layer.joincolumnlabel +"}}</div>": "";
+        var measurementunit  = (layer.measurementunit)? " " + layer.measurementunit +"": "";
+        var joinlabel  = (layer.joincolumnlabel)? "<div class='fm-popup-join-title'>{{" + layer.joincolumnlabel +"}}</div>": "";
         layer.customgfi = {
             content : {
                 en: "<div class='fm-popup'>" + joinlabel + "<div class='fm-popup-join-content'>{{{" + layer.joincolumn +"}}} <i>" + measurementunit +"</i></div></div>",
@@ -1137,6 +1138,11 @@ FM.WMSSERVERS = {
             label: 'Vienna OpenData',
             label_EN:  'Vienna OpenData',
             url: 'http://data.wien.gv.at/daten/wms'
+        },
+        {
+            label: 'Vienna OpenData',
+            label_EN:  'Vienna OpenData',
+            url: 'http://data.wien.gv.at/daten/wms'
         }
         /*,
         {
@@ -1183,13 +1189,19 @@ FM.Map = FM.Class.extend({
             // TODO: pass fullscreen content ID on a fullscreen object instead of like that
         },
         usedefaultbaselayers: true,
-        lang: 'EN'
+        lang: 'EN',
+        url: {}
     },
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
         // merging object with a deep copy
         this.options =  $.extend(true, {}, this.options, options);
         this.mapOptions = $.extend(true, {}, this.mapOptions, mapOptions);
+
+        // extent if exist FM.CONFIG
+        if (FMCONFIG) {
+            this.options.url = $.extend(true, {}, FMCONFIG, options.url);
+        }
 
         // setting up the lang properties
         FM.initializeLangProperties(this.options.lang);
@@ -1330,11 +1342,14 @@ FM.Map = FM.Class.extend({
             $('#'+ l.id + '-controller-item-opacity').css('display', 'block');
         }
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        //var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         $.ajax({
             type: "POST",
             url: url,
-            data: FM.Util.parseLayerRequest(l.layer),
+            data: JSON.stringify(l.layer),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
             success: function(response) {
                 _this._createShadeLayer(l, response, isReload);
             }
@@ -1344,8 +1359,15 @@ FM.Map = FM.Class.extend({
     _createShadeLayer: function(l, response, isReload){
         if (typeof response == 'string')
             response = $.parseJSON(response);
-        l.layer.sldurl = response.sldurl;
-        l.layer.urlWMS = response.geoserverwms;
+        //l.layer.sldurl = response.sldurl;
+        //l.layer.urlWMS = response.geoserverwms;
+        l.layer.sldurl = response.url;
+        // TODO: check urlWMS how to set it
+        l.layer.urlWMS = this.options.url.DEFAULT_WMS_SERVER;
+        if (response.geoserverwms)
+            l.layer.urlWMS = response.geoserverwms
+
+        //l.layer.urlWMS = "http://localhost:9090/geoserver/wms/";
         l.layer.legendHTML = response.legendHTML;
         l.createLayerWMSSLD();
 
@@ -1382,7 +1404,6 @@ FM.Map = FM.Class.extend({
     reAddLayer:function(l) {
         this.map.addLayer(l.leafletLayer);
         this.controller.setZIndex(l);
-
         // check layer visibility
         //this.controller.showHide(l.id)
     },
@@ -1409,7 +1430,7 @@ FM.Map = FM.Class.extend({
         $('#'+ l.id + '-controller-item-getlegend-holder').slideUp("slow");
         $('#'+ l.id + '-controller-item-opacity').css('display', 'none');
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         var r = new RequestHandler();
         r.open('POST', url);
         r.setContentType('application/x-www-form-urlencoded');
@@ -1485,7 +1506,7 @@ FM.Map = FM.Class.extend({
     },
 
     addGeoJSON: function(l) {
-        FMGeoJSON.createGeoJSONLayer(l);
+        console.log("TODO");
     },
 
     // syncronize the maps on movement
@@ -1527,15 +1548,6 @@ FM.Map = FM.Class.extend({
                 iconSize: [40, 40]
             })
         }).addTo(map);
-    },
-
-    /** TODO: codetype, code **/
-    zoomTo: function(boundary, code, srs) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
-    },
-
-    zoomTo: function(boundary, code) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
     },
 
     invalidateSize: function() {
@@ -1646,12 +1658,25 @@ FM.Map = FM.Class.extend({
         }
     },
 
+    /** TODO: codetype, code **/
+    zoomTo: function(boundary, code, srs) {
+        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
+    },
+
+    zoomTo: function(boundary, code) {
+        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
+    },
+
     zoomTo: function(layer, column, codes) {
         FM.MapUtils.zoomTo(this, layer, column, codes)
     },
 
     zoomToCountry: function(column, codes) {
         FM.MapUtils.zoomToCountry(this, column, codes)
+    },
+
+    getSLDfromCSS: function(layername, css) {
+        FM.MapUtils.getSLDfromCSS(layername, css, this.options.url.CSS_TO_SLD);
     }
 });
 
@@ -2719,8 +2744,13 @@ FM.guiMap = {
 ;
 FM.WCS = function() {
 
+    // TODO: config are the map.config (to be passed)
+    var config = {
+        url: {}
+    }
+
     // PROXY used to load the requests
-    var PROXY = (FMCONFIG.BASEURL_MAPS)? FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
+    var PROXY = (config.url.MAP_SERVICE_PROXY)? config.url.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
 
     // current version
     var VERSION = '1.1.1';
@@ -2764,10 +2794,15 @@ FM.WCS = function() {
 }();
 
 ;
-FM.WFS = function() {
+FM.WFS = function(config) {
+
+    // TODO: config are the map.config (to be passed)
+    var config = {
+        url: {}
+    }
 
     // PROXY used to load the requests
-    var PROXY = (FMCONFIG.BASEURL_MAPS)? FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
+    var PROXY = (config.url.BASEURL_MAPS)? config.url.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
 
     // current WFS version
     var VERSION = '1.1.0';
@@ -2942,7 +2977,7 @@ FM.LayerUtils = {
 
     _zoomToRequest: function(map, boundary, code, srs) {
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
+        var url = map.options.url.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
         $.ajax({
             type: "GET",
             url: url,
@@ -3080,7 +3115,7 @@ FM.MapUtils = function() {
     };
 
     var zoomTo = function(m, layer, column, codes) {
-        var url = FMCONFIG.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+        var url = m.options.url.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
         $.ajax({
             type: "GET",
             url: url,
@@ -3097,10 +3132,11 @@ FM.MapUtils = function() {
         zoomTo(m, "country", column, codes);
     };
 
-    var getSLDfromCSS = function(layername, css) {
+    var getSLDfromCSS = function(layername, css, url) {
         var sld = '';
+        //TODO: change URL
         $.ajax({
-            url: FMCONFIG.CSS_TO_SLD,
+            url: url,
             data: {
                 stylename: layername,
                 style: css
@@ -3345,7 +3381,7 @@ FM.SpatialQuery = {
      */
     getFeatureInfoJoin: function(l, layerPoint, latlng, map) {
         // setting a custom popup if it's not available
-        if (l.layer.custompopup == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
+        if (l.layer.customgfi == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
         FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, map);
     },
 
@@ -3366,16 +3402,6 @@ FM.SpatialQuery = {
         var sw = map.options.crs.project(bounds.getSouthWest());
         var ne = map.options.crs.project(bounds.getNorthEast());
         var BBOX = (sw.x ) + ',' + (sw.y) +',' + (ne.x) + ',' + (ne.y);
-        /*
-         var BBOX2 = (sw.x % -20037787) + ',' + (sw.y % 20037787) +',' + (ne.x % -20037787) + ',' + (ne.y % 20037508);
-         console.log('BBOX: ' + BBOX);
-        console.log('BBOX2: ' + BBOX2);
-        //console.log('sw.x: ' + sw.x); //-20037787.81567391
-        console.log('sw.x: ' + sw.x); //-7954342
-        console.log('sw.y: ' + sw.y);
-        console.log('ne.x: ' + ne.x);
-        console.log('ne.y: ' + ne.y);
-         */
         var WIDTH = map.getSize().x;
         var HEIGHT = map.getSize().y;
         var X = map.layerPointToContainerPoint(layerPoint).x;
@@ -3386,7 +3412,8 @@ FM.SpatialQuery = {
         Y = new Number(Y);
         Y = Y.toFixed(0) //13.3714
 
-        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        var url = FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        //var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
         url += '?SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&REQUEST=GetFeatureInfo';
@@ -3418,14 +3445,12 @@ FM.SpatialQuery = {
 
     // TODO: use an isOnHover flag?
     getFeatureInfoJoinRequest: function(url, requestType, latlon, map, l) {
-        var lang = ( l.layer.lang )? l.layer.lang.toLocaleLowerCase(): null;
+        var lang = l.layer.lang != null? l.layer.lang : map.options.lang;
         var _map = map;
         var _l = l;
-        /** TODO: use JQuery? **/
         $.ajax({
             type: "GET",
             url: url,
-            //dataType: 'application/x-www-form-urlencoded',
             success: function(response) {
                 // do something to response
                 if ( response != null ) {
@@ -3437,7 +3462,8 @@ FM.SpatialQuery = {
                     /** TODO: do it MUCH nicer **/
                     var r = response;
                     if (_l.layer.customgfi) {
-                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
+                        var joindata = _l.layer.joindata != null? _l.layer.joindata : _l.layer.data;
+                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, lang, joindata)
                         // TODO: handle multiple outputs
                         r = (result != null) ? result[0] : response;
                     }
@@ -3477,6 +3503,9 @@ FM.SpatialQuery = {
     },
 
     customPopup: function(response, custompopup, lang, joindata) {
+        //console.log(custompopup);
+        //console.log(lang);
+        //console.log(custompopup.content[lang]);
         var values = this._parseHTML(custompopup.content[lang]);
         if ( values.id.length > 0 || values.joinid.length > 0) {
             var h = $('<div></div>').append(response);
@@ -3494,21 +3523,24 @@ FM.SpatialQuery = {
     },
 
     _customizePopUp:function(content, values, responsetable, joindata) {
-//        console.log('SpatialQuery._customizePopUp()')
-//        joindata = $.parseJSON(joindata)
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
+        //console.log(tableHTML);
+        //console.log(headersHTML);
+        //console.log(joindata);
         var rowsData = [];
 
         // get only useful headers
         var headersHTMLIndexs = [];
         for ( var i=0;  i < headersHTML.length; i ++) {
-//            console.log("-----")
-//            console.log(headersHTML[i])
+            //console.log("-----")
+            //console.log(headersHTML[i])
             for (var j=0; j< values.id.length; j++) {
-//                console.log(values.id)
-                if ( values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
-                    headersHTMLIndexs.push(i); break;
+                //console.log("values.id")
+                //console.log(values.id)
+                if (values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
+                    headersHTMLIndexs.push(i);
+                    break;
                 }
             }
         }
@@ -3516,8 +3548,8 @@ FM.SpatialQuery = {
         // this is in case the joinid is not empty TODO: split the code
         if ( joindata ) {
             var headersHTMLJOINIndexs = [];
-            //console.log( 'values.joinid');
-            //console.log( values.joinid);
+            //console.log('values.joinid');
+            //console.log(values.joinid);
             for ( var i=0;  i < headersHTML.length; i ++) {
                 for (var j=0; j< values.joinid.length; j++) {
                     if ( values.joinid[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
@@ -3526,8 +3558,8 @@ FM.SpatialQuery = {
                 }
             }
         }
-//        console.log("headersHTMLJOINIndexs");
-//        console.log(headersHTMLJOINIndexs);
+        //console.log("headersHTMLJOINIndexs");
+        //console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
@@ -3579,6 +3611,7 @@ FM.SpatialQuery = {
 
 
     _getJoinValueFromCode: function(code, joindata) {
+        //console.log("_getJoinValueFromCode");
         //console.log(code);
         //console.log(joindata);
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
@@ -3589,7 +3622,7 @@ FM.SpatialQuery = {
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
                 if ( json[i][code] ) {
-                    console.log( json[i][code]);
+                    //console.log( json[i][code]);
                     return json[i][code];
                 }
                 else {
@@ -3832,7 +3865,8 @@ FM.SpatialQuery = {
         data.where = layer.joincolumn + " IN (" + spCodes + ") " ;
         $.ajax({
             type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
+            // url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
+            url :  map.options.url.WDS_SERVICE_SPATIAL_QUERY,
             data : data,
             success : function(response) {
                 //console.log(response);
@@ -3859,7 +3893,7 @@ FM.SpatialQuery = {
         data.where = "faost_code IN (" + spCodes + ") "
         $.ajax({
             type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
+            url :  map.config.url.WDS_SERVICE_SPATIAL_QUERY,
             data : data,
             success : function(response) {
                 //console.log(response);
@@ -3933,7 +3967,7 @@ FM.Layer = FM.Class.extend({
         switchjointype: false,
 
         // language
-        lang: 'en' //ISO2
+        lang: 'EN' //ISO2
 
     },
 
@@ -4084,10 +4118,10 @@ FM.Layer = FM.Class.extend({
 
       if ( this._fenixmap )
             fenixmap = this._fenixmap;
-
+      //  TODO: change to jquery
       var l = this;
         var r = new RequestHandler();
-        var url = 'http://'+ FM.CONFIG.BASEURL_MAPS + FM.CONFIG.MAP_SERVICE_SHADED;
+        var url = fenixmap.options.url.MAP_SERVICE_SHADED;
         r.open('POST', url);
         r.setContentType('application/x-www-form-urlencoded');
         r.onload(function () {

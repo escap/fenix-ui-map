@@ -33,7 +33,7 @@ FM.LayerUtils = {
 
     _zoomToRequest: function(map, boundary, code, srs) {
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
+        var url = map.options.url.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
         $.ajax({
             type: "GET",
             url: url,

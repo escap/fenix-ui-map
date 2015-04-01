@@ -24,13 +24,19 @@ FM.Map = FM.Class.extend({
             // TODO: pass fullscreen content ID on a fullscreen object instead of like that
         },
         usedefaultbaselayers: true,
-        lang: 'EN'
+        lang: 'EN',
+        url: {}
     },
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
         // merging object with a deep copy
         this.options =  $.extend(true, {}, this.options, options);
         this.mapOptions = $.extend(true, {}, this.mapOptions, mapOptions);
+
+        // extent if exist FM.CONFIG
+        if (FMCONFIG) {
+            this.options.url = $.extend(true, {}, FMCONFIG, options.url);
+        }
 
         // setting up the lang properties
         FM.initializeLangProperties(this.options.lang);
@@ -171,11 +177,14 @@ FM.Map = FM.Class.extend({
             $('#'+ l.id + '-controller-item-opacity').css('display', 'block');
         }
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        //var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         $.ajax({
             type: "POST",
             url: url,
-            data: FM.Util.parseLayerRequest(l.layer),
+            data: JSON.stringify(l.layer),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
             success: function(response) {
                 _this._createShadeLayer(l, response, isReload);
             }
@@ -185,8 +194,15 @@ FM.Map = FM.Class.extend({
     _createShadeLayer: function(l, response, isReload){
         if (typeof response == 'string')
             response = $.parseJSON(response);
-        l.layer.sldurl = response.sldurl;
-        l.layer.urlWMS = response.geoserverwms;
+        //l.layer.sldurl = response.sldurl;
+        //l.layer.urlWMS = response.geoserverwms;
+        l.layer.sldurl = response.url;
+        // TODO: check urlWMS how to set it
+        l.layer.urlWMS = this.options.url.DEFAULT_WMS_SERVER;
+        if (response.geoserverwms)
+            l.layer.urlWMS = response.geoserverwms
+
+        //l.layer.urlWMS = "http://localhost:9090/geoserver/wms/";
         l.layer.legendHTML = response.legendHTML;
         l.createLayerWMSSLD();
 
@@ -223,7 +239,6 @@ FM.Map = FM.Class.extend({
     reAddLayer:function(l) {
         this.map.addLayer(l.leafletLayer);
         this.controller.setZIndex(l);
-
         // check layer visibility
         //this.controller.showHide(l.id)
     },
@@ -250,7 +265,7 @@ FM.Map = FM.Class.extend({
         $('#'+ l.id + '-controller-item-getlegend-holder').slideUp("slow");
         $('#'+ l.id + '-controller-item-opacity').css('display', 'none');
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         var r = new RequestHandler();
         r.open('POST', url);
         r.setContentType('application/x-www-form-urlencoded');
@@ -326,7 +341,7 @@ FM.Map = FM.Class.extend({
     },
 
     addGeoJSON: function(l) {
-        FMGeoJSON.createGeoJSONLayer(l);
+        console.log("TODO");
     },
 
     // syncronize the maps on movement
@@ -368,15 +383,6 @@ FM.Map = FM.Class.extend({
                 iconSize: [40, 40]
             })
         }).addTo(map);
-    },
-
-    /** TODO: codetype, code **/
-    zoomTo: function(boundary, code, srs) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
-    },
-
-    zoomTo: function(boundary, code) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
     },
 
     invalidateSize: function() {
@@ -487,12 +493,25 @@ FM.Map = FM.Class.extend({
         }
     },
 
+    /** TODO: codetype, code **/
+    zoomTo: function(boundary, code, srs) {
+        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
+    },
+
+    zoomTo: function(boundary, code) {
+        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
+    },
+
     zoomTo: function(layer, column, codes) {
         FM.MapUtils.zoomTo(this, layer, column, codes)
     },
 
     zoomToCountry: function(column, codes) {
         FM.MapUtils.zoomToCountry(this, column, codes)
+    },
+
+    getSLDfromCSS: function(layername, css) {
+        FM.MapUtils.getSLDfromCSS(layername, css, this.options.url.CSS_TO_SLD);
     }
 });
 

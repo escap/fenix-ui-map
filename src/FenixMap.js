@@ -6,6 +6,9 @@
 var FM, originalFM;
 if (!window.console) {var console = {};}
 if (!console.log) {console.log = function() {};}
+if (!console.warn) {console.warn = function() {};}
+if (!console.error) {console.error = function() {};}
+if (!console.info) {console.info = function() {};}
 
 if (typeof exports !== undefined + '') {
     FM = exports;
