@@ -89,7 +89,10 @@ require([
 			disclaimerfao: true
 		},
 		url: {
-			//MAP_SERVICE_SHADED: 'http://localhost:5555/mapclassify/join'
+			MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
+			DEFAULT_WMS_SERVER: 'http://fenix.fao.org/geoserver',
+			MAP_SERVICE_GFI_JOIN: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request',
+			MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request'
 		}
 	}, {
 		zoomControl: false,
@@ -98,8 +101,8 @@ require([
 	
 	m.createMap();
 
-	var joincolumnlabel = 'adm0_name';
-	var joincolumn =  'adm0_code';
+	var joincolumnlabel = 'areanamee';
+	var joincolumn =  'faost_code';
 	var l = new FM.layer({
 		// PYTHON
 		"colorramp": "YlGnBu",
@@ -108,7 +111,7 @@ require([
 		//"doublecounting": false,
 		//"decimalvalues": 0,
 		"joincolumn": "adm0_code",
-		layers: 'fenix:gaul0_3857',
+		layers: 'fenix:gaul0_faostat_3857',
 		//layertitle: 'Join Dataset',
 		layertype: 'JOIN',
 		jointype: 'shaded',
@@ -118,7 +121,7 @@ require([
 		opacity: '0.7',
 		customgfi: {
 			content: {
-				EN: "<div class='fm-popup'>{{adm0_name}}<div class='fm-popup-join-content'>{{{adm0_code}}}</div></div>"
+				EN: "<div class='fm-popup'>{{"+ joincolumnlabel +"}}<div class='fm-popup-join-content'>{{{"+ joincolumn+"}}}</div></div>"
 			},
 			showpopup: true
 		}
