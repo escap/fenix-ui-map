@@ -358,10 +358,10 @@ FM.Map = FM.Class.extend({
         var l = (l) ? l: fenixMap.controller.selectedLayer;
         if ( l ) {
             if (l.layer.layertype != null && l.layer.layertype == 'JOIN') {
-                FM.SpatialQuery.getFeatureInfoJoin(l, e.layerPoint, e.latlng, fenixMap.map);
+                FM.SpatialQuery.getFeatureInfoJoin(l, e.layerPoint, e.latlng, fenixMap);
             }
             else {
-               FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap.map);
+               FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap);
             }
         }
     },

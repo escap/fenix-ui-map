@@ -9,10 +9,10 @@ FM.SpatialQuery = {
      * @param latlng
      * @param map
      */
-    getFeatureInfoJoin: function(l, layerPoint, latlng, map) {
+    getFeatureInfoJoin: function(l, layerPoint, latlng, fenixmap) {
         // setting a custom popup if it's not available
         if (l.layer.customgfi == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
-        FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, map);
+        FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, fenixmap);
     },
 
 
@@ -25,9 +25,12 @@ FM.SpatialQuery = {
      * @param latlng
      * @param map
      */
-    getFeatureInfoStandard: function(l, layerPoint, latlng, map) {
+    getFeatureInfoStandard: function(l, layerPoint, latlng, fenixmap) {
 
-        // var latlngStr = '(' + latlng.lat.toFixed(3) + ', ' + latlng.lng.toFixed(3) + ')';
+        // bind to leaflet map
+        var map = fenixmap.map;
+
+        // query parameters for the GFI
         var bounds = map.getBounds();
         var sw = map.options.crs.project(bounds.getSouthWest());
         var ne = map.options.crs.project(bounds.getNorthEast());
@@ -41,8 +44,7 @@ FM.SpatialQuery = {
         X = X.toFixed(0) //13.3714
         Y = new Number(Y);
         Y = Y.toFixed(0) //13.3714
-
-        var url = FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        var url = fenixmap.options.url.MAP_SERVICE_GFI_STANDARD;
         //var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
         url += '?SERVICE=WMS';
         url += '&VERSION=1.1.1';
