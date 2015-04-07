@@ -104,15 +104,15 @@ require([
 	m.addLayer( new FM.layer({
 		layers: 'fenix:gaul0_line_3857',
 		layertitle: 'Country Boundaries',
-		urlWMS: 'http://fenixapps.fao.org/geoserver',
-		opacity: '0.8',
-		lang: 'EN'
-	}) );
+		urlWMS: 'http://fenix.fao.org/geoserver',
+		opacity: '0.9',
+		lang: 'en'
+	}));
 
 
 	var r = {
 		//"decimalvalues": 5,
-		joincolumn: "adm2_code", //required! TODO: should be not mandatory?
+		//joincolumn: "adm0_code", //required! TODO: should be not mandatory?
 		layertype: 'JOIN',
 		jointype: 'shaded',
 		colorramp: "Greens",
@@ -128,6 +128,7 @@ require([
 	 $.ajax({
 	     type: 'POST',
 	     url: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
+		 //url: 'http://localhost:5555/mapclassify/join/',
 	     data: JSON.stringify(r),
 	     dataType: 'json',
 	     contentType: "application/json; charset=utf-8",
@@ -177,7 +178,7 @@ require([
 	                     }
 	                 }).addTo(m.map);
 
-					 m.map.fitBounds(geoJson.getBounds());
+					 //m.map.fitBounds(geoJson.getBounds());
 
 	             },
 	             error : function(err, b, c) { }
