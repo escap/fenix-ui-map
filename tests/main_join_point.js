@@ -186,12 +186,3 @@ require([
 	     error : function(err, b, c) { }
 	 });
 });
-
-
-
-
-
-
-
-
-
