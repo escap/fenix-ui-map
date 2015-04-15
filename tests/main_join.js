@@ -74,7 +74,7 @@ require([
         plugins: {
             geosearch: true,
             mouseposition: false,
-            controlloading : true,
+            controlloading: true,
             zoomControl: 'bottomright'
         },
         guiController: {
