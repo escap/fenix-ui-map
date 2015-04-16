@@ -73,7 +73,7 @@ require([
 		BASEURL_LANG: '../dist/i18n/'
 	});
 
-	var m = new FM.Map('map', {
+	var m = new FM.Map('#map', {
 		plugins: {
 			geosearch: true,
 			mouseposition: false,
