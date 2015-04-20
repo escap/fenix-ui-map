@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.0.1 - 2015-04-17 
+ * fenix-ui-map v0.0.1 - 2015-04-20 
  * Copyright 2015  
  * FENIX Development Team 
  * 
@@ -1039,7 +1039,7 @@ FM.WMSSERVERS = {
             url: 'http://fenix.fao.org/demo/fenix/geoserver/earthstat/wms'
         },
         {
-            label: 'Green Housegasses Data',
+            label: 'Greenhouse gases Data',
             label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
             url: 'http://fenix.fao.org/demo/ghg/geoserver/wms'
         },
