@@ -44,8 +44,13 @@ FM.Map = FM.Class.extend({
         var suffix = FM.Util.randomID();
         var mapContainerID =  suffix + '-container-map';
         var mapID =  suffix + '-map';
-        
-        $(id).append("<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>");
+
+        var mapDIV = "<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>";
+        //TODO check if id or other selector
+        $(id).length > 0? $(id).append(mapDIV): $("#" + id).append(mapDIV);
+        //typeof id === 'string'?  $("#" + id).append(mapDIV): $(id).append(mapDIV);
+
+        //$(id).append("<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>");
         $("#" + mapContainerID).append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
 
         this.id = mapID;
