@@ -6,6 +6,11 @@ FM.WMSSERVERS = {
             label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
             url: 'http://fenix.fao.org/demo/fenix/geoserver/earthstat/wms'
         },
+        {
+            label: 'Green Housegasses Data',
+            label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
+            url: 'http://fenix.fao.org/demo/ghg/geoserver/wms'
+        },
 //        {
 //            label: 'FENIX WMS Server',
 //            label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
