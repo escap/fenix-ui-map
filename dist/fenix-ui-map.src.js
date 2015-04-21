@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.0.1 - 2015-04-20 
+ * fenix-ui-map v0.0.1 - 2015-04-21 
  * Copyright 2015  
  * FENIX Development Team 
  * 
@@ -1275,9 +1275,6 @@ FM.Map = FM.Class.extend({
         this.initializePlugins();
         this.initializeMapGUI();
         if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
-
-        $("#" + this.id + " .leaflet-control-zoom-in").html("")
-        $("#" + this.id + " .leaflet-control-zoom-out").html("")
     },
 
     /** Default Baselayers loaded at startup if they are not override **/

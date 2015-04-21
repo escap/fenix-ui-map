@@ -105,9 +105,6 @@ FM.Map = FM.Class.extend({
         this.initializePlugins();
         this.initializeMapGUI();
         if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
-
-        $("#" + this.id + " .leaflet-control-zoom-in").html("")
-        $("#" + this.id + " .leaflet-control-zoom-out").html("")
     },
 
     /** Default Baselayers loaded at startup if they are not override **/
