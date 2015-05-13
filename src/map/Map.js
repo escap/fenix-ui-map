@@ -410,15 +410,20 @@ FM.Map = FM.Class.extend({
 
     // interface plugins
     initializePlugins:function() {
+    	
+    	this.plugins = {};
+    	//indexed plugins istances
+
         if ( this.options.plugins != null ) {
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
-                 var invoke = '_add' + key.toLowerCase();
+                var pname = key.toLowerCase(), 
+                	invoke = '_add' + pname;
 
                 /*FM.loadModuleLibs(key.toLowerCase(), function() {
                     FM.Plugins[invoke](_this, value)
                 });*/
-                FM.Plugins[invoke](_this, value)
+                _this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
         }
     },

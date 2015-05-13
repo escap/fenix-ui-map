@@ -5,7 +5,7 @@ FM.Plugins = {
             //$("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
            // FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn", _fenixmap.mapContainerID);
             $("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
-            FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn", _fenixmap.options.gui.fullscreenID);
+            FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn",_fenixmap.options.gui.fullscreenID);
         }
     },
 
@@ -48,6 +48,7 @@ FM.Plugins = {
         var zoomControl = new L.Control.Zoom();
         zoomControl.setPosition('bottomright');
         _fenixmap.map.addControl(zoomControl);
+        return zoomControl;
     },
 
     _addprintmodule: function(_fenixmap, show) {
@@ -171,5 +172,33 @@ FM.Plugins = {
             });
             _fenixmap.map.addControl(loadingControl)
         }
+    },
+
+    _addzoomresetcontrol: function( _fenixmap, show) {
+    	if( show ) {
+			(function() {
+
+				console.log(_fenixmap.plugins);
+
+				var pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? _fenixmap.options.plugins.zoomresetcontrol : 'bottomright',
+					control = new L.Control({position: pos}),
+					container = _fenixmap.plugins.zoomcontrol._container;
+
+				control.onAdd = function(map) {
+						var azoom = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
+						azoom.innerHTML = "Reset";
+						L.DomEvent
+							.disableClickPropagation(azoom)
+							.addListener(azoom, 'click', function() {
+								map.setView(map.options.center, map.options.zoom);
+							},azoom);
+						var d=  L.DomUtil.create('span');
+						d.style.display = 'none';
+						return d;
+					};
+				return control;
+			}())
+			.addTo(_fenixmap.map);
+		}    	
     }
 }

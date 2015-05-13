@@ -111,6 +111,20 @@
     background-position: -150px -30px !important;
 }
 
+/* to keep */
+.leaflet-control-zoom-reset {
+    font: bold 0 'Lucida Console', Monaco, monospace;
+    width:31px !important;
+    height: 30px !important;
+    background-image: url(images/fenix-map-sprite.png);
+    background-position: -210px 0 !important;
+}
+
+.leaflet-control-zoom-reset:hover {
+	cursor: pointer;
+    background-position: -210px -30px !important;
+}
+
 .leaflet-control-scale {
     top: 35px;
     left: 60px;
