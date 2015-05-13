@@ -699,14 +699,18 @@ div.fm-controller-item-title {
     padding: 0px 1px 1px 0px;
 }
 
+
 .fm-fullscreen {
     position:absolute; bottom:120px; right:10px;
 }
 
+.fm-icon-box-background,
+.leaflet-control-zoom-full,
 .fm-icon-fullscreen {
     background-position: -90px 0px;
 }
 
+.leaflet-control-zoom-full:hover,
 .fm-icon-fullscreen:hover {
     background-position: -90px -30px;
 }

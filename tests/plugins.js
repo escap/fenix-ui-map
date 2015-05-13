@@ -76,6 +76,7 @@ require([
 	var m = new FM.Map('#map', {
 		plugins: {
 			geosearch: true,
+			fullscreen: true,
 			mouseposition: false,
 			controlloading : true,
 			zoomControl: 'bottomright',
