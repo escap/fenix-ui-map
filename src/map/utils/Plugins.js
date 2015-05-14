@@ -2,11 +2,6 @@ FM.Plugins = {
 
     _addfullscreen: function(_fenixmap, show) {
         if ( show && window.fullScreenApi && window.fullScreenApi.supportsFullScreen) {
-            //$("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
-           // FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn", _fenixmap.mapContainerID);
-            //$("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
-           // FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn",_fenixmap.options.gui.fullscreenID);*/
-
 			return (function() {
 
 				var pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
@@ -15,18 +10,45 @@ FM.Plugins = {
 					control = new L.Control({position: pos});
 
 				control.onAdd = function(map) {
-						var azoom = L.DomUtil.create('div','leaflet-control-zoom-full fm-icon-sprite fm-btn-icon fm-icon-box-background');
+					var azoom = L.DomUtil.create('div','leaflet-control-zoom-full fm-icon-sprite fm-btn-icon fm-icon-box-background');
+					azoom.innerHTML = "&nbsp;";
+					L.DomEvent
+						.disableClickPropagation(azoom)
+						.addListener(azoom, 'click', function() {
+							var mapdiv = document.getElementById(_fenixmap.options.gui.fullscreenID);
+							window.fullScreenApi.requestFullScreen(mapdiv);
+						}, azoom);
+					return azoom;
+				};
+				return control;
+			}())
+			.addTo(_fenixmap.map);
+        }
+    },
+
+    _addzoomresetcontrol: function( _fenixmap, show) {
+    	if( show ) {
+			return (function() {
+				var pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? _fenixmap.options.plugins.zoomresetcontrol : 'bottomright',
+					control = new L.Control({position: pos}),
+					container = _fenixmap.plugins.zoomcontrol._container;
+
+				control.onAdd = function(map) {
+						var azoom = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
 						azoom.innerHTML = "&nbsp;";
 						L.DomEvent
 							.disableClickPropagation(azoom)
 							.addListener(azoom, 'click', function() {
-		                		window.fullScreenApi.requestFullScreen(azoom);
+								map.setView(map.options.center, map.options.zoom);
 							},azoom);
-						return azoom;
+						var d=  L.DomUtil.create('span');
+						d.style.display = 'none';
+						return d;
 					};
 				return control;
-			}()).addTo(_fenixmap.map);
-        }
+			}())
+			.addTo(_fenixmap.map);
+		}    	
     },
 
     _addlayercontroller: function(_fenixmap, show){
@@ -38,7 +60,7 @@ FM.Plugins = {
 
     _addgeosearch: function(_fenixmap, show) {
         if ( show && L.GeoSearch) {
-            new L.Control.GeoSearch({
+            return new L.Control.GeoSearch({
                 provider: new L.GeoSearch.Provider.OpenStreetMap()
             }).addTo(_fenixmap.map);
         }
@@ -47,8 +69,7 @@ FM.Plugins = {
     _addgeocoder: function(_fenixmap, show) {
         // TODO: should be load here dinamically the requires JS
         if ( show && L.Control.OSMGeocoder) {
-            var osmGeocoder = new L.Control.OSMGeocoder();
-            _fenixmap.map.addControl(osmGeocoder);
+            return new L.Conpluginstrol.OSMGeocoder().addTo(_fenixmap.map);
         }
     },
 
@@ -85,7 +106,7 @@ FM.Plugins = {
     _adddisclaimerfao: function(_fenixmap, show) {
         if ( show ) {
             var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
-            $("#" + _fenixmap.suffix + '-container-map').append(structure);
+            $("#" + _fenixmap.mapContainerID).append(structure);
             var text = '';
             switch(_fenixmap.options.lang.toUpperCase()) {
                 case 'ES':
@@ -190,30 +211,5 @@ FM.Plugins = {
             });
             _fenixmap.map.addControl(loadingControl)
         }
-    },
-
-    _addzoomresetcontrol: function( _fenixmap, show) {
-    	if( show ) {
-			return (function() {
-				var pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? _fenixmap.options.plugins.zoomresetcontrol : 'bottomright',
-					control = new L.Control({position: pos}),
-					container = _fenixmap.plugins.zoomcontrol._container;
-
-				control.onAdd = function(map) {
-						var azoom = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
-						azoom.innerHTML = "&nbsp;";
-						L.DomEvent
-							.disableClickPropagation(azoom)
-							.addListener(azoom, 'click', function() {
-								map.setView(map.options.center, map.options.zoom);
-							},azoom);
-						var d=  L.DomUtil.create('span');
-						d.style.display = 'none';
-						return d;
-					};
-				return control;
-			}())
-			.addTo(_fenixmap.map);
-		}    	
     }
 }

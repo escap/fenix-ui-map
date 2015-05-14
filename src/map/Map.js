@@ -5,8 +5,9 @@ FM.Map = FM.Class.extend({
     mapContainerID: '',
     tilePaneID: '',
 
-    map: '', // this is the map obj of Leaflet/Openlayers
-    controller : '', // controller of the map
+    map: '',        //this is the map obj of Leaflet/Openlayers
+    controller: '', //controller of the map
+    plugins: {},    //indexed plugins istances
 
     mapOptions: {
         center: [0, 0],
@@ -18,8 +19,8 @@ FM.Map = FM.Class.extend({
         guiController : {
             enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
         },
-        gui : {
-            fullscreen: true,
+        gui: {
+            fullscreen: false,
             fullscreenID: '' //TODO: pass it or
             // TODO: pass fullscreen content ID on a fullscreen object instead of like that
         },
@@ -393,16 +394,14 @@ FM.Map = FM.Class.extend({
 
     // interface GUI
     initializeMapGUI:function() {
+
         if ( this.options.gui != null ) {
             var _this = this;
-            $.each(this.options.gui,
-                function(key, value) {
-                  var invoke = '_add' + key.toLowerCase();
-                 try {
-                     if ( FM.Plugins[invoke]) FM.Plugins[invoke](_this, value);
-                 }catch (e){
-                     throw new Error("Plugin: " + invoke + " doesn't exist")
-                 }
+            $.each(this.options.gui, function(key, value) {
+            	var pname = key.toLowerCase(),
+              		invoke = '_add' + pname;
+                if ( FM.Plugins[invoke])
+               		_this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
         }
     },
@@ -410,20 +409,14 @@ FM.Map = FM.Class.extend({
 
     // interface plugins
     initializePlugins:function() {
-    	
-    	this.plugins = {};
-    	//indexed plugins istances
 
         if ( this.options.plugins != null ) {
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
-                var pname = key.toLowerCase(), 
+                var pname = key.toLowerCase(),
                 	invoke = '_add' + pname;
-
-                /*FM.loadModuleLibs(key.toLowerCase(), function() {
-                    FM.Plugins[invoke](_this, value)
-                });*/
-                _this.plugins[pname] = FM.Plugins[invoke](_this, value);
+                if (FM.Plugins[invoke])
+                	_this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
         }
     },
