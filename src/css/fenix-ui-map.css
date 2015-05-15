@@ -664,6 +664,7 @@ div.fm-controller-item-title {
 }
 
 .fm-icon-sprite {
+	display: block;
     width:30px;
     height: 30px;
     background-image: url(images/fenix-map-sprite.png);
@@ -699,11 +700,6 @@ div.fm-controller-item-title {
     padding: 0px 1px 1px 0px;
 }
 
-
-.fm-fullscreen {
-    position:absolute; bottom:120px; right:10px;
-}
-
 .fm-icon-box-background,
 .leaflet-control-fullscreen a {
     background-position: -90px 0px;
@@ -722,12 +718,9 @@ div.fm-controller-item-title {
 }
 
 .fm-disclaimerfao {
-    position:absolute; bottom:10px; right:10px;
+    font-size: 10px !important;
 }
 
-.fm-disclaimerfao-text {
-    font-size: 9px !important;
-}
 
 .fm-controller-box {
     font-size: 11px;
