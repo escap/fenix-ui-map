@@ -95,7 +95,7 @@ require([
 		}
 	});
 
-	m.createMap(12,12,4);
+	m.createMap();
 
 	var joincolumnlabel = 'areanamee';
 	var joincolumn = 'faost_code';
