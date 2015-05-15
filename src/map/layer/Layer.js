@@ -169,51 +169,6 @@ FM.Layer = FM.Class.extend({
             fenixmap.addShadedLayer(this);
         else if ( this._fenixmap)
             this._fenixmap.addShadedLayer(this);
-    },
-
-    createShadedLayerRequestCached:function (fenixmap) {
-        if ( fenixmap ) {
-            fenixmap.controller.layerAdded(this);
-            fenixmap.createShadedLayerRequestCached(this);
-        }
-        else if ( this._fenixmap) {
-            this._fenixmap.controller.layerAdded(this);
-            this._fenixmap.createShadedLayerRequestCached(this);
-        }
-    },
-
-    /**
-     * this method just request the layer, so it's been cached
-     *
-     * @param l
-     * @param isReload
-     */
-    createShadeLayerRequestCached: function(fenixmap, loadLayer) {
-
-      if ( this._fenixmap )
-            fenixmap = this._fenixmap;
-      //  TODO: change to jquery
-      var l = this;
-        var r = new RequestHandler();
-        var url = fenixmap.options.url.MAP_SERVICE_SHADED;
-        r.open('POST', url);
-        r.setContentType('application/x-www-form-urlencoded');
-        r.onload(function () {
-            var response = this.responseText;
-            if (typeof response == 'string') {
-                response = $.parseJSON(response);
-            }
-            l.layer.sldurl = response.sldurl;
-            l.layer.urlWMS = response.geoserverwms;
-            l.layer.legendHTML = response.legendHTML;
-            l.createLayerWMSSLD();
-
-            if ( loadLayer ) {
-                fenixmap.controller.layerAdded(l);
-                fenixmap._loadLayer(l, false)
-            }
-        });
-        r.send(FM.Util.parseLayerRequest(l.layer));
     }
 
 });

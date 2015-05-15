@@ -813,16 +813,7 @@ FM.MAPController = FM.Class.extend({
         * **/
 
         return null;
-    },
-
-    /**
-     *
-     * TODO: update the zindex counter to the latest zindex currently used each time is added a layer
-     */
-    updateZindexCounter: function() {
-
     }
-
 
 });
 
