@@ -87,20 +87,12 @@ FM.Map = FM.Class.extend({
         // join popup holder
         $("#" + mapContainerID).append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
 
-        /**  listener test
-        this.map.on('data:loaded', function (e) {
-            // Fit bounds after loading
-        }, this);
-
-        this.map.fire('data:loaded', {layer: 'test'});
-        **/
-
     },
 
     createMap: function(lat, lng, zoom) {
-        if ( lat )  this.mapOptions.lat = lat;
-        if ( lng )   this.mapOptions.lng = lng;
-        if ( zoom ) this.mapOptions.zoom = zoom;
+        this.mapOptions.lat = lat || this.mapOptions.lat;
+        this.mapOptions.lng = lng || this.mapOptions.lng;
+        this.mapOptions.zoom = zoom || this.mapOptions.zoom;
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
         L.control.scale('bottomright').addTo(this.map);
         this.initializePlugins();
@@ -213,15 +205,6 @@ FM.Map = FM.Class.extend({
         l.createLayerWMSSLD();
 
         this._loadLayer(l, isReload)
-    },
-
-    /** TODO: mix with the other request to do one that works for both situation */
-    createShadedLayerRequestCached: function(l, isReload) {
-        if ( l.layer.sldurl )
-            this._loadLayer(l, isReload)
-        else {
-            this.createShadeLayerRequest(l, isReload)
-        }
     },
 
     _loadLayer:function(l, isReload) {
@@ -359,7 +342,6 @@ FM.Map = FM.Class.extend({
     getFeatureInfo: function(e, l) {
         // var fenixMap = e.target._fenixMap;
         var fenixMap = this;
-//        this.addClickEffect(e.latlng, fenixMap.map);
         // get the layer that is been passed or the one that is selected in the Controller
         var l = (l) ? l: fenixMap.controller.selectedLayer;
         if ( l ) {
@@ -372,32 +354,12 @@ FM.Map = FM.Class.extend({
         }
     },
 
-    addClickEffect: function(latlng, map) {
-        var html = '<div id="reveal-cards">' +
-            '<div class="cards-card">' +
-            '<div style="clear:both"></div></div>';
-        L.marker([
-            latlng.lat,
-            latlng.lng
-        ], {
-            icon: L.divIcon({
-                // Specify a class name we can refer to in CSS.
-                //className: html,
-                // Define what HTML goes in each marker.
-                html: html,
-                // Set a markers width and height.
-                iconSize: [40, 40]
-            })
-        }).addTo(map);
-    },
-
     invalidateSize: function() {
       this.map.invalidateSize();
     },
 
     // interface plugins
     initializePlugins: function() {
-
         if ( this.options.plugins != null ) {
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
@@ -453,19 +415,11 @@ FM.Map = FM.Class.extend({
             mapOptions: {}
         };
         o.options    =  $.extend(true, {}, this.options);
-        o.mapOptions =  $.extend(true, {}, this.mapOptions);
+        o.mapOptions =  $.extend(true, _getCurrentMapOptions, this.mapOptions);
+        o.plugins =  $.extend(true, {}, this.plugins);
         // get current lan, lon, zoom
-        this._getCurrentMapOptions(o.mapOptions)
+        o.mapOptions =  $.extend(true, {}, this.mapOptions);
         return o;
-    },
-
-    _getCurrentMapOptions: function(mapOptions) {
-        // lat
-        mapOptions.lat = this.map.getCenter().lat;
-        // lng
-        mapOptions.lng = this.map.getCenter().lng;
-        // zoom
-        mapOptions.zoom = this.map.getZoom();
     },
 
     _getMapLayers:function() {
