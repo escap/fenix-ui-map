@@ -1543,15 +1543,13 @@ FM.Map = FM.Class.extend({
     },
 
     // interface plugins
-    initializePlugins:function() {
+    initializePlugins: function() {
 
         if ( this.options.plugins != null ) {
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
                 var pname = key.toLowerCase(),
                 	invoke = '_add' + pname;
-
-                console.log(pname);
 
                 if (FM.Plugins[invoke])
                 	_this.plugins[pname] = FM.Plugins[invoke](_this, value);

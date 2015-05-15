@@ -60,11 +60,11 @@ require.config({
 });
 
 require([
-	'jquery','underscore','bootstrap','handlebars',
+	'jquery','jquery','underscore','bootstrap','handlebars',
 	'fenix-map',
 	'fenix-map-config',
 	'domready!'
-], function($,_,bts,Handlebars,
+], function($,jQuery,_,bts,Handlebars,
 	FenixMap, FenixMapConf) {
 
 	
@@ -75,18 +75,16 @@ require([
 
 	var m = new FM.Map('#map', {
 		plugins: {
+			disclaimerfao: true,
 			geosearch: true,
 			mouseposition: false,
 			controlloading : true,
-			zoomControl: 'bottomright'
+			zoomcontrol: 'bottomright'
 		},
 		guiController: {
 			overlay: true,
 			baselayer: true,
 			wmsLoader: true
-		},
-		gui: {
-			disclaimerfao: true
 		},
 		url: {
 			MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
@@ -94,9 +92,6 @@ require([
 			MAP_SERVICE_GFI_JOIN: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/',
 			MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/'
 		}
-	}, {
-		zoomControl: false,
-		attributionControl: false
 	});
 	
 	m.createMap();

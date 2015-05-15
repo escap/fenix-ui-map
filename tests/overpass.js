@@ -50,7 +50,6 @@ require.config({
 			'chosen',
 			'leaflet',
 			//'leaflet.markercluster'
-			'leaflet.overpasslayer',
 			//'import-dependencies',
 			//'jquery-ui',
 			//'hoverintent',
@@ -67,6 +66,7 @@ require([
 	'jquery','underscore','bootstrap','handlebars',
 	'fenix-map',
 	'fenix-map-config',
+	'leaflet.overpasslayer',
 	'domready!'
 ], function($,_,bts,Handlebars,
 	FenixMap, FenixMapConf) {
@@ -82,15 +82,12 @@ require([
 			geosearch: true,
 			mouseposition: false,
 			controlloading : true,
-			zoomControl: 'bottomright'
+			zoomControl: 'topright'
 		},
 		guiController: {
 			overlay: true,
 			baselayer: true,
 			wmsLoader: true
-		},
-		gui: {
-			disclaimerfao: true
 		},
 		url: {
 			MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
