@@ -46,13 +46,14 @@ FM.Plugins = {
 					container = _fenixmap.plugins.zoomcontrol._container;
 
 				control.onAdd = function(map) {
-						var azoom = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
-						azoom.innerHTML = "&nbsp;";
+						var a = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
+						a.innerHTML = "&nbsp;";
+						a.title = "Zoom Reset";
 						L.DomEvent
-							.disableClickPropagation(azoom)
-							.addListener(azoom, 'click', function() {
+							.disableClickPropagation(a)
+							.addListener(a, 'click', function() {
 								map.setView(map.options.center, map.options.zoom);
-							},azoom);
+							},a);
 						var d=  L.DomUtil.create('span');
 						d.style.display = 'none';
 						return d;

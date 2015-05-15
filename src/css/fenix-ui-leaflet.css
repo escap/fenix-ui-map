@@ -1,11 +1,5 @@
 /* required styles */
 
-/** Tokeep **/
-.leaflet-bottom {
-    bottom: 40px;
-}
-
-
 .leaflet-container a, .leaflet-container a:focus, .leaflet-container a:hover, .leaflet-container a:visited, {
     color: #666666;
 }
@@ -82,13 +76,6 @@
 /* zoom control */
 /* to keep */
 
-<<<<<<< Updated upstream
-.leaflet-bottom .leaflet-control {
-    /*margin-bottom: 10px !important;*/
-}
-
-=======
->>>>>>> Stashed changes
 .leaflet-control-zoom-in {
     font: bold 0 'Lucida Console', Monaco, monospace;
     width:31px !important;

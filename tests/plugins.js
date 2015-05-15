@@ -60,11 +60,11 @@ require.config({
 });
 
 require([
-	'jquery','underscore','bootstrap','handlebars',
+	'jquery','jquery','underscore','bootstrap','handlebars',
 	'fenix-map',
 	'fenix-map-config',
 	'domready!'
-], function($,_,bts,Handlebars,
+], function($,jQuery,_,bts,Handlebars,
 	FenixMap, FenixMapConf) {
 
 	_.extend(FenixMapConf, {
