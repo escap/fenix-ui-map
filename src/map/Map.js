@@ -417,8 +417,6 @@ FM.Map = FM.Class.extend({
         o.options    =  $.extend(true, {}, this.options);
         o.mapOptions =  $.extend(true, _getCurrentMapOptions, this.mapOptions);
         o.plugins =  $.extend(true, {}, this.plugins);
-        // get current lan, lon, zoom
-        o.mapOptions =  $.extend(true, {}, this.mapOptions);
         return o;
     },
 
