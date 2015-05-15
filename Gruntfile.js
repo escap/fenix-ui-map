@@ -30,6 +30,9 @@ grunt.initConfig({
 		js: {
 			src: ['dist/*.js']
 		},
+		css: {
+			src: ['dist/*.css']
+		},		
 		images: {
 			src: ['dist/images/*']
 		}		
@@ -134,7 +137,7 @@ grunt.initConfig({
 		dist: {
 			options: { livereload: true },
 			files: ['src/**/*','Gruntfile.js'],
-			tasks: ['clean:js','copy:fenixmapconfig','concat','cssmin','jshint']
+			tasks: ['clean:js','clean:css','copy:fenixmapconfig','concat','cssmin','jshint']
 		}		
 	}
 });
