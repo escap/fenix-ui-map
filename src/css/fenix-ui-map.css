@@ -705,13 +705,11 @@ div.fm-controller-item-title {
 }
 
 .fm-icon-box-background,
-.leaflet-control-zoom-full,
-.fm-icon-fullscreen {
+.leaflet-control-fullscreen a {
     background-position: -90px 0px;
 }
 
-.leaflet-control-zoom-full:hover,
-.fm-icon-fullscreen:hover {
+.leaflet-control-fullscreen a:hover {
     background-position: -90px -30px;
 }
 

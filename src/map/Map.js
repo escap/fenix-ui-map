@@ -9,25 +9,27 @@ FM.Map = FM.Class.extend({
     controller: '', //controller of the map
     plugins: {},    //indexed plugins istances
 
+    options: {
+        url: {},    	
+        lang: 'EN',    	
+        usedefaultbaselayers: true,    	
+        guiController : {
+            enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
+        },
+        plugins: {
+			fullscreen: true,  //true or {id: 'divID'} or false
+        	zoomcontrol: true,
+        	disclaimerfao: true
+        }
+    },
     mapOptions: {
+		zoomControl: false,
+		attributionControl: false,
         center: [0, 0],
         lat: 0,
         lng: 0,
         zoom: 1
-    },
-    options: {
-        guiController : {
-            enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
-        },
-        gui: {
-            fullscreen: false,
-            fullscreenID: '' //TODO: pass it or
-            // TODO: pass fullscreen content ID on a fullscreen object instead of like that
-        },
-        usedefaultbaselayers: true,
-        lang: 'EN',
-        url: {}
-    },
+    },    
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
         // merging object with a deep copy
@@ -58,8 +60,6 @@ FM.Map = FM.Class.extend({
         this.mapContainerID = mapContainerID;
         this.suffix = suffix;
 
-        // fullscreen
-        this.options.gui.fullscreenID = ( this.options.gui.fullscreenID != '')? this.options.gui.fullscreenID: this.mapContainerID;
         this.map = new L.Map(this.id, this.mapOptions);
 
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
@@ -97,15 +97,15 @@ FM.Map = FM.Class.extend({
 
     },
 
-    createMap: function(lat, lng, zoom){
+    createMap: function(lat, lng, zoom) {
         if ( lat )  this.mapOptions.lat = lat;
         if ( lng )   this.mapOptions.lng = lng;
         if ( zoom ) this.mapOptions.zoom = zoom;
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
         L.control.scale('bottomright').addTo(this.map);
         this.initializePlugins();
-        this.initializeMapGUI();
         if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
+        return this;
     },
 
     /** Default Baselayers loaded at startup if they are not override **/
@@ -150,10 +150,12 @@ FM.Map = FM.Class.extend({
            /* DEFAULT request**/
            this.addLayerWMS(l);
         }
+        return this;
     },
 
     removeLayer:function(l) {
         this.controller.removeLayer(l);
+        return this;
     },
 
     addLayerWMS: function(l) {
@@ -164,7 +166,8 @@ FM.Map = FM.Class.extend({
         this._openlegend(l, false);
 
         // check layer visibility
-        this.controller.showHide(l.id, false)
+        this.controller.showHide(l.id, false);
+        return this;
     },
 
     addShadedLayer: function(l) {
@@ -392,21 +395,6 @@ FM.Map = FM.Class.extend({
       this.map.invalidateSize();
     },
 
-    // interface GUI
-    initializeMapGUI:function() {
-
-        if ( this.options.gui != null ) {
-            var _this = this;
-            $.each(this.options.gui, function(key, value) {
-            	var pname = key.toLowerCase(),
-              		invoke = '_add' + pname;
-                if ( FM.Plugins[invoke])
-               		_this.plugins[pname] = FM.Plugins[invoke](_this, value);
-            });
-        }
-    },
-
-
     // interface plugins
     initializePlugins:function() {
 
@@ -415,6 +403,9 @@ FM.Map = FM.Class.extend({
             $.each(this.options.plugins, function(key, value) {
                 var pname = key.toLowerCase(),
                 	invoke = '_add' + pname;
+
+                console.log(pname);
+
                 if (FM.Plugins[invoke])
                 	_this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
@@ -491,15 +482,6 @@ FM.Map = FM.Class.extend({
             var l = new FM.layer(overlays[i]);
             this.addLayer(l);
         }
-    },
-
-    /** TODO: codetype, code **/
-    zoomTo: function(boundary, code, srs) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
-    },
-
-    zoomTo: function(boundary, code) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
     },
 
     zoomTo: function(layer, column, codes) {

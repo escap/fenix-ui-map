@@ -1156,25 +1156,27 @@ FM.Map = FM.Class.extend({
     controller: '', //controller of the map
     plugins: {},    //indexed plugins istances
 
+    options: {
+        url: {},    	
+        lang: 'EN',    	
+        usedefaultbaselayers: true,    	
+        guiController : {
+            enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
+        },
+        plugins: {
+			fullscreen: true,  //true or {id: 'divID'} or false
+        	zoomcontrol: true,
+        	disclaimerfao: true
+        }
+    },
     mapOptions: {
+		zoomControl: false,
+		attributionControl: false,
         center: [0, 0],
         lat: 0,
         lng: 0,
         zoom: 1
-    },
-    options: {
-        guiController : {
-            enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
-        },
-        gui: {
-            fullscreen: false,
-            fullscreenID: '' //TODO: pass it or
-            // TODO: pass fullscreen content ID on a fullscreen object instead of like that
-        },
-        usedefaultbaselayers: true,
-        lang: 'EN',
-        url: {}
-    },
+    },    
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
         // merging object with a deep copy
@@ -1205,8 +1207,6 @@ FM.Map = FM.Class.extend({
         this.mapContainerID = mapContainerID;
         this.suffix = suffix;
 
-        // fullscreen
-        this.options.gui.fullscreenID = ( this.options.gui.fullscreenID != '')? this.options.gui.fullscreenID: this.mapContainerID;
         this.map = new L.Map(this.id, this.mapOptions);
 
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
@@ -1244,15 +1244,15 @@ FM.Map = FM.Class.extend({
 
     },
 
-    createMap: function(lat, lng, zoom){
+    createMap: function(lat, lng, zoom) {
         if ( lat )  this.mapOptions.lat = lat;
         if ( lng )   this.mapOptions.lng = lng;
         if ( zoom ) this.mapOptions.zoom = zoom;
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
         L.control.scale('bottomright').addTo(this.map);
         this.initializePlugins();
-        this.initializeMapGUI();
         if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
+        return this;
     },
 
     /** Default Baselayers loaded at startup if they are not override **/
@@ -1297,10 +1297,12 @@ FM.Map = FM.Class.extend({
            /* DEFAULT request**/
            this.addLayerWMS(l);
         }
+        return this;
     },
 
     removeLayer:function(l) {
         this.controller.removeLayer(l);
+        return this;
     },
 
     addLayerWMS: function(l) {
@@ -1311,7 +1313,8 @@ FM.Map = FM.Class.extend({
         this._openlegend(l, false);
 
         // check layer visibility
-        this.controller.showHide(l.id, false)
+        this.controller.showHide(l.id, false);
+        return this;
     },
 
     addShadedLayer: function(l) {
@@ -1539,21 +1542,6 @@ FM.Map = FM.Class.extend({
       this.map.invalidateSize();
     },
 
-    // interface GUI
-    initializeMapGUI:function() {
-
-        if ( this.options.gui != null ) {
-            var _this = this;
-            $.each(this.options.gui, function(key, value) {
-            	var pname = key.toLowerCase(),
-              		invoke = '_add' + pname;
-                if ( FM.Plugins[invoke])
-               		_this.plugins[pname] = FM.Plugins[invoke](_this, value);
-            });
-        }
-    },
-
-
     // interface plugins
     initializePlugins:function() {
 
@@ -1562,6 +1550,9 @@ FM.Map = FM.Class.extend({
             $.each(this.options.plugins, function(key, value) {
                 var pname = key.toLowerCase(),
                 	invoke = '_add' + pname;
+
+                console.log(pname);
+
                 if (FM.Plugins[invoke])
                 	_this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
@@ -1638,15 +1629,6 @@ FM.Map = FM.Class.extend({
             var l = new FM.layer(overlays[i]);
             this.addLayer(l);
         }
-    },
-
-    /** TODO: codetype, code **/
-    zoomTo: function(boundary, code, srs) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
-    },
-
-    zoomTo: function(boundary, code) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
     },
 
     zoomTo: function(layer, column, codes) {
@@ -3176,25 +3158,34 @@ FM.MapUtils = function() {
 }();;
 FM.Plugins = {
 
+    _addzoomcontrol: function(_fenixmap, show) {
+    	if( show ) {
+	    	var pos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+							_fenixmap.options.plugins.zoomcontrol : 'bottomright';
+	        return new L.Control.Zoom({position: pos}).addTo(_fenixmap.map);
+       	}
+    },
+
     _addfullscreen: function(_fenixmap, show) {
         if ( show && window.fullScreenApi && window.fullScreenApi.supportsFullScreen) {
 			return (function() {
 
-				var pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
-						_fenixmap.options.plugins.fullscreen : 
-						_fenixmap.options.plugins.zoomcontrol || 'bottomright',
+				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
+					pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
+						_fenixmap.options.plugins.fullscreen : zoompos,
 					control = new L.Control({position: pos});
 
 				control.onAdd = function(map) {
-					var azoom = L.DomUtil.create('div','leaflet-control-zoom-full fm-icon-sprite fm-btn-icon fm-icon-box-background');
-					azoom.innerHTML = "&nbsp;";
+					var div = L.DomUtil.create('div','leaflet-control-fullscreen'),
+						a = L.DomUtil.create('a','fm-icon-sprite fm-btn-icon fm-icon-box-background', div);
 					L.DomEvent
-						.disableClickPropagation(azoom)
-						.addListener(azoom, 'click', function() {
-							var mapdiv = document.getElementById(_fenixmap.options.gui.fullscreenID);
+						.disableClickPropagation(a)
+						.addListener(a, 'click', function() {
+							var mapdiv = document.getElementById(_fenixmap.options.plugins.fullscreen.id || _fenixmap.id);
 							window.fullScreenApi.requestFullScreen(mapdiv);
-						}, azoom);
-					return azoom;
+						}, a);
+					return div;
 				};
 				return control;
 			}())
@@ -3205,7 +3196,10 @@ FM.Plugins = {
     _addzoomresetcontrol: function( _fenixmap, show) {
     	if( show ) {
 			return (function() {
-				var pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? _fenixmap.options.plugins.zoomresetcontrol : 'bottomright',
+				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
+					pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomresetcontrol : zoompos,
 					control = new L.Control({position: pos}),
 					container = _fenixmap.plugins.zoomcontrol._container;
 
@@ -3225,6 +3219,47 @@ FM.Plugins = {
 			}())
 			.addTo(_fenixmap.map);
 		}    	
+    },
+
+    _adddisclaimerfao: function(_fenixmap, show) {
+        if ( show ) {
+			return (function() {
+				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? _fenixmap.options.plugins.disclaimerfao : 'bottomright',
+					control = new L.Control({position: pos});
+
+				control.onAdd = function(map) {
+						var azoom = L.DomUtil.create('div','leaflet-control-disclaimer');
+						azoom.innerHTML = "DISCLAIMER";
+
+						return azoom;
+					};
+				return control;
+			}())
+			.addTo(_fenixmap.map);        	
+/*            var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
+            $("#" + _fenixmap.mapContainerID).append(structure);
+            var text = '';
+            switch(_fenixmap.options.lang.toUpperCase()) {
+                case 'ES':fullsc
+                    text = FM.guiMap.disclaimerfao_S;
+                    break;
+                case 'FR':
+                    text = FM.guiMap.disclaimerfao_F;
+                    break;
+                default:
+                    text = FM.guiMap.disclaimerfao_E;
+                    break;
+            }
+            text = FM.replaceAll(text, 'REPLACE', _fenixmap.suffix);
+
+            $("#" + _fenixmap.suffix + '-disclaimerfao').attr( "title", text);
+
+            try {
+                $("#" + _fenixmap.suffix + '-disclaimerfao').powerTip({placement: 'nw'});
+            } catch (e) {
+
+            }*/
+        }
     },
 
     _addlayercontroller: function(_fenixmap, show){
@@ -3261,11 +3296,6 @@ FM.Plugins = {
         }
     },
 
-    _addzoomcontrol: function(_fenixmap, position) {
-        var zoomControl = new L.Control.Zoom({position: position});
-        return zoomControl.addTo(_fenixmap.map);
-    },
-
     _addprintmodule: function(_fenixmap, show) {
         if ( show && L.print)
             /** TODO: install print module **/
@@ -3278,35 +3308,6 @@ FM.Plugins = {
         var printControl = L.control.print({ provider: printProvider });
         _fenixmap.map.addControl(printControl);
     },
-
-    _adddisclaimerfao: function(_fenixmap, show) {
-        if ( show ) {
-            var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
-            $("#" + _fenixmap.mapContainerID).append(structure);
-            var text = '';
-            switch(_fenixmap.options.lang.toUpperCase()) {
-                case 'ES':
-                    text = FM.guiMap.disclaimerfao_S;
-                    break;
-                case 'FR':
-                    text = FM.guiMap.disclaimerfao_F;
-                    break;
-                default:
-                    text = FM.guiMap.disclaimerfao_E;
-                    break;
-            }
-            text = FM.replaceAll(text, 'REPLACE', _fenixmap.suffix);
-
-            $("#" + _fenixmap.suffix + '-disclaimerfao').attr( "title", text);
-
-            try {
-                $("#" + _fenixmap.suffix + '-disclaimerfao').powerTip({placement: 'nw'});
-            } catch (e) {
-
-            }
-        }
-    },
-
 
     /**
      *

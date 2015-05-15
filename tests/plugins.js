@@ -14,7 +14,7 @@ require.config({
 		'handlebars'            :'node_modules/handlebars/dist/handlebars.min',
 		
 		'hoverintent'           :'node_modules/hoverintent/dist/hoverintent.min',
-		'leaflet'               :'node_modules/leaflet/dist/leaflet',
+		'leaflet'               :'node_modules/leaflet/dist/leaflet-src',
 		//'leaflet.markercluster' :'node_modules/leaflet.markercluster/dist/leaflet.markercluster',
 		'powertip'              :'node_modules/jquery-powertip/dist/jquery.powertip.min',
 
@@ -74,10 +74,12 @@ require([
 
 	var m = new FM.Map('#map', {
 		plugins: {
+			zoomcontrol: 'bottomright',			
+			disclaimerfao: true,
+			fullscreen: true,
 			geosearch: true,
 			mouseposition: false,
 			controlloading : true,
-			zoomControl: 'bottomright',
 			zoomResetControl: true
 		},
 		guiController: {
@@ -85,19 +87,12 @@ require([
 			baselayer: true,
 			wmsLoader: true
 		},
-		gui: {
-			fullscreen: true,
-			disclaimerfao: true
-		},
 		url: {
 			MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
 			DEFAULT_WMS_SERVER: 'http://fenix.fao.org/geoserver',
 			MAP_SERVICE_GFI_JOIN: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/',
 			MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/'
 		}
-	}, {
-		zoomControl: false,
-		attributionControl: false
 	});
 
 	m.createMap();
@@ -140,6 +135,8 @@ require([
    // //m.zoomTo("country", "iso3", ["THA"]);
    // //m.zoomTo("country", "iso2", "GE");
 });
+
+
 
 
 

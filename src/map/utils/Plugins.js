@@ -1,24 +1,33 @@
 FM.Plugins = {
 
+    _addzoomcontrol: function(_fenixmap, show) {
+    	if( show ) {
+	    	var pos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+							_fenixmap.options.plugins.zoomcontrol : 'bottomright';
+	        return new L.Control.Zoom({position: pos}).addTo(_fenixmap.map);
+       	}
+    },
+
     _addfullscreen: function(_fenixmap, show) {
         if ( show && window.fullScreenApi && window.fullScreenApi.supportsFullScreen) {
 			return (function() {
 
-				var pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
-						_fenixmap.options.plugins.fullscreen : 
-						_fenixmap.options.plugins.zoomcontrol || 'bottomright',
+				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
+					pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
+						_fenixmap.options.plugins.fullscreen : zoompos,
 					control = new L.Control({position: pos});
 
 				control.onAdd = function(map) {
-					var azoom = L.DomUtil.create('div','leaflet-control-zoom-full fm-icon-sprite fm-btn-icon fm-icon-box-background');
-					azoom.innerHTML = "&nbsp;";
+					var div = L.DomUtil.create('div','leaflet-control-fullscreen'),
+						a = L.DomUtil.create('a','fm-icon-sprite fm-btn-icon fm-icon-box-background', div);
 					L.DomEvent
-						.disableClickPropagation(azoom)
-						.addListener(azoom, 'click', function() {
-							var mapdiv = document.getElementById(_fenixmap.options.gui.fullscreenID);
+						.disableClickPropagation(a)
+						.addListener(a, 'click', function() {
+							var mapdiv = document.getElementById(_fenixmap.options.plugins.fullscreen.id || _fenixmap.id);
 							window.fullScreenApi.requestFullScreen(mapdiv);
-						}, azoom);
-					return azoom;
+						}, a);
+					return div;
 				};
 				return control;
 			}())
@@ -29,7 +38,10 @@ FM.Plugins = {
     _addzoomresetcontrol: function( _fenixmap, show) {
     	if( show ) {
 			return (function() {
-				var pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? _fenixmap.options.plugins.zoomresetcontrol : 'bottomright',
+				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
+					pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomresetcontrol : zoompos,
 					control = new L.Control({position: pos}),
 					container = _fenixmap.plugins.zoomcontrol._container;
 
@@ -49,6 +61,47 @@ FM.Plugins = {
 			}())
 			.addTo(_fenixmap.map);
 		}    	
+    },
+
+    _adddisclaimerfao: function(_fenixmap, show) {
+        if ( show ) {
+			return (function() {
+				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? _fenixmap.options.plugins.disclaimerfao : 'bottomright',
+					control = new L.Control({position: pos});
+
+				control.onAdd = function(map) {
+						var azoom = L.DomUtil.create('div','leaflet-control-disclaimer');
+						azoom.innerHTML = "DISCLAIMER";
+
+						return azoom;
+					};
+				return control;
+			}())
+			.addTo(_fenixmap.map);        	
+/*            var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
+            $("#" + _fenixmap.mapContainerID).append(structure);
+            var text = '';
+            switch(_fenixmap.options.lang.toUpperCase()) {
+                case 'ES':fullsc
+                    text = FM.guiMap.disclaimerfao_S;
+                    break;
+                case 'FR':
+                    text = FM.guiMap.disclaimerfao_F;
+                    break;
+                default:
+                    text = FM.guiMap.disclaimerfao_E;
+                    break;
+            }
+            text = FM.replaceAll(text, 'REPLACE', _fenixmap.suffix);
+
+            $("#" + _fenixmap.suffix + '-disclaimerfao').attr( "title", text);
+
+            try {
+                $("#" + _fenixmap.suffix + '-disclaimerfao').powerTip({placement: 'nw'});
+            } catch (e) {
+
+            }*/
+        }
     },
 
     _addlayercontroller: function(_fenixmap, show){
@@ -85,11 +138,6 @@ FM.Plugins = {
         }
     },
 
-    _addzoomcontrol: function(_fenixmap, position) {
-        var zoomControl = new L.Control.Zoom({position: position});
-        return zoomControl.addTo(_fenixmap.map);
-    },
-
     _addprintmodule: function(_fenixmap, show) {
         if ( show && L.print)
             /** TODO: install print module **/
@@ -102,35 +150,6 @@ FM.Plugins = {
         var printControl = L.control.print({ provider: printProvider });
         _fenixmap.map.addControl(printControl);
     },
-
-    _adddisclaimerfao: function(_fenixmap, show) {
-        if ( show ) {
-            var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
-            $("#" + _fenixmap.mapContainerID).append(structure);
-            var text = '';
-            switch(_fenixmap.options.lang.toUpperCase()) {
-                case 'ES':
-                    text = FM.guiMap.disclaimerfao_S;
-                    break;
-                case 'FR':
-                    text = FM.guiMap.disclaimerfao_F;
-                    break;
-                default:
-                    text = FM.guiMap.disclaimerfao_E;
-                    break;
-            }
-            text = FM.replaceAll(text, 'REPLACE', _fenixmap.suffix);
-
-            $("#" + _fenixmap.suffix + '-disclaimerfao').attr( "title", text);
-
-            try {
-                $("#" + _fenixmap.suffix + '-disclaimerfao').powerTip({placement: 'nw'});
-            } catch (e) {
-
-            }
-        }
-    },
-
 
     /**
      *
