@@ -16,7 +16,7 @@ grunt.initConfig({
 	meta: {
 		banner:
 		'/* \n'+
-		' * <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> \n'+
+		' * <%= pkg.name %> v<%= pkg.version %> \n'+
 		' * Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> \n'+
 		' * <%= pkg.author %> \n'+
 		' * \n'+
