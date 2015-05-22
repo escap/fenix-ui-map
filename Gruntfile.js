@@ -143,7 +143,7 @@ grunt.initConfig({
 			},
 			cache: 'sftpCache.json',
 			src: 'dist',
-			dest: '/work/prod/nginx/www/cdn/js/fenix-ui-map/<%= pkg.version %>',
+			dest: '/work/prod/nginx/www/cdn/js/<%= pkg.name %>/<%= pkg.version %>',
 			serverSep: '/',
 			concurrency: 4,
 			progress: true
