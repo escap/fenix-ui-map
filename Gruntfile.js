@@ -10,6 +10,7 @@ grunt.loadNpmTasks('grunt-contrib-jshint');
 grunt.loadNpmTasks('grunt-contrib-copy');
 grunt.loadNpmTasks('grunt-jsonlint');
 grunt.loadNpmTasks('grunt-contrib-watch');
+grunt.loadNpmTasks('grunt-sftp-deploy');
 
 grunt.initConfig({
 	pkg: grunt.file.readJSON('package.json'),
@@ -133,6 +134,21 @@ grunt.initConfig({
 			src: '<%= cssmin.combine.dest %>'
 		}
 	},
+	'sftp-deploy': {
+		build: {
+			auth: {
+				authKey: '.ftppass',
+				host: 'fenixrepo.fao.org',
+				port: 22
+			},
+			cache: 'sftpCache.json',
+			src: 'dist',
+			dest: '/work/prod/nginx/www/cdn/js/fenix-ui-map/<%= pkg.version %>',
+			serverSep: '/',
+			concurrency: 4,
+			progress: true
+		}
+	},
 	watch: {
 		dist: {
 			options: { livereload: true },
@@ -150,6 +166,10 @@ grunt.registerTask('default', [
 	'cssmin',
 	'jsonlint',	
 	'copy'
+]);
+
+grunt.registerTask('deploy', [
+	'sftp-deploy',
 ]);
 
 };
