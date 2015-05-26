@@ -137,13 +137,15 @@ grunt.initConfig({
 	'sftp-deploy': {
 		build: {
 			auth: {
-				authKey: '.ftppass',
 				host: 'fenixrepo.fao.org',
-				port: 22
+				port: 22,
+				authKey: {
+					username: 'root'
+				}
 			},
 			cache: 'sftpCache.json',
 			src: 'dist',
-			dest: '/work/prod/nginx/www/cdn/js/<%= pkg.name %>/<%= pkg.version %>',
+			dest: '/work/prod/nginx/www/cdn/fenix/<%= pkg.name %>/<%= pkg.version %>',
 			serverSep: '/',
 			concurrency: 4,
 			progress: true
@@ -154,7 +156,7 @@ grunt.initConfig({
 			options: { livereload: true },
 			files: ['src/**/*','Gruntfile.js'],
 			tasks: ['clean:js','clean:css','copy:fenixmapconfig','concat','cssmin','jshint']
-		}		
+		}
 	}
 });
 
