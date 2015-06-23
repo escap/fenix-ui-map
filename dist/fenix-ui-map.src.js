@@ -1646,7 +1646,7 @@ FM.LayerLegend = {
         if ( isReload ) {
             if(($('#' + toRendedID + '-holder').is(":visible"))) {
                 $('#' + toRendedID + '-holder').hide();
-                $('#' + toRendedID + '-holder').slideDown();
+                $('#' + toRendedID + '-holder').fadeIn(300);
                 l.layer.openlegend = true;
             }
             else {
@@ -1654,17 +1654,17 @@ FM.LayerLegend = {
         }
         else{
             if(!($('#' + toRendedID + '-holder').is(":visible"))) {
-                $('#' + toRendedID + '-holder').slideDown();
+                $('#' + toRendedID + '-holder').fadeIn(300);
                 l.layer.openlegend = true;
             } else {
-                $('#' + toRendedID + '-holder').slideUp();
+                $('#' + toRendedID + '-holder').fadeOut();
                 l.layer.openlegend = false;
             }
         }
 
         //$('#' + toRendedID + '-holder').draggable();
         $('#' + toRendedID+ '-remove').click({id:toRendedID + '-holder'}, function(event) {
-            $('#' + event.data.id).slideUp();
+            $('#' + event.data.id).fadeOut();
             l.layer.openlegend = false;
         });
     },
