@@ -2249,6 +2249,9 @@ FM.MAPController = FM.Class.extend({
 
     removeLayerDefault:function(l) {
         // remove layer from the map
+        
+        console.log('removeLayerDefault',l,this._map);
+
         this._map.removeLayer(l.leafletLayer);
         // remove layer from the hashmaps
         this.layersMap.remove(l.id);
