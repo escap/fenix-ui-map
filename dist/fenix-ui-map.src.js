@@ -1646,7 +1646,7 @@ FM.LayerLegend = {
         if ( isReload ) {
             if(($('#' + toRendedID + '-holder').is(":visible"))) {
                 $('#' + toRendedID + '-holder').hide();
-                $('#' + toRendedID + '-holder').fadeIn(300);
+                $('#' + toRendedID + '-holder').slideDown();
                 l.layer.openlegend = true;
             }
             else {
@@ -1654,17 +1654,17 @@ FM.LayerLegend = {
         }
         else{
             if(!($('#' + toRendedID + '-holder').is(":visible"))) {
-                $('#' + toRendedID + '-holder').fadeIn(300);
+                $('#' + toRendedID + '-holder').slideDown();
                 l.layer.openlegend = true;
             } else {
-                $('#' + toRendedID + '-holder').fadeOut();
+                $('#' + toRendedID + '-holder').slideUp();
                 l.layer.openlegend = false;
             }
         }
 
         //$('#' + toRendedID + '-holder').draggable();
         $('#' + toRendedID+ '-remove').click({id:toRendedID + '-holder'}, function(event) {
-            $('#' + event.data.id).fadeOut();
+            $('#' + event.data.id).slideUp();
             l.layer.openlegend = false;
         });
     },
@@ -1757,28 +1757,69 @@ FM.MAPController = FM.Class.extend({
      *
      */
     initializeGUI:function() {
-        if ( this._guiController ) {
+
+        var self = this;
+
+        if ( self._guiController ) {
             // adding the box gui
-            $('#' + this.id).append(FM.replaceAll(FM.guiController.box, 'REPLACE', this.suffix));
+            /*$('#' + self.id).append( FM.replaceAll(FM.guiController.box, 'REPLACE', self.suffix) );
 
             // adding the box icons container
-            $('#' + this.id).append(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', this.suffix));
-            this.$menuBox = $('#' + this.suffix + '-controller-box');
-            this.$menuBoxContainer = $('#' + this.suffix + '-controller-box-content');
-            this.$boxIcons = $('#' + this.suffix + '-controller-box-icons-container');
+            $('#' + self.id).append( FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix) );
+            
+            self.$menuBox = $('#' + self.suffix + '-controller-box');
+            
+            self.$menuBoxContainer = $('#' + self.suffix + '-controller-box-content');
+            
+            self.$boxIcons = $('#' + self.suffix + '-controller-box-icons-container');*/
+            
+            var mapDiv$ = $('#' + self.id);
 
-            this.$boxIcons
+            self.$menuBox = $(FM.replaceAll(FM.guiController.box, 'REPLACE', self.suffix));
+            self.$menuBoxContainer = self.$menuBox.find('#' + self.suffix + '-controller-box-content');
+
+            self.$boxIcons = $(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
+
+/*            mapDiv$
+            .append(self.$menuBox)
+            .append(self.$boxIcons);
+*/
+            var _fenixmap = self._fenixMap;
+
+            var iconsControl = (function() {
+                var control = new L.Control({position: 'bottomleft'});
+
+                control.onAdd = function(map) {
+        
+                    return self.$boxIcons[0];
+                };
+                return control;
+            }());
+
+            self._map.addControl(iconsControl);
+            
+            var guiControl = (function() {
+                var control = new L.Control({position: 'bottomleft'});
+
+                control.onAdd = function(map) {
+        
+                    return self.$menuBox[0];
+                };
+                return control;
+            }());
+            
+            self._map.addControl(guiControl);
 
             /** TODO: make it nicer and more dynamic, with a more consistent name **/
-            if ( this._guiController.overlay) {
-                this.loadIcon('overlay');
-                this.initializeOverlayDragging();
+            if ( self._guiController.overlay) {
+                self.loadIcon('overlay');
+                self.initializeOverlayDragging();
             }
-            if ( this._guiController.baselayer) {
-                this.loadIcon('baselayer');
+            if ( self._guiController.baselayer) {
+                self.loadIcon('baselayer');
             }
 
-            if ( this._guiController.wmsLoader) {
+            if ( self._guiController.wmsLoader) {
                 this.loadIcon('wmsLoader');
                 var wmsUtils = new FM.WMSUtils();
                 var idDD =      this.suffix + '-controller-wmsLoader-dropdown';
@@ -1802,6 +1843,7 @@ FM.MAPController = FM.Class.extend({
 
         this.$boxIcons.show();
         this.$boxIcons.append(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        
         this.$menuBoxContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
 
         var boxIcon = $('#' + this.suffix + '-controller-' + toLoad + 'Icon');
@@ -3037,6 +3079,8 @@ FM.Plugins = {
         if ( show && window.fullScreenApi && window.fullScreenApi.supportsFullScreen) {
 			return (function() {
 
+                //TODO second click on button exit from fullscreen
+
 				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
 						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
 					pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
@@ -3049,7 +3093,12 @@ FM.Plugins = {
 					L.DomEvent
 						.disableClickPropagation(a)
 						.addListener(a, 'click', function() {
-							var mapdiv = document.getElementById(_fenixmap.options.plugins.fullscreen.id || _fenixmap.id);
+
+							var idDiv = _fenixmap.options.plugins.fullscreen.id || _fenixmap.id,
+                                mapdiv = document.getElementById(idDiv);
+                            
+                            console.log('fullscreen click', idDiv);
+
 							window.fullScreenApi.requestFullScreen(mapdiv);
 						}, a);
 					return div;

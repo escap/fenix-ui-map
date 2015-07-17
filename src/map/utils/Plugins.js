@@ -12,6 +12,8 @@ FM.Plugins = {
         if ( show && window.fullScreenApi && window.fullScreenApi.supportsFullScreen) {
 			return (function() {
 
+                //TODO second click on button exit from fullscreen
+
 				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
 						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
 					pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
@@ -24,7 +26,12 @@ FM.Plugins = {
 					L.DomEvent
 						.disableClickPropagation(a)
 						.addListener(a, 'click', function() {
-							var mapdiv = document.getElementById(_fenixmap.options.plugins.fullscreen.id || _fenixmap.id);
+
+							var idDiv = _fenixmap.options.plugins.fullscreen.id || _fenixmap.id,
+                                mapdiv = document.getElementById(idDiv);
+                            
+                            console.log('fullscreen click', idDiv);
+
 							window.fullScreenApi.requestFullScreen(mapdiv);
 						}, a);
 					return div;

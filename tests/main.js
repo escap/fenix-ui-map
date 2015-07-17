@@ -22,7 +22,7 @@ require.config({
 		'chosen'                :'node_modules/chosen-jquery/lib/chosen.jquery.min',
 		'jquery-ui'             :'//fenixapps.fao.org/repository/js/jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min',
 		'jquery.i18n.properties':'//fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min',
-        'jquery.hoverIntent': 'node_modules/jquery.hoverIntent/jquery.hoverIntent.min',
+        'jquery.hoverIntent'    :'node_modules/jquery.hoverIntent/jquery.hoverIntent.min',
 
 
         'fenix-map'             :'dist/fenix-ui-map.src',
@@ -36,6 +36,7 @@ require.config({
 		'jquery-ui' : ['jquery'],
 		'powertip'  : ['jquery'],
 		'jquery.i18n.properties': ['jquery'],
+		'jquery.hoverIntent'    : ['jquery'],
         'hoverintent'    : ['jquery'],
 		'underscore': {
 			exports: '_'
