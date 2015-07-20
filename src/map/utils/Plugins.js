@@ -243,5 +243,14 @@ FM.Plugins = {
             });
             _fenixmap.map.addControl(loadingControl)
         }
+    },
+
+    _addscalecontrol: function( _fenixmap, show) {
+        if( show && L.Control.Scale) {
+            var pos = typeof _fenixmap.options.plugins.scalecontrol === 'string' ? 
+                    _fenixmap.options.plugins.scalecontrol : 'bottomleft';
+            
+            L.control.scale({position: pos}).addTo(_fenixmap.map);
+        }
     }
 }

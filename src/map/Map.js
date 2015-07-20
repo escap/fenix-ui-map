@@ -19,6 +19,7 @@ FM.Map = FM.Class.extend({
         plugins: {
 			fullscreen: true,  //true or {id: 'divID'} or false
         	zoomcontrol: true,
+            scalecontrol: true,
         	disclaimerfao: true
         }
     },
@@ -94,7 +95,7 @@ FM.Map = FM.Class.extend({
         this.mapOptions.lng = lng || this.mapOptions.lng;
         this.mapOptions.zoom = zoom || this.mapOptions.zoom;
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
-        L.control.scale('bottomright').addTo(this.map);
+        
         this.initializePlugins();
         if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
         return this;
