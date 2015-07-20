@@ -230,7 +230,6 @@ FM.Plugins = {
                 layers.eachLayer(function(layer) {
                     countOfEditedLayers++;
                 });
-                //console.log("Edited " + countOfEditedLayers + " layers");
             });
         }
     },
@@ -248,7 +247,7 @@ FM.Plugins = {
     _addscalecontrol: function( _fenixmap, show) {
         if( show && L.Control.Scale) {
             var pos = typeof _fenixmap.options.plugins.scalecontrol === 'string' ? 
-                    _fenixmap.options.plugins.scalecontrol : 'bottomleft';
+                    _fenixmap.options.plugins.scalecontrol : 'topleft';
             
             L.control.scale({position: pos}).addTo(_fenixmap.map);
         }

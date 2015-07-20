@@ -115,11 +115,6 @@
     background-position: -210px -30px !important;
 }
 
-.leaflet-control-scale {
-    top: 35px;
-    left: 60px;
-}
-
 .leaflet-container .leaflet-control-attribution{
     background: none repeat scroll 0 0 rgba(255, 255, 255, 0.3);
 }
