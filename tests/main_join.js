@@ -14,7 +14,7 @@ require.config({
         'handlebars'            :'node_modules/handlebars/dist/handlebars.min',
 
         'jquery.hoverIntent'           :'node_modules/jquery.hoverIntent/dist/jquery.hoverIntent.min',
-        'leaflet'               :'node_modules/leaflet/dist/leaflet',
+        'leaflet'               :'node_modules/leaflet/dist/leaflet-src',
         //'leaflet.markercluster' :'node_modules/leaflet.markercluster/dist/leaflet.markercluster',
         'powertip'              :'node_modules/jquery-powertip/dist/jquery.powertip.min',
 

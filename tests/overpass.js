@@ -14,7 +14,7 @@ require.config({
 		'handlebars'            :'node_modules/handlebars/dist/handlebars.min',
 		
 		'hoverintent'           :'node_modules/hoverintent/dist/hoverintent.min',
-		'leaflet'               :'node_modules/leaflet/dist/leaflet',
+		'leaflet'               :'node_modules/leaflet/dist/leaflet-src',
 		//'leaflet.markercluster' :'node_modules/leaflet.markercluster/dist/leaflet.markercluster',
 		'leaflet.overpasslayer' :'node_modules/leaflet-layer-overpass/dist/OverPassLayer.min',
 
