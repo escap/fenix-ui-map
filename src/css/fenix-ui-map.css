@@ -324,6 +324,7 @@ div.fm-controller-box-header-text{
     background-color:white;
     display:none;
     z-index: 1 !important;
+    margin-left: 10px;
 }
 
 .fm-legend-layertitle {
