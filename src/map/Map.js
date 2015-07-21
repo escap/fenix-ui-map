@@ -34,6 +34,7 @@ FM.Map = FM.Class.extend({
     },    
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
+
         // merging object with a deep copy
         this.options =  $.extend(true, {}, this.options, options);
         this.mapOptions = $.extend(true, {}, this.mapOptions, mapOptions);
@@ -71,13 +72,10 @@ FM.Map = FM.Class.extend({
 
         this.controller.initializeGUI();
 
-        var _this = this;
         this.map._fenixMap = this;
-        // TODO: boolean to see if GFI is allowed
-        this.map.on('click', function (e) {
-            if(_this.options.guiController.enablegfi)
-                _this.getFeatureInfo(e);
-        });
+
+        if(this.options.guiController.enablegfi)
+            this.map.on('click', this.getFeatureInfo, this);
 
         var swipeControl = (function() {
             var control = new L.Control();
