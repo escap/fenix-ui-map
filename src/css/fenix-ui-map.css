@@ -324,6 +324,7 @@ div.fm-controller-box-header-text{
 
 .fm-box-legend {
     padding: 10px;
+    margin-right: 10px;
     position:relative;
     bottom: 100%;
     float:right;

@@ -264,8 +264,9 @@ FM.MAPController = FM.Class.extend({
 
             var _this = this;
             // listeners
-            $(idItem + '-title').append(l.layer.layertitle);
-            $(idItem + '-title').attr( "title", l.layer.layertitle);
+            self._fenixMap.$map.find(idItem + '-title')
+                .append(l.layer.layertitle)
+                .attr( "title", l.layer.layertitle);
             try { $(idItem + '-title').powerTip({placement: 'se'}); } catch (e) {}
 
             // Remove Layer

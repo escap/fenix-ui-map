@@ -85,8 +85,14 @@ FM.Map = FM.Class.extend({
         // popup hovervalue
         this.$map.append("<div id='"+ suffix +"-popup'><div>");
 
-        // swipe id (TODO: replace with the new swipe)
-        this.$map.append("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>");
+        var swipeControl = (function() {
+            var control = new L.Control();
+            control.onAdd = function(map) {
+    
+                return $("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>")[0];
+            };
+            return control;
+        }()).addTo(this.map);
 
         // join popup holder
         this.$map.append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
