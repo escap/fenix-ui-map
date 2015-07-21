@@ -69,8 +69,6 @@ FM.MAPController = FM.Class.extend({
 
             self.$boxIcons = $(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
-            var _fenixmap = self._fenixMap;
-
             var iconsControl = (function() {
                 var control = new L.Control({position: 'bottomleft'});
 
@@ -79,15 +77,13 @@ FM.MAPController = FM.Class.extend({
                     return self.$boxIcons[0];
                 };
                 return control;
-            }());
+            }()).addTo(self._map);
 
-            self._map.addControl(iconsControl);
-            
             var guiControl = (function() {
                 var control = new L.Control({position: 'bottomleft'});
 
                 control.onAdd = function(map) {
-                    
+
                     var div = self.$boxMenu[0];
 
                     if (!L.Browser.touch) {
@@ -100,9 +96,7 @@ FM.MAPController = FM.Class.extend({
                     return div;
                 };
                 return control;
-            }());
-            
-            self._map.addControl(guiControl);
+            }()).addTo(self._map);
 
             /** TODO: make it nicer and more dynamic, with a more consistent name **/
             if ( self._guiController.overlay) {
