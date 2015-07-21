@@ -729,19 +729,17 @@ div.fm-controller-item-title {
     overflow:auto;
     position: absolute;
     z-index: 0;
-    max-height: -moz-calc(100% - 26px);
+
+/* 
+    TODO REFACT!  cause bug zero height 
+   max-height: -moz-calc(100% - 26px);
     max-height: -webkit-calc(100% - 26px);
     max-height: -o-calc(100% - 26px);
-    max-height: calc(100% - 26px);
+    max-height: calc(100% - 26px);*/
     bottom:10px;
     left:60px;
     width:250px;
     padding: 5px;
-
-}
-
-.fm-controller-box-content {
-
 
 }
 

@@ -90,30 +90,7 @@ FM.Plugins = {
 					};
 				return control;
 			}())
-			.addTo(_fenixmap.map);        	
-/*            var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
-            $("#" + _fenixmap.mapContainerID).append(structure);
-            var text = '';
-            switch(_fenixmap.options.lang.toUpperCase()) {
-                case 'ES':fullsc
-                    text = FM.guiMap.disclaimerfao_S;
-                    break;
-                case 'FR':
-                    text = FM.guiMap.disclaimerfao_F;
-                    break;
-                default:
-                    text = FM.guiMap.disclaimerfao_E;
-                    break;
-            }
-            text = FM.replaceAll(text, 'REPLACE', _fenixmap.suffix);
-
-            $("#" + _fenixmap.suffix + '-disclaimerfao').attr( "title", text);
-
-            try {
-                $("#" + _fenixmap.suffix + '-disclaimerfao').powerTip({placement: 'nw'});
-            } catch (e) {
-
-            }*/
+			.addTo(_fenixmap.map);
         }
     },
 
@@ -250,6 +227,24 @@ FM.Plugins = {
                     _fenixmap.options.plugins.scalecontrol : 'topleft';
             
             L.control.scale({position: pos}).addTo(_fenixmap.map);
+        }
+    },
+
+    _addlegendcontrol: function( _fenixmap, show) {
+        if( show ) {
+            return (function() {
+                var pos = typeof _fenixmap.options.plugins.legendcontrol === 'string' ? 
+                        _fenixmap.options.plugins.legendcontrol : 'topright',
+                    control = new L.Control({position: pos});
+
+                control.onAdd = function(map) {
+                    var div = L.DomUtil.create('div','leaflet-control-legend');
+                    //FILLED BY JQUERY
+                    return div;
+                };
+                return control;
+            }())
+            .addTo(_fenixmap.map);
         }
     }
 }

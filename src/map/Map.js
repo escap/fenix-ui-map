@@ -20,6 +20,7 @@ FM.Map = FM.Class.extend({
 			fullscreen: true,  //true or {id: 'divID'} or false
         	zoomcontrol: true,
             scalecontrol: true,
+            legendcontrol: true,
         	disclaimerfao: true
         }
     },
@@ -50,26 +51,28 @@ FM.Map = FM.Class.extend({
         var mapID =  suffix + '-map';
 
         var mapDIV = "<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>";
-        //TODO check if id or other selector
+        
         $(id).length > 0? $(id).append(mapDIV): $("#" + id).append(mapDIV);
-        //typeof id === 'string'?  $("#" + id).append(mapDIV): $(id).append(mapDIV);
-
-        //$(id).append("<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>");
-        $("#" + mapContainerID).append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
 
         this.id = mapID;
-        this.mapContainerID = mapContainerID;
-        this.suffix = suffix;
+
+        this.$map = $("#" + mapContainerID);
+
+        this.$map.append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
 
         this.map = new L.Map(this.id, this.mapOptions);
+
+        this.mapContainerID = mapContainerID;
+        this.suffix = suffix;
 
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
         this.setTilePaneID();
 
         // TODO: put in options the fact to add a controller or not
-        $("#" + mapContainerID).append("<div style='width:350px;' id='"+ suffix +"-controller'><div>");
+        this.$map.append("<div style='width:350px;' id='"+ suffix +"-controller'><div>");
 
         this.controller = new FM.mapController(suffix, this, this.map,  this.options.guiController);
+
         this.controller.initializeGUI();
 
         var _this = this;
@@ -80,13 +83,13 @@ FM.Map = FM.Class.extend({
         });
 
         // popup hovervalue
-        $("#" + mapContainerID).append("<div id='"+ suffix +"-popup'><div>");
+        this.$map.append("<div id='"+ suffix +"-popup'><div>");
 
         // swipe id (TODO: replace with the new swipe)
-        $("#" + mapContainerID).append("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>");
+        this.$map.append("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>");
 
         // join popup holder
-        $("#" + mapContainerID).append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
+        this.$map.append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
 
     },
 

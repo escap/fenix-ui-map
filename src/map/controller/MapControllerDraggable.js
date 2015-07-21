@@ -61,17 +61,6 @@ FM.MAPController = FM.Class.extend({
         var self = this;
 
         if ( self._guiController ) {
-            // adding the box gui
-            /*$('#' + self.id).append( FM.replaceAll(FM.guiController.box, 'REPLACE', self.suffix) );
-
-            // adding the box icons container
-            $('#' + self.id).append( FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix) );
-            
-            self.$boxMenu = $('#' + self.suffix + '-controller-box');
-            
-            self.$boxMenuContainer = $('#' + self.suffix + '-controller-box-content');
-            
-            self.$boxIcons = $('#' + self.suffix + '-controller-box-icons-container');*/
             
             var mapDiv$ = $('#' + self.id);
 
@@ -80,10 +69,6 @@ FM.MAPController = FM.Class.extend({
 
             self.$boxIcons = $(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
-/*            mapDiv$
-            .append(self.$boxMenu)
-            .append(self.$boxIcons);
-*/
             var _fenixmap = self._fenixMap;
 
             var iconsControl = (function() {
@@ -141,13 +126,17 @@ FM.MAPController = FM.Class.extend({
         var guiBox = toLoad + 'Box';
         var guiIcon = toLoad + 'Icon';
 
-        this.$boxIcons.show();
-        this.$boxIcons.append(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        
         this.$boxMenuContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
 
-        var boxIcon = $('#' + this.suffix + '-controller-' + toLoad + 'Icon');
-        boxIcon.attr( "title", $.i18n.prop('_' + toLoad));
-        try {boxIcon.powerTip({placement: 'ne'}); } catch (e) {}
+        var $boxIcon = $(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        $boxIcon.attr('title', $.i18n.prop('_' + toLoad));
+
+        this.$boxIcons.show().append($boxIcon);
+
+        try {
+            $boxIcon.powerTip({placement: 'ne'});
+        } catch (e) {}
 
         var _this = this;
         var $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
@@ -224,6 +213,9 @@ FM.MAPController = FM.Class.extend({
      * @param l
      */
     layerAdded: function(l) {
+
+        var self = this;
+
         l.layerAdded = true;
         /** TODO: check if works always this solution **/
         if ( !l.layer.zindex ) {
@@ -232,14 +224,12 @@ FM.MAPController = FM.Class.extend({
         }
         this.zIndex = this.zIndex + 2;
 
-        if ( l.layer.hideLayerInControllerList ) {
-            // do nothing
-        }
-        else {
+        if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var legendStructure = FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id);
-            var idMap =  '#'+ this.suffix + '-container-map';
-            $(idMap).append(legendStructure);
+            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id));
+           
+            self._fenixMap.$map.find('.leaflet-control-legend').append($legend);
+            
 
             // creating the HTML controller-overlay-item structure
             var idStructure =  '#'+ this.suffix + '-controller-overlay-content';
@@ -250,6 +240,8 @@ FM.MAPController = FM.Class.extend({
             // TODO: a way to get the layer back by the ID
 
             $(idStructure).prepend(overlayStructure);
+
+
 
             // saving the layer information (it's too many information TODO: please set only ID and needed infos
             $( '#'+ l.id  + '-controller-item-box' ).data( "layer", l );
@@ -503,9 +495,7 @@ FM.MAPController = FM.Class.extend({
                     FM.LayerUtils.setLayerOpacity(l, ui.value);
                 }
             });
-        }catch(e) {
-            //console.log('jquery-ui is not loaded');
-        }
+        }catch(e) { }
 
         $('#' + l.id + '-controller-box-item').on('click', {id:l.id}, function(event) {
             var id = event.data.id;
@@ -660,7 +650,7 @@ FM.MAPController = FM.Class.extend({
                     this.showHideLayer(id, isReload);
             }
         }catch (e) {
-            console.warn("showHide warn:" + e);
+           // console.warn("showHide warn:" + e);
         }
     },
 
@@ -727,7 +717,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         }catch (e) {
-            console.warn("showHideLayer error:"  + e);
+           // console.warn("showHideLayer error:"  + e);
         }
     },
 
@@ -768,7 +758,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         } catch (e) {
-            console.warn("setZIndex error:"  + e);
+           // console.warn("setZIndex error:"  + e);
         }
     },
 

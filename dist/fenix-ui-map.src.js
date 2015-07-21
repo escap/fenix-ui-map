@@ -1167,6 +1167,7 @@ FM.Map = FM.Class.extend({
 			fullscreen: true,  //true or {id: 'divID'} or false
         	zoomcontrol: true,
             scalecontrol: true,
+            legendcontrol: true,
         	disclaimerfao: true
         }
     },
@@ -1197,26 +1198,28 @@ FM.Map = FM.Class.extend({
         var mapID =  suffix + '-map';
 
         var mapDIV = "<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>";
-        //TODO check if id or other selector
+        
         $(id).length > 0? $(id).append(mapDIV): $("#" + id).append(mapDIV);
-        //typeof id === 'string'?  $("#" + id).append(mapDIV): $(id).append(mapDIV);
-
-        //$(id).append("<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>");
-        $("#" + mapContainerID).append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
 
         this.id = mapID;
-        this.mapContainerID = mapContainerID;
-        this.suffix = suffix;
+
+        this.$map = $("#" + mapContainerID);
+
+        this.$map.append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
 
         this.map = new L.Map(this.id, this.mapOptions);
+
+        this.mapContainerID = mapContainerID;
+        this.suffix = suffix;
 
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
         this.setTilePaneID();
 
         // TODO: put in options the fact to add a controller or not
-        $("#" + mapContainerID).append("<div style='width:350px;' id='"+ suffix +"-controller'><div>");
+        this.$map.append("<div style='width:350px;' id='"+ suffix +"-controller'><div>");
 
         this.controller = new FM.mapController(suffix, this, this.map,  this.options.guiController);
+
         this.controller.initializeGUI();
 
         var _this = this;
@@ -1227,13 +1230,13 @@ FM.Map = FM.Class.extend({
         });
 
         // popup hovervalue
-        $("#" + mapContainerID).append("<div id='"+ suffix +"-popup'><div>");
+        this.$map.append("<div id='"+ suffix +"-popup'><div>");
 
         // swipe id (TODO: replace with the new swipe)
-        $("#" + mapContainerID).append("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>");
+        this.$map.append("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>");
 
         // join popup holder
-        $("#" + mapContainerID).append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
+        this.$map.append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
 
     },
 
@@ -1763,17 +1766,6 @@ FM.MAPController = FM.Class.extend({
         var self = this;
 
         if ( self._guiController ) {
-            // adding the box gui
-            /*$('#' + self.id).append( FM.replaceAll(FM.guiController.box, 'REPLACE', self.suffix) );
-
-            // adding the box icons container
-            $('#' + self.id).append( FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix) );
-            
-            self.$boxMenu = $('#' + self.suffix + '-controller-box');
-            
-            self.$boxMenuContainer = $('#' + self.suffix + '-controller-box-content');
-            
-            self.$boxIcons = $('#' + self.suffix + '-controller-box-icons-container');*/
             
             var mapDiv$ = $('#' + self.id);
 
@@ -1782,10 +1774,6 @@ FM.MAPController = FM.Class.extend({
 
             self.$boxIcons = $(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
-/*            mapDiv$
-            .append(self.$boxMenu)
-            .append(self.$boxIcons);
-*/
             var _fenixmap = self._fenixMap;
 
             var iconsControl = (function() {
@@ -1843,13 +1831,17 @@ FM.MAPController = FM.Class.extend({
         var guiBox = toLoad + 'Box';
         var guiIcon = toLoad + 'Icon';
 
-        this.$boxIcons.show();
-        this.$boxIcons.append(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        
         this.$boxMenuContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
 
-        var boxIcon = $('#' + this.suffix + '-controller-' + toLoad + 'Icon');
-        boxIcon.attr( "title", $.i18n.prop('_' + toLoad));
-        try {boxIcon.powerTip({placement: 'ne'}); } catch (e) {}
+        var $boxIcon = $(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        $boxIcon.attr('title', $.i18n.prop('_' + toLoad));
+
+        this.$boxIcons.show().append($boxIcon);
+
+        try {
+            $boxIcon.powerTip({placement: 'ne'});
+        } catch (e) {}
 
         var _this = this;
         var $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
@@ -1926,6 +1918,9 @@ FM.MAPController = FM.Class.extend({
      * @param l
      */
     layerAdded: function(l) {
+
+        var self = this;
+
         l.layerAdded = true;
         /** TODO: check if works always this solution **/
         if ( !l.layer.zindex ) {
@@ -1934,14 +1929,12 @@ FM.MAPController = FM.Class.extend({
         }
         this.zIndex = this.zIndex + 2;
 
-        if ( l.layer.hideLayerInControllerList ) {
-            // do nothing
-        }
-        else {
+        if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var legendStructure = FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id);
-            var idMap =  '#'+ this.suffix + '-container-map';
-            $(idMap).append(legendStructure);
+            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id));
+           
+            self._fenixMap.$map.find('.leaflet-control-legend').append($legend);
+            
 
             // creating the HTML controller-overlay-item structure
             var idStructure =  '#'+ this.suffix + '-controller-overlay-content';
@@ -1952,6 +1945,8 @@ FM.MAPController = FM.Class.extend({
             // TODO: a way to get the layer back by the ID
 
             $(idStructure).prepend(overlayStructure);
+
+
 
             // saving the layer information (it's too many information TODO: please set only ID and needed infos
             $( '#'+ l.id  + '-controller-item-box' ).data( "layer", l );
@@ -2205,9 +2200,7 @@ FM.MAPController = FM.Class.extend({
                     FM.LayerUtils.setLayerOpacity(l, ui.value);
                 }
             });
-        }catch(e) {
-            //console.log('jquery-ui is not loaded');
-        }
+        }catch(e) { }
 
         $('#' + l.id + '-controller-box-item').on('click', {id:l.id}, function(event) {
             var id = event.data.id;
@@ -2362,7 +2355,7 @@ FM.MAPController = FM.Class.extend({
                     this.showHideLayer(id, isReload);
             }
         }catch (e) {
-            console.warn("showHide warn:" + e);
+           // console.warn("showHide warn:" + e);
         }
     },
 
@@ -2429,7 +2422,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         }catch (e) {
-            console.warn("showHideLayer error:"  + e);
+           // console.warn("showHideLayer error:"  + e);
         }
     },
 
@@ -2470,7 +2463,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         } catch (e) {
-            console.warn("setZIndex error:"  + e);
+           // console.warn("setZIndex error:"  + e);
         }
     },
 
@@ -2532,14 +2525,11 @@ FM.guiController = {
 
     boxIcons: '<div id="REPLACE-controller-box-icons-container" class="fm-icon-box-background fm-controller-box-icons-container"></div>',
 
-    box:
-        '' +
-            '<div class="fm-box-zindex fm-icon-box-background fm-controller-box-icons-container fm-controller-box" style="display:none" id="REPLACE-controller-box">' +
+    box: '<div class="fm-box-zindex fm-icon-box-background fm-controller-box-icons-container fm-controller-box" style="display:none" id="REPLACE-controller-box">' +
                 '<div id="REPLACE-controller-box-content"></div>' +
-            '</div>' +
-        '',
+            '</div>',
 
-    baselayerIcon: "<div class='fm-box-zindex'><div class='fm-icon-sprite fm-baselayers' id='REPLACE-controller-baselayerIcon'><div></div>",
+    baselayerIcon: '<div class="fm-box-zindex"><div class="fm-icon-sprite fm-baselayers" id="REPLACE-controller-baselayerIcon"><div></div>',
     baselayerBox: '<div class="fm-box-zindex" id="REPLACE-controller-baselayer-box" style="display:none">' +
                         '<div id="REPLACE-controller-baselayer-title" class="fm-controller-box-title">Baselayers</div>' +
                         '<div id="REPLACE-controller-baselayer-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
@@ -2567,7 +2557,8 @@ FM.guiController = {
                     '<div class="fm-standard-hr"></div>' +
                     '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>' +
                   '</div>',
-    overlay :'<div id="REPLACE-controller-item-box" class="fm-box-zindex fm-controller-box-item">' +
+
+    overlay: '<div id="REPLACE-controller-item-box" class="fm-box-zindex fm-controller-box-item">' +
                     '<div id="REPLACE-controller-item" class="fm-controller-box-header">' +
                         '<div class="fm-controller-box-header-text">' +
                             '<div class="fm-controller-item-title" id="REPLACE-controller-item-title" ></div>' +
@@ -2593,6 +2584,7 @@ FM.guiController = {
                 '</div>' +
             '</div>' +
         '</div>',
+
     wmsLoaderIcon: "<div class='fm-box-zindex'><div class='fm-icon-sprite fm-wmsloader' id='REPLACE-controller-wmsLoaderIcon'></div></div>",
     wmsLoaderBox: '<div class="fm-box-zindex" id="REPLACE-controller-wmsLoader-box" style="display:none; min-height:300px;">' +
                     '<div id="REPLACE-controller-wmsLoader-title" class="fm-controller-box-title">WMS Loader</div>' +
@@ -2607,10 +2599,7 @@ FM.guiController = {
                         '<div id="REPLACE-WMSLayer-title" class="fm-WMSLayer-title"></div>' +
                     '</div>',
 
-
     legend: '<div class="fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
-            //'<div class="fm-box-zindex fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
-//            '<div class="fm-box-zindex fm-box fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
             '<div class="fm-legend-title-content">' +
                 '<div id="REPLACE-controller-item-getlegend-legend-layertitle" class="fm-legend-layertitle"></div>' +
                 '<div id="REPLACE-controller-item-getlegend-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
@@ -3122,30 +3111,7 @@ FM.Plugins = {
 					};
 				return control;
 			}())
-			.addTo(_fenixmap.map);        	
-/*            var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
-            $("#" + _fenixmap.mapContainerID).append(structure);
-            var text = '';
-            switch(_fenixmap.options.lang.toUpperCase()) {
-                case 'ES':fullsc
-                    text = FM.guiMap.disclaimerfao_S;
-                    break;
-                case 'FR':
-                    text = FM.guiMap.disclaimerfao_F;
-                    break;
-                default:
-                    text = FM.guiMap.disclaimerfao_E;
-                    break;
-            }
-            text = FM.replaceAll(text, 'REPLACE', _fenixmap.suffix);
-
-            $("#" + _fenixmap.suffix + '-disclaimerfao').attr( "title", text);
-
-            try {
-                $("#" + _fenixmap.suffix + '-disclaimerfao').powerTip({placement: 'nw'});
-            } catch (e) {
-
-            }*/
+			.addTo(_fenixmap.map);
         }
     },
 
@@ -3282,6 +3248,24 @@ FM.Plugins = {
                     _fenixmap.options.plugins.scalecontrol : 'topleft';
             
             L.control.scale({position: pos}).addTo(_fenixmap.map);
+        }
+    },
+
+    _addlegendcontrol: function( _fenixmap, show) {
+        if( show ) {
+            return (function() {
+                var pos = typeof _fenixmap.options.plugins.legendcontrol === 'string' ? 
+                        _fenixmap.options.plugins.legendcontrol : 'topright',
+                    control = new L.Control({position: pos});
+
+                control.onAdd = function(map) {
+                    var div = L.DomUtil.create('div','leaflet-control-legend');
+                    //FILLED BY JQUERY
+                    return div;
+                };
+                return control;
+            }())
+            .addTo(_fenixmap.map);
         }
     }
 }

@@ -137,7 +137,7 @@ require([
     }));
 
     // map2
-    var m2 = new FM.Map('map2', {
+    var m2 = new FM.Map('map', {
         plugins: {
             geosearch: true,
             mouseposition: false,

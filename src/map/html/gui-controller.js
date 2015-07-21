@@ -2,14 +2,11 @@ FM.guiController = {
 
     boxIcons: '<div id="REPLACE-controller-box-icons-container" class="fm-icon-box-background fm-controller-box-icons-container"></div>',
 
-    box:
-        '' +
-            '<div class="fm-box-zindex fm-icon-box-background fm-controller-box-icons-container fm-controller-box" style="display:none" id="REPLACE-controller-box">' +
+    box: '<div class="fm-box-zindex fm-icon-box-background fm-controller-box-icons-container fm-controller-box" style="display:none" id="REPLACE-controller-box">' +
                 '<div id="REPLACE-controller-box-content"></div>' +
-            '</div>' +
-        '',
+            '</div>',
 
-    baselayerIcon: "<div class='fm-box-zindex'><div class='fm-icon-sprite fm-baselayers' id='REPLACE-controller-baselayerIcon'><div></div>",
+    baselayerIcon: '<div class="fm-box-zindex"><div class="fm-icon-sprite fm-baselayers" id="REPLACE-controller-baselayerIcon"><div></div>',
     baselayerBox: '<div class="fm-box-zindex" id="REPLACE-controller-baselayer-box" style="display:none">' +
                         '<div id="REPLACE-controller-baselayer-title" class="fm-controller-box-title">Baselayers</div>' +
                         '<div id="REPLACE-controller-baselayer-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
@@ -37,7 +34,8 @@ FM.guiController = {
                     '<div class="fm-standard-hr"></div>' +
                     '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>' +
                   '</div>',
-    overlay :'<div id="REPLACE-controller-item-box" class="fm-box-zindex fm-controller-box-item">' +
+
+    overlay: '<div id="REPLACE-controller-item-box" class="fm-box-zindex fm-controller-box-item">' +
                     '<div id="REPLACE-controller-item" class="fm-controller-box-header">' +
                         '<div class="fm-controller-box-header-text">' +
                             '<div class="fm-controller-item-title" id="REPLACE-controller-item-title" ></div>' +
@@ -63,6 +61,7 @@ FM.guiController = {
                 '</div>' +
             '</div>' +
         '</div>',
+
     wmsLoaderIcon: "<div class='fm-box-zindex'><div class='fm-icon-sprite fm-wmsloader' id='REPLACE-controller-wmsLoaderIcon'></div></div>",
     wmsLoaderBox: '<div class="fm-box-zindex" id="REPLACE-controller-wmsLoader-box" style="display:none; min-height:300px;">' +
                     '<div id="REPLACE-controller-wmsLoader-title" class="fm-controller-box-title">WMS Loader</div>' +
@@ -77,10 +76,7 @@ FM.guiController = {
                         '<div id="REPLACE-WMSLayer-title" class="fm-WMSLayer-title"></div>' +
                     '</div>',
 
-
     legend: '<div class="fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
-            //'<div class="fm-box-zindex fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
-//            '<div class="fm-box-zindex fm-box fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
             '<div class="fm-legend-title-content">' +
                 '<div id="REPLACE-controller-item-getlegend-legend-layertitle" class="fm-legend-layertitle"></div>' +
                 '<div id="REPLACE-controller-item-getlegend-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
