@@ -3056,10 +3056,11 @@ FM.Plugins = {
 
 							var idDiv = _fenixmap.options.plugins.fullscreen.id || _fenixmap.id,
                                 mapdiv = document.getElementById(idDiv);
-                            
-                            console.log('fullscreen click', idDiv);
 
-							window.fullScreenApi.requestFullScreen(mapdiv);
+                            if( window.fullScreenApi.isFullScreen(mapdiv) )
+                                window.fullScreenApi.cancelFullScreen(mapdiv);
+                            else
+                                window.fullScreenApi.requestFullScreen(mapdiv);
 						}, a);
 					return div;
 				};
