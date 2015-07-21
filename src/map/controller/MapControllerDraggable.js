@@ -67,24 +67,28 @@ FM.MAPController = FM.Class.extend({
             self.$boxMenu = $(FM.replaceAll(FM.guiController.box, 'REPLACE', self.suffix));
             self.$boxMenuContainer = self.$boxMenu.find('#' + self.suffix + '-controller-box-content');
 
+            self.$boxMenuContainer.css({maxHeight: (self._map.getSize().y-60)+'px'});
+
             self.$boxIcons = $(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
-            var iconsControl = (function() {
+/*            var iconsControl = (function() {
                 var control = new L.Control({position: 'bottomleft'});
-
                 control.onAdd = function(map) {
-        
                     return self.$boxIcons[0];
                 };
                 return control;
-            }()).addTo(self._map);
+            }()).addTo(self._map);*/
 
             var guiControl = (function() {
-                var control = new L.Control({position: 'bottomleft'});
+                var control = new L.Control({position: 'topleft'});
 
                 control.onAdd = function(map) {
 
-                    var div = self.$boxMenu[0];
+                    var $div = $('<div class="leaflet-control-controller">')
+                        
+                        .append(self.$boxIcons)
+                        .append(self.$boxMenu),
+                        div = $div[0];
 
                     if (!L.Browser.touch) {
                         L.DomEvent.disableClickPropagation(div);
@@ -150,13 +154,13 @@ FM.MAPController = FM.Class.extend({
                     // check if the select icon is the same that is shown
                     if ( _this.$boxMenuSelected == $id ) {
                         // close the panel
-                        _this.$boxMenu.slideUp("slow")
+                        _this.$boxMenu.slideUp()
                         $id.hide();
                         _this.$boxMenuSelected = '';
                     }
                     else {
                         _this.$boxMenuSelected.hide();
-                         $id.slideDown("slow");
+                         $id.slideDown();
                         _this.$boxMenuSelected = $id;
                     }
                 }
@@ -164,8 +168,7 @@ FM.MAPController = FM.Class.extend({
                     // if the menu box is invisible
                     _this.$boxMenuSelected = $id;
                     _this.$boxMenuSelected.show();
-                    _this.$boxMenu.slideDown("slow", function() {
-                    });
+                    _this.$boxMenu.slideDown();
                 }
         });
 
@@ -173,7 +176,7 @@ FM.MAPController = FM.Class.extend({
         $('#' + this.suffix + '-controller-' + toLoad + '-remove').on('click', {$id: $id, suffix: this.suffix}, function(event) {
             var $id = event.data.$id;
             var suffix =  event.data.suffix;
-            $('#' + suffix + '-controller-box').slideUp("slow");
+            $('#' + suffix + '-controller-box').slideUp();
             $id.hide();
         });
     },

@@ -74,7 +74,8 @@ FM.Plugins = {
     _adddisclaimerfao: function(_fenixmap, show) {
         if ( show && $.powerTip) {
 			return (function() {
-				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? _fenixmap.options.plugins.disclaimerfao : 'bottomright',
+				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? 
+                        _fenixmap.options.plugins.disclaimerfao : 'bottomright',
 					control = new L.Control({position: pos}),
 					lang = _fenixmap.options.lang.toLowerCase();
 
@@ -224,7 +225,7 @@ FM.Plugins = {
     _addscalecontrol: function( _fenixmap, show) {
         if( show && L.Control.Scale) {
             var pos = typeof _fenixmap.options.plugins.scalecontrol === 'string' ? 
-                    _fenixmap.options.plugins.scalecontrol : 'topleft';
+                    _fenixmap.options.plugins.scalecontrol : 'bottomleft';
             
             L.control.scale({position: pos}).addTo(_fenixmap.map);
         }

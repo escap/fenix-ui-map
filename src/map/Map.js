@@ -39,9 +39,8 @@ FM.Map = FM.Class.extend({
         this.mapOptions = $.extend(true, {}, this.mapOptions, mapOptions);
 
         // extent if exist FM.CONFIG
-        if (FMCONFIG) {
+        if (FMCONFIG)
             this.options.url = $.extend(true, {}, FMCONFIG, options.url);
-        }
 
         // setting up the lang properties
         FM.initializeLangProperties(this.options.lang);
@@ -68,9 +67,6 @@ FM.Map = FM.Class.extend({
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
         this.setTilePaneID();
 
-        // TODO: put in options the fact to add a controller or not
-        this.$map.append("<div style='width:350px;' id='"+ suffix +"-controller'><div>");
-
         this.controller = new FM.mapController(suffix, this, this.map,  this.options.guiController);
 
         this.controller.initializeGUI();
@@ -79,16 +75,13 @@ FM.Map = FM.Class.extend({
         this.map._fenixMap = this;
         // TODO: boolean to see if GFI is allowed
         this.map.on('click', function (e) {
-            if ( _this.options.guiController.enablegfi ) _this.getFeatureInfo(e);
+            if(_this.options.guiController.enablegfi)
+                _this.getFeatureInfo(e);
         });
-
-        // popup hovervalue
-        this.$map.append("<div id='"+ suffix +"-popup'><div>");
 
         var swipeControl = (function() {
             var control = new L.Control();
             control.onAdd = function(map) {
-    
                 return $("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>")[0];
             };
             return control;
