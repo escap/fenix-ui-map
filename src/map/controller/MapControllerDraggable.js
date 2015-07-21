@@ -80,7 +80,7 @@ FM.MAPController = FM.Class.extend({
             }()).addTo(self._map);*/
 
             var guiControl = (function() {
-                var control = new L.Control({position: 'topleft'});
+                var control = new L.Control({position: 'bottomleft'});
 
                 control.onAdd = function(map) {
 
