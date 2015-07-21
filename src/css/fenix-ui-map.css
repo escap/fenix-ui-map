@@ -52,6 +52,11 @@
     position: relative;
 }
 
+.fm-controller-box-content {
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+
 
 .fm-controller-box-item:hover {
     background-color: #E6E6E6;
@@ -337,7 +342,6 @@ div.fm-controller-item-title {
     position:relative;
     bottom: 100%;
     float:right;
-    margin: 10px 10px 5px 0px;
     background-color:white;
     display:none;
     z-index: 1 !important;

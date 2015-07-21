@@ -1792,8 +1792,17 @@ FM.MAPController = FM.Class.extend({
                 var control = new L.Control({position: 'bottomleft'});
 
                 control.onAdd = function(map) {
-        
-                    return self.$boxMenu[0];
+                    
+                    var div = self.$boxMenu[0];
+
+                    if (!L.Browser.touch) {
+                        L.DomEvent.disableClickPropagation(div);
+                        L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+                    } else {
+                        L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+                    }
+
+                    return div;
                 };
                 return control;
             }());
