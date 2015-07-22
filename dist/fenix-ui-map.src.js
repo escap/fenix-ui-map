@@ -1488,6 +1488,7 @@ FM.Map = FM.Class.extend({
 
     // TODO: add other parameters in the request: I.E.
     getFeatureInfo: function(e, l) {
+
         // var fenixMap = e.target._fenixMap;
         var fenixMap = this;
         // get the layer that is been passed or the one that is selected in the Controller
@@ -1795,9 +1796,9 @@ FM.MAPController = FM.Class.extend({
                     if (!L.Browser.touch) {
                         L.DomEvent.disableClickPropagation(div);
                         L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-                    } else {
-                        L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
                     }
+                    else
+                        L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
 
                     return div;
                 };
@@ -1928,8 +1929,16 @@ FM.MAPController = FM.Class.extend({
 
         if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id));
+            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
+                div = $legend[0];
            
+            if (!L.Browser.touch) {
+                L.DomEvent.disableClickPropagation(div);
+                L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+            }
+            else
+                L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+
             self._fenixMap.$map.find('.leaflet-control-legend').append($legend);
             
 

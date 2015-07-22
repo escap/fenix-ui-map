@@ -341,6 +341,7 @@ FM.Map = FM.Class.extend({
 
     // TODO: add other parameters in the request: I.E.
     getFeatureInfo: function(e, l) {
+
         // var fenixMap = e.target._fenixMap;
         var fenixMap = this;
         // get the layer that is been passed or the one that is selected in the Controller

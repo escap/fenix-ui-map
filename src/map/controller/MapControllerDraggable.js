@@ -93,9 +93,9 @@ FM.MAPController = FM.Class.extend({
                     if (!L.Browser.touch) {
                         L.DomEvent.disableClickPropagation(div);
                         L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-                    } else {
-                        L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
                     }
+                    else
+                        L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
 
                     return div;
                 };
@@ -226,8 +226,16 @@ FM.MAPController = FM.Class.extend({
 
         if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id));
+            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
+                div = $legend[0];
            
+            if (!L.Browser.touch) {
+                L.DomEvent.disableClickPropagation(div);
+                L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+            }
+            else
+                L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+
             self._fenixMap.$map.find('.leaflet-control-legend').append($legend);
             
 
