@@ -150,10 +150,9 @@ FM.MAPController = FM.Class.extend({
         $('#' + this.suffix + '-controller-' + toLoad + 'Icon').on('click', {$id: $id, suffix: this.suffix}, function(event) {
                 var $id = event.data.$id;
                 var suffix =  event.data.suffix;
-                if (_this.$boxMenu.is(':visible')) {
-                    // check if the select icon is the same that is shown
+                if (_this.$boxMenu.is(':visible'))
+                {
                     if ( _this.$boxMenuSelected == $id ) {
-                        // close the panel
                         _this.$boxMenu.slideUp()
                         $id.hide();
                         _this.$boxMenuSelected = '';
@@ -165,7 +164,6 @@ FM.MAPController = FM.Class.extend({
                     }
                 }
                 else {
-                    // if the menu box is invisible
                     _this.$boxMenuSelected = $id;
                     _this.$boxMenuSelected.show();
                     _this.$boxMenu.slideDown();
@@ -189,10 +187,6 @@ FM.MAPController = FM.Class.extend({
         $('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
-            start: function (event, ui) {
-                //console.log( ui.item.index());
-                //$(ui.item).data("startindex", ui.item.index());
-            },
             stop: function (event, ui) {
                 // getting layers order
                 var children = $(ui.item).parent().children();
@@ -420,8 +414,11 @@ FM.MAPController = FM.Class.extend({
             // Show/Hide SubIcons
             var $subiconsshowhide  = $(idItem+ '-showhide-subicons');
             var $subiconscontainer = $(idItem+ '-subicons');
+            
             $subiconsshowhide.on('click', function(event) {
-                $subiconscontainer.slideToggle();
+
+                $subiconscontainer.slideToggle('fast');
+
                 if ( $subiconsshowhide.hasClass("fm-icon-up")) {
                     $subiconsshowhide.removeClass("fm-icon-up")
                     $subiconsshowhide.addClass("fm-icon-down")

@@ -48,14 +48,15 @@
     margin: 4px 0;
     cursor: pointer;
     position: relative;
-    height: 50px;
+    height: auto;
+    min-height: 55px;
+    overflow: hidden;
 }
 
 .fm-controller-box-content {
     overflow-y:scroll;
     overflow-x:hidden;
 }
-
 
 .fm-controller-box-item:hover {
     background-color: #E6E6E6;
@@ -836,7 +837,7 @@ div#legend.bottomright div table {
 /** Sub icons **/
 .fm-controller-box-subicons {
     position: relative;
-    margin-bottom:5px;
+    margin: 5px 0;
     -webkit-border-radius: 5px;
     border-radius: 5px;
     border: 1px solid #428BCA;
