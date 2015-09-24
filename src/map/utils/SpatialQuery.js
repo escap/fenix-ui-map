@@ -94,7 +94,7 @@ FM.SpatialQuery = {
                     var r = response;
                     if (_l.layer.customgfi) {
                         var joindata = _l.layer.joindata != null? _l.layer.joindata : _l.layer.data;
-                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, lang, joindata)
+                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, lang, joindata, l.layer);
                         // TODO: handle multiple outputs
                         r = (result != null) ? result[0] : response;
                     }
@@ -133,13 +133,13 @@ FM.SpatialQuery = {
         });
     },
 
-    customPopup: function(response, custompopup, lang, joindata) {
+    customPopup: function(response, custompopup, lang, joindata, layer) {
         var values = this._parseHTML(custompopup.content[lang]);
         if ( values.id.length > 0 || values.joinid.length > 0) {
             var h = $('<div></div>').append(response);
             var responsetable = h.find('table');
             if ( responsetable) {
-                return FM.SpatialQuery._customizePopUp(custompopup.content[lang], values, responsetable, joindata );
+                return FM.SpatialQuery._customizePopUp(custompopup.content[lang], values, responsetable, joindata, layer );
             }
         }
 
@@ -150,7 +150,7 @@ FM.SpatialQuery = {
         return response;
     },
 
-    _customizePopUp:function(content, values, responsetable, joindata) {
+    _customizePopUp:function(content, values, responsetable, joindata, layer) {
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
         var rowsData = [];
@@ -201,8 +201,10 @@ FM.SpatialQuery = {
             if ( joindata ) {
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
                     var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
+                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
                     var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
+                    v = (layer.decimalvalues)? v.toFixed(layer.decimalvalues): v;
                     c = FM.Util.replaceAll(c, header, v);
                 }
             }
@@ -220,7 +222,6 @@ FM.SpatialQuery = {
         var integerCode = ( parseInt(code) )? parseInt(code): null
         //console.log(integerCode);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
-        //console.log(json);
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
                 if ( json[i][code] ) {
