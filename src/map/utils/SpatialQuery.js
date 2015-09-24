@@ -151,6 +151,9 @@ FM.SpatialQuery = {
     },
 
     _customizePopUp:function(content, values, responsetable, joindata, layer) {
+
+        console.log(content)
+
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
         var rowsData = [];
@@ -192,27 +195,34 @@ FM.SpatialQuery = {
 
             // Replace IDs
             for(var i=0; i<headersHTMLIndexs.length; i ++) {
-                var header = '{{' + headersHTML[headersHTMLIndexs[i]].innerHTML + '}}'
+                var header = '{{' + headersHTML[headersHTMLIndexs[i]].innerHTML + '}}';
                 var d = rowsData[j][headersHTMLIndexs[i]].innerHTML;
                 c = FM.Util.replaceAll(c, header, d);
             }
 
             // Replace joindata (if needed)
+            // used to add dynamically the measurementunit
+            var checkJoinData = false;
             if ( joindata ) {
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
-                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
-                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
+                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}';
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
                     var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
-                    v = (layer.decimalvalues)? v.toFixed(layer.decimalvalues): v;
+                    v = (v !== 'NA' && layer.decimalvalues)? v.toFixed(layer.decimalvalues): v;
                     c = FM.Util.replaceAll(c, header, v);
+                    if (v !== 'NA') {
+                        checkJoinData = true;
+                    }
                 }
             }
 
             // adding the row result to the outputcontent
             htmlresult.push(c)
         }
-        //console.log(htmlresult)
+
+        // "dynamic" measurementunit change
+        htmlresult[0] = FM.Util.replaceAll(htmlresult[0], "{{measurementunit}}", (checkJoinData)? layer.measurementunit: '');
+
         return htmlresult;
     },
 
@@ -234,7 +244,7 @@ FM.SpatialQuery = {
                 }
             }
         }
-        return '';
+        return 'NA';
         //return 'No data available for this point';
     },
 
