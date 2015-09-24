@@ -3436,8 +3436,6 @@ FM.SpatialQuery = {
 
     _customizePopUp:function(content, values, responsetable, joindata, layer) {
 
-        console.log(content)
-
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
         var rowsData = [];
@@ -3621,7 +3619,8 @@ FM.SpatialQuery = {
         FM.LayerUtils.filterLayerOuterEqualThan(this, l, min, max);
     }
 
-};
+}
+;
 FM.Layer = FM.Class.extend({
 
     _fenixmap: '',
