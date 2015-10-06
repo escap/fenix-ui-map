@@ -2,7 +2,7 @@ define(function() {
 
 	return window.FMCONFIG = {
 
-		BASEURL_LANG: '../dist/i18n/',
+		BASEURL_LANG: 'http://fenixrepo.fao.org/cdn/js/fenix-ui-map/0.1.4/i18n/',
 
 		MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
 		DEFAULT_WMS_SERVER: 'http://fenix.fao.org/geoserver',
