@@ -3489,7 +3489,7 @@ FM.SpatialQuery = {
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
                     var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}';
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
-                    var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
+                    var v = parseFloat(FM.SpatialQuery._getJoinValueFromCode(d, joindata));
                     v = (v !== 'NA' && layer.decimalvalues)? v.toFixed(layer.decimalvalues): v;
                     c = FM.Util.replaceAll(c, header, v);
                     if (v !== 'NA') {
