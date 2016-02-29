@@ -86,7 +86,7 @@ FM.Map = FM.Class.extend({
         }()).addTo(this.map);
 
         // join popup holder
-        this.$map.append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
+        this.$map.append(FM.Util.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
 
     },
 

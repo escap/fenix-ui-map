@@ -64,12 +64,12 @@ FM.MAPController = FM.Class.extend({
             
             var mapDiv$ = $('#' + self.id);
 
-            self.$boxMenu = $(FM.replaceAll(FM.guiController.box, 'REPLACE', self.suffix));
+            self.$boxMenu = $(FM.Util.replaceAll(FM.guiController.box, 'REPLACE', self.suffix));
             self.$boxMenuContainer = self.$boxMenu.find('#' + self.suffix + '-controller-box-content');
 
             self.$boxMenuContainer.css({maxHeight: (self._map.getSize().y-60)+'px'});
 
-            self.$boxIcons = $(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
+            self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
 /*            var iconsControl = (function() {
                 var control = new L.Control({position: 'bottomleft'});
@@ -134,9 +134,9 @@ FM.MAPController = FM.Class.extend({
         var guiIcon = toLoad + 'Icon';
 
         
-        this.$boxMenuContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
+        this.$boxMenuContainer.append(FM.Util.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
 
-        var $boxIcon = $(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        var $boxIcon = $(FM.Util.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
         $boxIcon.attr('title', $.i18n.prop('_' + toLoad));
 
         this.$boxIcons.show().append($boxIcon);
@@ -226,7 +226,7 @@ FM.MAPController = FM.Class.extend({
 
         if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
+            var $legend = $(FM.Util.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
                 div = $legend[0];
            
             if (!L.Browser.touch) {
@@ -243,7 +243,7 @@ FM.MAPController = FM.Class.extend({
             var idStructure =  '#'+ this.suffix + '-controller-overlay-content';
             var idItem = '#'+ l.id + '-controller-item';
             var idControllerItem = l.id + '-controller-item';
-            var overlayStructure = FM.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
+            var overlayStructure = FM.Util.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
 
             // TODO: a way to get the layer back by the ID
 
@@ -476,8 +476,8 @@ FM.MAPController = FM.Class.extend({
         // creating the HTML controller-overlay-item structure
         var idStructure =  '#'+ this.suffix + '-controller-baselayer-content';
         var idItem = '#'+ l.id + '-controller-item';
-        var overlayStructure = FM.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
-        overlayStructure = FM.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
+        var overlayStructure = FM.Util.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
+        overlayStructure = FM.Util.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
 
         $(idStructure).append(overlayStructure);
 

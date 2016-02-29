@@ -100,7 +100,7 @@ FM.WMSUtils = FM.Class.extend({
 
 
                 var rand = FM.Util.randomID();
-                var layerPanel = FM.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
+                var layerPanel = FM.Util.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
 
                 $("#" + id).append(layerPanel);
                 $('#' + rand + '-WMSLayer-title').append(layer.layertitle);

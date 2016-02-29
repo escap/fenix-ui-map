@@ -1,6 +1,6 @@
 /* 
  * fenix-ui-map v0.0.1 
- * Copyright 2015  
+ * Copyright 2016  
  * FENIX Development Team 
  * 
  * Licensed under the GPL3 license. 
@@ -302,16 +302,6 @@ FM.Util = {
         }
     };
 
-    /*FM.Util.replaceAll = function(text, stringToFind, stringToReplace) {
-        var temp = text;
-        var index = temp.indexOf(stringToFind);
-        while(index != -1){
-            temp = temp.replace(stringToFind,stringToReplace);
-            index = temp.indexOf(stringToFind);
-        }
-        return temp;
-    };   */
-
     FM.Util.replaceAll = function(text, stringToFind, stringToReplace) {
         return text.replace(new RegExp(stringToFind, 'g'), stringToReplace);
     },
@@ -347,7 +337,6 @@ FM.extend = FM.Util.extend;
 FM.bind = FM.Util.bind;
 FM.stamp = FM.Util.stamp;
 FM.setOptions = FM.Util.setOptions;
-FM.replaceAll = FM.Util.replaceAll;
 FM.loadModuleLibs = FM.Util.loadModuleLibs;
 FM.initializeLangProperties = FM.Util.initializeLangProperties;;
 ;(function(exports){
@@ -569,7 +558,7 @@ FM.WMSUtils = FM.Class.extend({
 
 
                 var rand = FM.Util.randomID();
-                var layerPanel = FM.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
+                var layerPanel = FM.Util.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
 
                 $("#" + id).append(layerPanel);
                 $('#' + rand + '-WMSLayer-title').append(layer.layertitle);
@@ -1233,7 +1222,7 @@ FM.Map = FM.Class.extend({
         }()).addTo(this.map);
 
         // join popup holder
-        this.$map.append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
+        this.$map.append(FM.Util.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
 
     },
 
@@ -1767,12 +1756,12 @@ FM.MAPController = FM.Class.extend({
             
             var mapDiv$ = $('#' + self.id);
 
-            self.$boxMenu = $(FM.replaceAll(FM.guiController.box, 'REPLACE', self.suffix));
+            self.$boxMenu = $(FM.Util.replaceAll(FM.guiController.box, 'REPLACE', self.suffix));
             self.$boxMenuContainer = self.$boxMenu.find('#' + self.suffix + '-controller-box-content');
 
             self.$boxMenuContainer.css({maxHeight: (self._map.getSize().y-60)+'px'});
 
-            self.$boxIcons = $(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
+            self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
 /*            var iconsControl = (function() {
                 var control = new L.Control({position: 'bottomleft'});
@@ -1837,9 +1826,9 @@ FM.MAPController = FM.Class.extend({
         var guiIcon = toLoad + 'Icon';
 
         
-        this.$boxMenuContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
+        this.$boxMenuContainer.append(FM.Util.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
 
-        var $boxIcon = $(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        var $boxIcon = $(FM.Util.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
         $boxIcon.attr('title', $.i18n.prop('_' + toLoad));
 
         this.$boxIcons.show().append($boxIcon);
@@ -1929,7 +1918,7 @@ FM.MAPController = FM.Class.extend({
 
         if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var $legend = $(FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
+            var $legend = $(FM.Util.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
                 div = $legend[0];
            
             if (!L.Browser.touch) {
@@ -1946,7 +1935,7 @@ FM.MAPController = FM.Class.extend({
             var idStructure =  '#'+ this.suffix + '-controller-overlay-content';
             var idItem = '#'+ l.id + '-controller-item';
             var idControllerItem = l.id + '-controller-item';
-            var overlayStructure = FM.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
+            var overlayStructure = FM.Util.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
 
             // TODO: a way to get the layer back by the ID
 
@@ -2179,8 +2168,8 @@ FM.MAPController = FM.Class.extend({
         // creating the HTML controller-overlay-item structure
         var idStructure =  '#'+ this.suffix + '-controller-baselayer-content';
         var idItem = '#'+ l.id + '-controller-item';
-        var overlayStructure = FM.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
-        overlayStructure = FM.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
+        var overlayStructure = FM.Util.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
+        overlayStructure = FM.Util.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
 
         $(idStructure).append(overlayStructure);
 
