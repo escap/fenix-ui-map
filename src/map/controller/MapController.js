@@ -71,14 +71,6 @@ FM.MAPController = FM.Class.extend({
 
             self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
-/*            var iconsControl = (function() {
-                var control = new L.Control({position: 'bottomleft'});
-                control.onAdd = function(map) {
-                    return self.$boxIcons[0];
-                };
-                return control;
-            }()).addTo(self._map);*/
-
             var guiControl = (function() {
                 var control = new L.Control({position: 'bottomleft'});
 

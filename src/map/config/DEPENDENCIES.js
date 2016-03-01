@@ -4,13 +4,6 @@ FM.DEPENDENCIES = {
 
     fenixmap: {
         js: [
-            "http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js",
-            "http://fenixapps.fao.org/repository/js/jquery/1.9.1/jquery.min.js",
-            "http://fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min.js",
-            "http://code.jquery.com/ui/1.10.3/jquery-ui.js",
-            "http://fenixapps.fao.org/repository/js/jquery.power.tip/1.2.0/jquery.powertip.min.js",
-            "http://fenixapps.fao.org/repository/js/FENIX/utils/import-dependencies-1.0.js",
-            "http://hqlprfenixapp2.hq.un.fao.org:13000/repository/js/jquery.pageslide/2.0/jquery.pageslide.min.js",
             // change with library
             "js/FENIXMap.js",
             "js/core/Class.js",

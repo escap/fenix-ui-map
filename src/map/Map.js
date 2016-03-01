@@ -330,10 +330,6 @@ FM.Map = FM.Class.extend({
         }
     },
 
-    addGeoJSON: function(l) {
-        console.log("TODO");
-    },
-
     // syncronize the maps on movement
     syncOnMove: function (mapToSync) {
         FM.MapUtils.syncMapsOnMove(this.map, mapToSync);
