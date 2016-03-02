@@ -83,15 +83,30 @@ require([
 			zoomcontrol: 'bottomright'
 		},
 		guiController: {
-			overlay: true,
+			overlay: false,
 			baselayer: true,
-			wmsLoader: true
+			wmsLoader: false
 		},
 		url: {
 			MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
 			DEFAULT_WMS_SERVER: 'http://fenix.fao.org/geoserver',
 			MAP_SERVICE_GFI_JOIN: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/',
 			MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/'
+		},
+		baselayers: {
+			"osm": {
+				url: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+				title_en: "OpenStreetMap"
+			},
+			"osm_grayscale": {
+				url: "http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
+				title_en: "OpenStreetMap Gray"
+			},
+			"esri": {
+				url: "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+				title_en: "Esri WorldGrayCanvas",
+//TODO				attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+			}
 		}
 	});
 	

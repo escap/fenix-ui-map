@@ -1140,10 +1140,12 @@ FM.Map = FM.Class.extend({
 
     options: {
         url: {},    	
-        lang: 'EN',    	
-        usedefaultbaselayers: true,    	
+        lang: 'EN',
         guiController : {
-            enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
+            overlay : true,
+            baselayer: true,
+            wmsLoader: true,
+            enablegfi: true, //this is used to switch off events like on drawing (when is need to stop the events on GFI)
         },
         plugins: {
 			fullscreen: true,  //true or {id: 'divID'} or false
@@ -1151,7 +1153,9 @@ FM.Map = FM.Class.extend({
             scalecontrol: true,
             legendcontrol: true,
         	disclaimerfao: true
-        }
+        },
+        baselayers: null,
+        usedefaultbaselayers: true        
     },
     mapOptions: {
 		zoomControl: false,
@@ -1226,16 +1230,35 @@ FM.Map = FM.Class.extend({
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
         
         this.initializePlugins();
-        if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
-        return this;
-    },
 
-    /** Default Baselayers loaded at startup if they are not override **/
-    _addDefaultBaseLayers: function() {
-        this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('OSM_GRAYSCALE', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDSTREETMAP', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDTERRAINBASE', 'EN'), true);
+        if (this.options.baselayers) {
+            for(var i in this.options.baselayers) {
+                //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
+                var layeropts = this.options.baselayers[i];
+                // this is replicated because in wms it's used "layers" instead of layername
+                
+                var l = new FM.layer({
+                    layername: i,
+                    layertype: 'TILE',
+                    layertitle: layeropts['title_'+ this.options.lang.toLowerCase()],
+                    lang: this.options.lang.toUpperCase()
+                });
+
+                console.log(l)
+
+                l.leafletLayer = new L.TileLayer(layeropts.url);
+
+                this.addTileLayer(l, true);              
+            }
+        }
+        else if( this.options.usedefaultbaselayers ) {
+            this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
+            this.addTileLayer(FM.TileLayer.createBaseLayer('OSM_GRAYSCALE', 'EN'), true);
+            this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDSTREETMAP', 'EN'), true);
+            this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDTERRAINBASE', 'EN'), true);
+        }
+
+        return this;
     },
 
     /** TODO: make it nicer **/
@@ -3627,7 +3650,7 @@ FM.Layer = FM.Class.extend({
 
         layertitle: '',
         enablegfi: true,
-        layertype: 'WMS', //['WMS', 'JOIN']
+        layertype: 'WMS', //['WMS', 'JOIN', 'TILE']
         openlegend: false,
 
         // JOIN default options
@@ -3654,7 +3677,8 @@ FM.Layer = FM.Class.extend({
 
         var wmsParameters = this._getWMSParameters();
         if ( this.leafletLayer ) {
-            this.leafletLayer.setParams(wmsParameters);
+            if(this.layertype === 'WMS')
+                this.leafletLayer.setParams(wmsParameters);
         }
         else {
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
@@ -3772,17 +3796,18 @@ FM.layer = function (layer, map, options) {
 
 
 ;
+
 FM.TileLayer = FM.Layer.extend({
 
-    createTileLayer: function() {
-       var tileTitle = 'TITLE_' + this.layer.lang.toUpperCase();
-       var layer = (this.layer.layername)? FM.TILELAYER[this.layer.layername]: FM.TILELAYER[this.layer.layers];
-       this.layer.layertitle = {};
-       this.layer.layertitle = layer[tileTitle];
-       this.layer.layertype= 'TILE';
-       var leafletLayer =  new L.TileLayer(layer.URL);
-       return leafletLayer;
-    }
+  createTileLayer: function() {
+    var tileTitle = 'TITLE_' + this.layer.lang.toUpperCase();
+    var layer = (this.layer.layername)? FM.TILELAYER[this.layer.layername]: FM.TILELAYER[this.layer.layers];
+    this.layer.layertype = 'TILE';
+    this.layer.layertitle = {};
+    this.layer.layertitle = layer[tileTitle];
+    var leafletLayer =  new L.TileLayer(layer.URL);
+    return leafletLayer;
+  }
 
 });
 

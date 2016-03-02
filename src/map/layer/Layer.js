@@ -34,7 +34,7 @@ FM.Layer = FM.Class.extend({
 
         layertitle: '',
         enablegfi: true,
-        layertype: 'WMS', //['WMS', 'JOIN']
+        layertype: 'WMS', //['WMS', 'JOIN', 'TILE']
         openlegend: false,
 
         // JOIN default options
@@ -61,7 +61,8 @@ FM.Layer = FM.Class.extend({
 
         var wmsParameters = this._getWMSParameters();
         if ( this.leafletLayer ) {
-            this.leafletLayer.setParams(wmsParameters);
+            if(this.layertype === 'WMS')
+                this.leafletLayer.setParams(wmsParameters);
         }
         else {
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
