@@ -1714,7 +1714,8 @@ FM.MAPController = FM.Class.extend({
 
     _guiController:  {
         overlay : true,
-        baselayer: true
+        baselayer: true,
+        layersthumbs: true
     },
 
     /** Used by the controller **/
@@ -2160,6 +2161,8 @@ FM.MAPController = FM.Class.extend({
      */
     addBaseLayer: function(l) {
 
+        var self = this;
+
         // setting the zIndex and updating it
         //console.log(this.zIndexBaseLayer);
         l.layer.zindex = this.zIndexBaseLayer;
@@ -2177,15 +2180,16 @@ FM.MAPController = FM.Class.extend({
 
         $(idStructure).append(overlayStructure);
 
-        var _this = this;
         // listeners
         $(idItem + '-title').append(l.layer.layertitle);
 
-        // add baselayer icon
-        $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
+        if(self._guiController.layersthumbs)
+            $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
+        else
+            $('#' + l.id + '-controller-item-baselayer-image').remove();
 
         $(idItem+ '-enabledisable').on('click', {id:l.id}, function(event) {
-            _this.showHide(event.data.id)
+            self.showHide(event.data.id)
         });
 
         var opacity = 1;
@@ -2207,20 +2211,20 @@ FM.MAPController = FM.Class.extend({
 
         $('#' + l.id + '-controller-box-item').on('click', {id:l.id}, function(event) {
             var id = event.data.id;
-            var l = _this.baseLayersMap.get(id);
+            var l = self.baseLayersMap.get(id);
 
             // removing the old baselayer
-            _this.removeBaseLayerByID(_this.currentBaseLayer.id);
-            var oldBaseLayer = _this.baseLayersMap.get(_this.currentBaseLayer.id);
+            self.removeBaseLayerByID(self.currentBaseLayer.id);
+            var oldBaseLayer = self.baseLayersMap.get(self.currentBaseLayer.id);
             $('#' + oldBaseLayer.id + "-controller-box-item").removeClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + oldBaseLayer.id + "-controller-item-opacity").hide();
 
             // add the new baselayer to the map and setting as default one
             $('#' + l.id + "-controller-box-item").addClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + l.id + "-controller-item-opacity").show();
-            _this._map.addLayer(l.leafletLayer);
-            _this.currentBaseLayer = l;
-            _this.setZIndex(l)
+            self._map.addLayer(l.leafletLayer);
+            self.currentBaseLayer = l;
+            self.setZIndex(l)
 
         });
 
@@ -2232,7 +2236,7 @@ FM.MAPController = FM.Class.extend({
             this.currentBaseLayer = l;
             $('#' + l.id + "-controller-box-item").addClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + l.id + "-controller-item-opacity").show();
-            _this.setZIndex(l)
+            self.setZIndex(l)
         }
 
     },

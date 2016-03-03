@@ -85,7 +85,8 @@ require([
 		guiController: {
 			overlay: false,
 			baselayer: true,
-			wmsLoader: false
+			wmsLoader: false,
+			layersthumbs: false
 		},
 		url: {
 			MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
