@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.0.1 
+ * fenix-ui-map v0.2.0 
  * Copyright 2016  
  * FENIX Development Team 
  * 

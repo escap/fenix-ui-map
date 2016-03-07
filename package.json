@@ -1,6 +1,6 @@
 {
   "name": "fenix-ui-map",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "FENIX map component",
   "main": "index.html",
   "scripts": {
