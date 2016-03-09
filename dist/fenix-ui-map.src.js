@@ -999,18 +999,12 @@ FM.WMSSERVERS = {
         },
         {
             label: 'Greenhouse gases Data',
-            label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
+            label_EN: 'FENIX',
             url: 'http://fenix.fao.org/demo/ghg/geoserver/wms'
         },
-//        {
-//            label: 'FENIX WMS Server',
-//            label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
-//            url: 'http://fenixapps.fao.org/geoserver'
-//        },
         {
             label: 'DATA.FAO.ORG',
             label_EN: 'data.fao.org WMS Server',
-            //url: 'http://data.fao.org/maps/wms?AUTHKEY=d30aebf0-ab2a-11e1-afa6-0800200c9a66'
             url: 'http://data.fao.org/maps/wms'
         },
         {
@@ -1038,11 +1032,6 @@ FM.WMSSERVERS = {
             label_EN:  'German OpenData',
             url: 'http://geo.sv.rostock.de/geodienste/verwaltung/wms'
         },
-//        {
-//            label: 'De Agostini of',
-//            label_EN:  'De Agostini',
-//            url: 'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/de_agostini.map'
-//        },
         {
             label: 'ENVIRONMENT OpenData',
             label_EN:  'Scotland OpenData',
@@ -1053,40 +1042,10 @@ FM.WMSSERVERS = {
             label_EN: 'OpenGeo Demo Server',
             url: 'http://demo.opengeo.org/geoserver/ows'
         },
-        //{
-        //    label: 'HarvestChoice 1',
-        //    label_EN: 'HarvestChoice 1',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_1/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 2',
-        //    label_EN: 'HarvestChoice 2',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_2/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 3',
-        //    label_EN: 'HarvestChoice 3',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_3/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 4',
-        //    label_EN: 'HarvestChoice 4',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_4/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 5',
-        //    label_EN: 'HarvestChoice 5',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_5/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 6',
-        //    label_EN: 'HarvestChoice 6',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_6/MapServer/WMSServer'
-        //},
         {
             label: 'Alberts Map Service',
             url: 'http://maps.gov.bc.ca/arcserver/services/Province/albers_cache/MapServer/WMSServer',
-            urlParameters: 'service=WMS'  // used as additional parameters
+            urlParameters: 'service=WMS'
         },
         {
             label: 'Cubert Map Service',
@@ -1108,21 +1067,6 @@ FM.WMSSERVERS = {
             label_EN:  'Vienna OpenData',
             url: 'http://data.wien.gv.at/daten/wms'
         }
-        /*,
-        {
-            label: 'toscana',
-            label_EN: 'Cubewerx Map Service',
-            url: 'http://eusoils.jrc.ec.europa.eu/wrb/wms_Threats.asp'
-        }*/
-
-
-/*        ,{
-            label: 'OCHA Map Service',
-            label_EN: 'OCHA Map Service',
-            url: 'http://carto.iict.ch/geoserver/wms',
-            urlParameters: 'service=WMS'  // used as additional parameters
-        }*/
-
     ]
 }
 
@@ -1810,10 +1754,11 @@ FM.MAPController = FM.Class.extend({
 
             if ( self._guiController.wmsLoader) {
                 this.loadIcon('wmsLoader');
-                var wmsUtils = new FM.WMSUtils();
-                var idDD =      this.suffix + '-controller-wmsLoader-dropdown';
-                var idContent = this.suffix + '-controller-wmsLoader-content';
-                var wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+                var wmsUtils = new FM.WMSUtils(),
+                    idDD = this.suffix + '-controller-wmsLoader-dropdown',
+                    idContent = this.suffix + '-controller-wmsLoader-content',
+                    wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+                    
                 wmsUtils.WMSCapabilities(idDD, idContent, this._fenixMap, wmsServers);
             }
         }
@@ -3670,11 +3615,13 @@ FM.Layer = FM.Class.extend({
     initialize: function(layer, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
-        if ( options) this.options = options;
+        if (options)
+            this.options = options;
 
         this.id = FM.Util.randomID();
 
-        if ( layer.joindata ) layer.defaultdata = layer.joindata;
+        if (layer.joindata)
+            layer.defaultdata = layer.joindata;
     },
 
     createLayerWMS: function() {
@@ -3804,12 +3751,12 @@ FM.layer = function (layer, map, options) {
 FM.TileLayer = FM.Layer.extend({
 
   createTileLayer: function() {
-    var tileTitle = 'TITLE_' + this.layer.lang.toUpperCase();
-    var layer = (this.layer.layername)? FM.TILELAYER[this.layer.layername]: FM.TILELAYER[this.layer.layers];
+    
+    var info = this.layer.layername ? FM.TILELAYER[this.layer.layername] : FM.TILELAYER[this.layer.layers];
+
     this.layer.layertype = 'TILE';
-    this.layer.layertitle = {};
-    this.layer.layertitle = layer[tileTitle];
-    var leafletLayer =  new L.TileLayer(layer.URL);
+    this.layer.layertitle = info[ 'TITLE_' + this.layer.lang.toUpperCase() ];
+    var leafletLayer = new L.TileLayer( info.URL );
     return leafletLayer;
   }
 
@@ -3820,7 +3767,7 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     // this is replicated because in wms it's used "layers" instead of layername
     layer.layername = layername;
     layer.layers = layername;
-    layer.layertype ='TILE';
+    layer.layertype = 'TILE';
     layer.lang = lang;
     var l = new FM.TileLayer(layer);
     l.leafletLayer = l.createTileLayer(layer.layername);

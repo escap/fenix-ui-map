@@ -106,10 +106,11 @@ FM.MAPController = FM.Class.extend({
 
             if ( self._guiController.wmsLoader) {
                 this.loadIcon('wmsLoader');
-                var wmsUtils = new FM.WMSUtils();
-                var idDD =      this.suffix + '-controller-wmsLoader-dropdown';
-                var idContent = this.suffix + '-controller-wmsLoader-content';
-                var wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+                var wmsUtils = new FM.WMSUtils(),
+                    idDD = this.suffix + '-controller-wmsLoader-dropdown',
+                    idContent = this.suffix + '-controller-wmsLoader-content',
+                    wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+                    
                 wmsUtils.WMSCapabilities(idDD, idContent, this._fenixMap, wmsServers);
             }
         }
