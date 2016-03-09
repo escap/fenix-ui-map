@@ -113,14 +113,19 @@ require([
 	
 	map.createMap();
 
-/*	map.addLayer( new FM.layer({
+	map.addLayer( new FM.layer({
 		layers: 'fenix:gaul0_line_3857',
 		layertitle: 'Country Boundaries',
 		urlWMS: 'http://fenixapps.fao.org/geoserver',
 		opacity: '0.8',
 		lang: 'EN'
 	}) );
-*/
+	
+	var labels = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+		subdomains: 'abcd',
+		maxZoom: 19
+	});
    //map.zoomTo("country", "iso3", ["THA"]);
    //map.zoomTo("country", "iso2", "GE");
 });

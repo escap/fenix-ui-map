@@ -50,11 +50,13 @@ FM.Layer = FM.Class.extend({
     initialize: function(layer, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
-        if ( options) this.options = options;
+        if (options)
+            this.options = options;
 
         this.id = FM.Util.randomID();
 
-        if ( layer.joindata ) layer.defaultdata = layer.joindata;
+        if (layer.joindata)
+            layer.defaultdata = layer.joindata;
     },
 
     createLayerWMS: function() {
