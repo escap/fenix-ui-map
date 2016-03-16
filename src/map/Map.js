@@ -17,6 +17,7 @@ FM.Map = FM.Class.extend({
             baselayer: true,
             wmsLoader: true,
             enablegfi: true, //this is used to switch off events like on drawing (when is need to stop the events on GFI)
+            layersthumbs: false
         },
         plugins: {
 			fullscreen: true,  //true or {id: 'divID'} or false
@@ -109,7 +110,6 @@ FM.Map = FM.Class.extend({
                 'ESRI_WORLDTERRAINBASE': FM.TILELAYER['ESRI_WORLDTERRAINBASE']
             }
         }
-
 
         for(var i in this.options.baselayers) {
             //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);

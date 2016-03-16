@@ -39,12 +39,12 @@ FM.MAPController = FM.Class.extend({
     getFeautureInfoLayer: [],
     // TODO: this is the list of the layers selected for the GFI
 
-    initialize: function(suffix, fenixMap, map, guiController) { // (HTMLElement or String, Object)
+    initialize: function(suffix, fenixMap, map, guiOpts) { // (HTMLElement or String, Object)
         this._map = map;
         this._fenixMap = fenixMap;
         this.suffix = suffix;
         this.id = suffix + '-controller';
-        this._guiController = $.extend({}, this._guiController, guiController);
+        this._guiController = $.extend({}, this._guiController, guiOpts);
 
         // initialize HashMaps
         this.baseLayersMap = new HashMap();
@@ -470,9 +470,10 @@ FM.MAPController = FM.Class.extend({
         this.layersMapZIndexes.set(l.layer.zindex, l.id);
 
         // creating the HTML controller-overlay-item structure
-        var idStructure =  '#'+ this.suffix + '-controller-baselayer-content';
-        var idItem = '#'+ l.id + '-controller-item';
-        var overlayStructure = FM.Util.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
+        var idStructure =  '#'+ this.suffix + '-controller-baselayer-content',
+            idItem = '#'+ l.id + '-controller-item',
+            overlayStructure = FM.Util.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
+
         overlayStructure = FM.Util.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
 
         $(idStructure).append(overlayStructure);
