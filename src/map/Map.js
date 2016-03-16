@@ -13,7 +13,7 @@ FM.Map = FM.Class.extend({
         url: {},    	
         lang: 'EN',
         guiController : {
-            overlay : true,
+            overlay: true,
             baselayer: true,
             wmsLoader: true,
             enablegfi: true, //this is used to switch off events like on drawing (when is need to stop the events on GFI)
@@ -25,8 +25,7 @@ FM.Map = FM.Class.extend({
             legendcontrol: true,
         	disclaimerfao: true
         },
-        baselayers: null,
-        usedefaultbaselayers: true        
+        baselayers: null
     },
     mapOptions: {
 		zoomControl: false,
@@ -71,7 +70,7 @@ FM.Map = FM.Class.extend({
 
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
         this.setTilePaneID();
-
+   
         this.controller = new FM.mapController(suffix, this, this.map,  this.options.guiController);
 
         this.controller.initializeGUI();
@@ -102,32 +101,34 @@ FM.Map = FM.Class.extend({
         
         this.initializePlugins();
 
-        if (this.options.baselayers) {
-            for(var i in this.options.baselayers) {
-                //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
-                var layeropts = this.options.baselayers[i];
-                // this is replicated because in wms it's used "layers" instead of layername
-                
-                var l = new FM.layer({
-                    layername: i,
-                    layertype: 'TILE',
-                    layertitle: layeropts['title_'+ this.options.lang.toLowerCase()],
-                    lang: this.options.lang.toUpperCase()
-                });
-
-                console.log(l)
-
-                l.leafletLayer = new L.TileLayer(layeropts.url);
-
-                this.addTileLayer(l, true);              
+        if(this.options.baselayers === null) {
+            this.options.baselayers = {
+                'OSM': FM.TILELAYER['OSM'],
+                'OSM_GRAYSCALE': FM.TILELAYER['OSM_GRAYSCALE'],
+                'ESRI_WORLDSTREETMAP': FM.TILELAYER['ESRI_WORLDSTREETMAP'],
+                'ESRI_WORLDTERRAINBASE': FM.TILELAYER['ESRI_WORLDTERRAINBASE']
             }
         }
-        else if( this.options.usedefaultbaselayers ) {
-            this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
-            this.addTileLayer(FM.TileLayer.createBaseLayer('OSM_GRAYSCALE', 'EN'), true);
-            this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDSTREETMAP', 'EN'), true);
-            this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDTERRAINBASE', 'EN'), true);
+
+
+        for(var i in this.options.baselayers) {
+            //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
+            var layeropts = this.options.baselayers[i];
+            // this is replicated because in wms it's used "layers" instead of layername
+            
+            var l = new FM.layer({
+                layername: i,
+                layertype: 'TILE',
+                layertitle: layeropts['title_'+ this.options.lang.toLowerCase()],
+                lang: this.options.lang.toUpperCase()
+            });
+            var lurl = layeropts.url;
+            delete layeropts.url;
+            l.leafletLayer = new L.TileLayer(lurl, layeropts);
+
+            this.addTileLayer(l, true);
         }
+
 
         return this;
     },

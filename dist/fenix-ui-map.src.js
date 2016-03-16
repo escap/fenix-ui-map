@@ -1,5 +1,5 @@
 /* 
- * fenix-ui-map v0.2.0 
+ * fenix-ui-map v0.2.1 
  * Copyright 2016  
  * FENIX Development Team 
  * 
@@ -935,57 +935,53 @@ FM.TILELAYER = {
 
     // OpenStreetMap
     OSM: {
-        URL: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        TITLE_EN: 'OSM - OpenStreetMap',
-        TITLE_FR: 'OSM - OpenStreetMap'
+        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        title_en: 'OSM - OpenStreetMap'
     },
 
     OSM_GRAYSCALE: {
-        URL : 'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
-        TITLE_EN: 'OSM - OpenStreetMap grayscale',
-        TITLE_FR: 'OSM - OpenStreetMap grayscale'
+        url : 'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
+        title_en: 'OSM - OpenStreetMap grayscale'
     },
 
     MAPQUEST: {
-        URL : 'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
-        TITLE_EN: 'MapQuest'
+        url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
+        title_en: 'MapQuest'
     },
 
     MAPQUEST_NASA_AERIAL : {
-        URL: 'http://tile21.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
-        TITLE_EN: 'MapQuest Aerial'
+        url: 'http://tile21.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
+        title_en: 'MapQuest Aerial'
     },
 
     ESRI_WORLDSTREETMAP : {
-        URL: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png',
-        TITLE_EN: 'ESRI - World Street Map',
-        TITLE_FR:  'ESRI - World Street Map'
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png',
+        title_en: 'ESRI - World Street Map'
     },
 
     ESRI_WORLDTERRAINBASE : {
-        URL: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
-        TITLE_EN: 'ESRI - World Terrain Base',
-        TITLE_FR: 'ESRI - World Terrain Base'
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
+        title_en: 'ESRI - World Terrain Base'
     },
 
     ACETATE_LABELS : {
-        URL : 'http://a{s}.acetate.geoiq.com/tiles/acetate-labels/{z}/{x}/{y}.png',
-        TITLE_EN : 'Acetate Labels'
+        url : 'http://a{s}.acetate.geoiq.com/tiles/acetate-labels/{z}/{x}/{y}.png',
+        title_en : 'Acetate Labels'
     },
 
     ACETATE_TERRAIN : {
-        URL : 'http://a{s}.acetate.geoiq.com/tiles/terrain/{z}/{x}/{y}.png',
-        TITLE_EN: 'Acetate Terrain'
+        url : 'http://a{s}.acetate.geoiq.com/tiles/terrain/{z}/{x}/{y}.png',
+        title_en: 'Acetate Terrain'
     },
 
     STAMEN_TONER_BACKGROUND : {
-        URL : 'http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png',
-        TITLE_EN: 'Stamen'
+        url : 'http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png',
+        title_en: 'Stamen'
     },
 
     ESRI_HISTORICAL_MERCATOR: {
-        URL : 'http://tiles2.arcgis.com/tiles/IEuSomXfi6iB7a25/arcgis/rest/services/World_Globe_1812/MapServer/{z}/{x}/{y}.png',
-        TITLE_EN: 'ESRI_HISTORICAL_MERCATOR'
+        url : 'http://tiles2.arcgis.com/tiles/IEuSomXfi6iB7a25/arcgis/rest/services/World_Globe_1812/MapServer/{z}/{x}/{y}.png',
+        title_en: 'ESRI_HISTORICAL_MERCATOR'
     }
 };
 ;
@@ -1086,7 +1082,7 @@ FM.Map = FM.Class.extend({
         url: {},    	
         lang: 'EN',
         guiController : {
-            overlay : true,
+            overlay: true,
             baselayer: true,
             wmsLoader: true,
             enablegfi: true, //this is used to switch off events like on drawing (when is need to stop the events on GFI)
@@ -1098,8 +1094,7 @@ FM.Map = FM.Class.extend({
             legendcontrol: true,
         	disclaimerfao: true
         },
-        baselayers: null,
-        usedefaultbaselayers: true        
+        baselayers: null
     },
     mapOptions: {
 		zoomControl: false,
@@ -1144,7 +1139,7 @@ FM.Map = FM.Class.extend({
 
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
         this.setTilePaneID();
-
+   
         this.controller = new FM.mapController(suffix, this, this.map,  this.options.guiController);
 
         this.controller.initializeGUI();
@@ -1175,32 +1170,34 @@ FM.Map = FM.Class.extend({
         
         this.initializePlugins();
 
-        if (this.options.baselayers) {
-            for(var i in this.options.baselayers) {
-                //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
-                var layeropts = this.options.baselayers[i];
-                // this is replicated because in wms it's used "layers" instead of layername
-                
-                var l = new FM.layer({
-                    layername: i,
-                    layertype: 'TILE',
-                    layertitle: layeropts['title_'+ this.options.lang.toLowerCase()],
-                    lang: this.options.lang.toUpperCase()
-                });
-
-                console.log(l)
-
-                l.leafletLayer = new L.TileLayer(layeropts.url);
-
-                this.addTileLayer(l, true);              
+        if(this.options.baselayers === null) {
+            this.options.baselayers = {
+                'OSM': FM.TILELAYER['OSM'],
+                'OSM_GRAYSCALE': FM.TILELAYER['OSM_GRAYSCALE'],
+                'ESRI_WORLDSTREETMAP': FM.TILELAYER['ESRI_WORLDSTREETMAP'],
+                'ESRI_WORLDTERRAINBASE': FM.TILELAYER['ESRI_WORLDTERRAINBASE']
             }
         }
-        else if( this.options.usedefaultbaselayers ) {
-            this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
-            this.addTileLayer(FM.TileLayer.createBaseLayer('OSM_GRAYSCALE', 'EN'), true);
-            this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDSTREETMAP', 'EN'), true);
-            this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDTERRAINBASE', 'EN'), true);
+
+
+        for(var i in this.options.baselayers) {
+            //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
+            var layeropts = this.options.baselayers[i];
+            // this is replicated because in wms it's used "layers" instead of layername
+            
+            var l = new FM.layer({
+                layername: i,
+                layertype: 'TILE',
+                layertitle: layeropts['title_'+ this.options.lang.toLowerCase()],
+                lang: this.options.lang.toUpperCase()
+            });
+            var lurl = layeropts.url;
+            delete layeropts.url;
+            l.leafletLayer = new L.TileLayer(lurl, layeropts);
+
+            this.addTileLayer(l, true);
         }
+
 
         return this;
     },
@@ -3755,8 +3752,8 @@ FM.TileLayer = FM.Layer.extend({
     var info = this.layer.layername ? FM.TILELAYER[this.layer.layername] : FM.TILELAYER[this.layer.layers];
 
     this.layer.layertype = 'TILE';
-    this.layer.layertitle = info[ 'TITLE_' + this.layer.lang.toUpperCase() ];
-    var leafletLayer = new L.TileLayer( info.URL );
+    this.layer.layertitle = info[ 'title_' + this.layer.lang.toLowerCase() ];
+    var leafletLayer = new L.TileLayer( info.url );
     return leafletLayer;
   }
 

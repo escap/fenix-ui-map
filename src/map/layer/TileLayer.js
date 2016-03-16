@@ -6,8 +6,8 @@ FM.TileLayer = FM.Layer.extend({
     var info = this.layer.layername ? FM.TILELAYER[this.layer.layername] : FM.TILELAYER[this.layer.layers];
 
     this.layer.layertype = 'TILE';
-    this.layer.layertitle = info[ 'TITLE_' + this.layer.lang.toUpperCase() ];
-    var leafletLayer = new L.TileLayer( info.URL );
+    this.layer.layertitle = info[ 'title_' + this.layer.lang.toLowerCase() ];
+    var leafletLayer = new L.TileLayer( info.url );
     return leafletLayer;
   }
 

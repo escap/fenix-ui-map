@@ -101,12 +101,13 @@ require([
 			},
 			"osm_grayscale": {
 				url: "http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
-				title_en: "OpenStreetMap Gray"
+				title_en: "OpenStreetMap Gray"				
 			},
-			"esri": {
+			"esri_grayscale": {
 				url: "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
 				title_en: "Esri WorldGrayCanvas",
-//TODO				attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+				attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+				maxZoom: 16
 			}
 		}
 	});
