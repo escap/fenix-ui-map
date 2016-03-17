@@ -17,7 +17,7 @@ define(function() {
 			'handlebars'            :FENIX_CDN+'handlebars/2.0.0/handlebars.min',
 			
 			'hoverintent'           :FENIX_CDN+'hoverintent/dist/hoverintent.min',
-			'leaflet'               :FENIX_CDN+'leaflet/0.7.3/leaflet-src',
+			'leaflet'               :FENIX_CDN+'leaflet/0.7.7/leaflet-src',
 			'leaflet.markercluster' :FENIX_CDN+'leaflet/plugins/leaflet.markercluster/1.1/leaflet.markercluster',
 			'powertip'              :FENIX_CDN+'jquery.powertip/1.2.0/jquery.powertip.min',
 

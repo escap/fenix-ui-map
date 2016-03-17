@@ -40,17 +40,17 @@ requirejs(['../src/paths'], function (paths) {
 				wmsLoader: false
 			},
 			baselayers: {
+				"world_imagery": {
+					title_en: "World Imagery",
+					url: "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+					attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+				},				
 				"cartodb": {
 					title_en: "CartoDB light",
 					url: 'http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
 					attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
 					subdomains: 'abcd',
 					maxZoom: 19
-				},
-				"world_imagery": {
-					title_en: "World Imagery",
-					url: "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-					attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
 				},
 				"esri_grayscale": {
 					url: "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
@@ -61,13 +61,13 @@ requirejs(['../src/paths'], function (paths) {
 			}
 		});
 		
-		map.createMap();
+		map.createMap(0,0,3);
 
 		map.addLayer( new FM.layer({
 			layers: 'fenix:gaul0_line_3857',
 			layertitle: 'Country Boundaries',
 			urlWMS: 'http://fenixapps.fao.org/geoserver',
-			opacity: '0.8',
+			//opacity: '0.8',
 			lang: 'EN'
 		}) );
 
@@ -78,10 +78,12 @@ requirejs(['../src/paths'], function (paths) {
 	        lang: 'EN'
 	    });
 
-		labelsLayer.leafletLayer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+		labelsLayer.leafletLayer = new L.TileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
 			subdomains: 'abcd',
-			maxZoom: 19
+			maxZoom: 19,
+			opacity: 0.8,
+			updateWhenIdle: false
 		});
 
 		map.addLayer(labelsLayer);
