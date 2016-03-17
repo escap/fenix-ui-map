@@ -1,6 +1,6 @@
 
 requirejs(['../src/paths'], function (paths) {
-    'use strict';
+	'use strict';
 
 	paths.baseUrl = '../';
 
