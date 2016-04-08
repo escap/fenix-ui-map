@@ -72,6 +72,9 @@ FM.MAPController = FM.Class.extend({
 
             self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
+//TODO replace addTo with jQuery appendTo
+//supporting rendering outside of map div
+
             var guiControl = (function() {
                 var control = new L.Control({position: 'bottomleft'});
 
