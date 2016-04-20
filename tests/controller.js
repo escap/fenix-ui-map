@@ -35,7 +35,7 @@ requirejs(['../src/paths'], function (paths) {
 				MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/'
 			},
 			guiController: {
-				//container: '#controller_wrapper',
+				container: '#controller_wrapper',
 				overlay: true,
 				baselayer: true,
 				wmsLoader: false
