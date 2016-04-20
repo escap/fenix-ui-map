@@ -13,6 +13,7 @@ FM.Map = FM.Class.extend({
         url: {},    	
         lang: 'EN',
         guiController : {
+            container: null,
             overlay: true,
             baselayer: true,
             wmsLoader: true,
@@ -26,7 +27,9 @@ FM.Map = FM.Class.extend({
             legendcontrol: true,
         	disclaimerfao: true
         },
-        baselayers: null
+        baselayers: null,
+        boundaries: null,
+        labels: null
     },
     mapOptions: {
 		zoomControl: false,
@@ -128,6 +131,26 @@ FM.Map = FM.Class.extend({
 
             this.addTileLayer(l, true);
         }
+
+        if(this.options.boundaries) {
+            this.addTileLayer( new FM.layer({
+                layers: this.options.url.LAYER_BOUNDARIES,
+                urlWMS: this.options.url.DEFAULT_WMS_SERVER,
+                layertitle: 'Country Boundaries',
+                lang: 'EN',
+                opacity: 0.9                
+            }) );
+        }
+
+        if(this.options.labels) {
+            this.addTileLayer( new FM.layer({
+                layers: L.Util.template(this.options.url.LAYER_LABELS, 'en'),
+                urlWMS: this.options.url.DEFAULT_WMS_SERVER,
+                layertitle: 'Country Labels',                
+                lang: 'EN',
+                opacity: 0.9                
+            }) );
+        }                
 
 
         return this;

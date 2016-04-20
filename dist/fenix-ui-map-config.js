@@ -17,6 +17,9 @@ define(function() {
 		BASEURL_MAPS: 'http://fenixapps2.fao.org/maps-demo',
 		MAP_SERVICE_ZOOM_TO_BOUNDARY: '/rest/service/bbox',
 		MAP_SERVICE_WMS_GET_CAPABILITIES: '/rest/service/request',
-		MAP_SERVICE_PROXY: '/rest/service/request'
+		MAP_SERVICE_PROXY: '/rest/service/request',
+
+		LAYER_BOUNDARIES: 'fenix:gaul0_line_3857',
+		LAYER_LABELS: 'fenix:gaul0_3857',
     };
 });

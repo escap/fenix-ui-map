@@ -9,6 +9,7 @@ FM.MAPController = FM.Class.extend({
     _fenixMap: '',
 
     _guiController:  {
+        container: null,
         overlay : true,
         baselayer: true,
         layersthumbs: true
@@ -65,50 +66,59 @@ FM.MAPController = FM.Class.extend({
             
             var mapDiv$ = $('#' + self.id);
 
-            self.$boxMenu = $(FM.Util.replaceAll(FM.guiController.box, 'REPLACE', self.suffix));
+            self.$boxMenu = $(FM.Util.replaceAll(FM.guiController.boxMenu, 'REPLACE', self.suffix));
+
             self.$boxMenuContainer = self.$boxMenu.find('#' + self.suffix + '-controller-box-content');
-
-            self.$boxMenuContainer.css({maxHeight: (self._map.getSize().y-60)+'px'});
-
+            
             self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
-//TODO replace addTo with jQuery appendTo
-//supporting rendering outside of map div
+            var visibleBoxMenu;
 
-            var guiControl = (function() {
-                var control = new L.Control({position: 'bottomleft'});
+            if( self._guiController.container ) {
 
-                control.onAdd = function(map) {
+                var $div = $('<div class="fm-controller-external">')
+                    .append(self.$boxIcons, self.$boxMenu);
 
-                    var $div = $('<div class="leaflet-control-controller">')
-                        
-                        .append(self.$boxIcons)
-                        .append(self.$boxMenu),
-                        div = $div[0];
+                $div.appendTo(self._guiController.container);
 
-                    if (!L.Browser.touch) {
-                        L.DomEvent.disableClickPropagation(div);
-                        L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-                    }
-                    else
-                        L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+                visibleBoxMenu = true;
+            }
+            else
+            {
+                visibleBoxMenu = false;
 
-                    return div;
-                };
-                return control;
-            }()).addTo(self._map);
+                var guiControl = (function() {
+                    var control = new L.Control({position: 'bottomleft'});
+
+                    control.onAdd = function(map) {
+
+                        var $div = $('<div class="leaflet-control-controller">')
+                            .append(self.$boxIcons, self.$boxMenu);
+
+                        if (!L.Browser.touch) {
+                            L.DomEvent.disableClickPropagation($div[0]);
+                            L.DomEvent.on($div[0], 'mousewheel', L.DomEvent.stopPropagation);
+                        }
+                        else
+                            L.DomEvent.on($div[0], 'click', L.DomEvent.stopPropagation);
+
+                        return $div[0];
+                    };
+                    return control;
+                }()).addTo(self._map);
+            }
 
             /** TODO: make it nicer and more dynamic, with a more consistent name **/
             if ( self._guiController.overlay) {
-                self.loadIcon('overlay');
+                self.loadIcon('overlay', visibleBoxMenu);
                 self.initializeOverlayDragging();
             }
             if ( self._guiController.baselayer) {
-                self.loadIcon('baselayer');
+                self.loadIcon('baselayer', visibleBoxMenu);
             }
 
             if ( self._guiController.wmsLoader) {
-                this.loadIcon('wmsLoader');
+                self.loadIcon('wmsLoader', visibleBoxMenu);
                 var wmsUtils = new FM.WMSUtils(),
                     idDD = this.suffix + '-controller-wmsLoader-dropdown',
                     idContent = this.suffix + '-controller-wmsLoader-content',
@@ -125,28 +135,47 @@ FM.MAPController = FM.Class.extend({
      *
      * @param toLoad
      */
-    loadIcon: function(toLoad) {
-        var guiController = FM.guiController;
+    loadIcon: function(toLoad, visibleBox) {
         var guiBox = toLoad + 'Box';
         var guiIcon = toLoad + 'Icon';
 
-        
-        this.$boxMenuContainer.append(FM.Util.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
+        visibleBox = typeof visibleBox !== 'undefined' ? visibleBox : false;
 
-        var $boxIcon = $(FM.Util.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
+        this.$boxMenuContainer.append(
+            FM.Util.replaceAll(FM.guiController[guiBox], 'REPLACE', this.suffix)
+        );
+
+        if(visibleBox===false) {
+            this.$boxMenu.hide();
+            //this.$boxMenuContainer.find('.fm-box-zindex').hide();
+        }else {
+            this.$boxMenu.show();
+            this.$boxMenuContainer.find('.fm-box-zindex').show();
+        }
+        
+        var $boxIcon = $(FM.Util.replaceAll(FM.guiController[guiIcon], 'REPLACE', this.suffix));
         $boxIcon.attr('title', $.i18n.prop('_' + toLoad));
 
-        this.$boxIcons.show().append($boxIcon);
+        $boxIcon.appendTo(this.$boxIcons);
 
+        if(visibleBox===true)
+            this.$boxIcons.hide();
+
+        //TODO REMOVE powerTip
         try {
             $boxIcon.powerTip({placement: 'ne'});
         } catch (e) {}
 
         var _this = this;
         var $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
-        $('#' + this.suffix + '-controller-' + toLoad + 'Icon').on('click', {$id: $id, suffix: this.suffix}, function(event) {
-                var $id = event.data.$id;
-                var suffix =  event.data.suffix;
+        $('#' + this.suffix + '-controller-' + toLoad + 'Icon')
+        .on('click', {
+                $id: $id,
+                suffix: this.suffix
+            }, function(e) {
+                
+                var $id = e.data.$id;
+
                 if (_this.$boxMenu.is(':visible'))
                 {
                     if ( _this.$boxMenuSelected == $id ) {
@@ -155,22 +184,25 @@ FM.MAPController = FM.Class.extend({
                         _this.$boxMenuSelected = '';
                     }
                     else {
-                        _this.$boxMenuSelected.hide();
-                         $id.slideDown();
+                        $id.slideDown();
                         _this.$boxMenuSelected = $id;
                     }
                 }
                 else {
                     _this.$boxMenuSelected = $id;
-                    _this.$boxMenuSelected.show();
                     _this.$boxMenu.slideDown();
                 }
         });
 
         // close icon
-        $('#' + this.suffix + '-controller-' + toLoad + '-remove').on('click', {$id: $id, suffix: this.suffix}, function(event) {
-            var $id = event.data.$id;
-            var suffix =  event.data.suffix;
+        $('#' + this.suffix + '-controller-' + toLoad + '-remove')
+        .on('click', {
+            $id: $id,
+            suffix: this.suffix
+        }, function(e) {
+            var $id = e.data.$id,
+                suffix =  e.data.suffix;
+
             $('#' + suffix + '-controller-box').slideUp();
             $id.hide();
         });
@@ -181,6 +213,9 @@ FM.MAPController = FM.Class.extend({
      */
     initializeOverlayDragging: function() {
         var _this = this;
+
+//TODO replace with https://github.com/RubaXa/Sortable
+
         $('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
@@ -489,8 +524,8 @@ FM.MAPController = FM.Class.extend({
         else
             $('#' + l.id + '-controller-item-baselayer-image').remove();
 
-        $(idItem+ '-enabledisable').on('click', {id:l.id}, function(event) {
-            self.showHide(event.data.id)
+        $(idItem+ '-enabledisable').on('click', {id:l.id}, function(e) {
+            self.showHide(e.data.id)
         });
 
         var opacity = 1;
@@ -504,14 +539,17 @@ FM.MAPController = FM.Class.extend({
                 max: 1,
                 step: 0.1,
                 value: opacity,
-                slide: function( event, ui ) {
+                slide: function(e, ui) {
                     FM.LayerUtils.setLayerOpacity(l, ui.value);
                 }
             });
         }catch(e) { }
 
-        $('#' + l.id + '-controller-box-item').on('click', {id:l.id}, function(event) {
-            var id = event.data.id;
+        $('#' + l.id + '-controller-box-item')
+        .on('click', {
+            id:l.id
+        }, function(e) {
+            var id = e.data.id;
             var l = self.baseLayersMap.get(id);
 
             // removing the old baselayer
