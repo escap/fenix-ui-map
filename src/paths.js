@@ -16,10 +16,10 @@ define(function() {
 			'underscore'            :FENIX_CDN+'underscore/1.7.0/underscore-min',
 			'handlebars'            :FENIX_CDN+'handlebars/2.0.0/handlebars.min',
 			
-			'hoverintent'           :FENIX_CDN+'hoverintent/dist/hoverintent.min',
+			//'hoverintent'           :FENIX_CDN+'hoverintent/dist/hoverintent.min',
 			'leaflet'               :FENIX_CDN+'leaflet/0.7.7/leaflet-src',
 			'leaflet.markercluster' :FENIX_CDN+'leaflet/plugins/leaflet.markercluster/1.1/leaflet.markercluster',
-			'powertip'              :FENIX_CDN+'jquery.powertip/1.2.0/jquery.powertip.min',
+			//'powertip'              :FENIX_CDN+'jquery.powertip/1.2.0/jquery.powertip.min',
 
 			'chosen'                :FENIX_CDN+'chosen/1.2.0/chosen.jquery.min',
 			'jquery-ui'             :FENIX_CDN+'jquery-ui/1.10.3/jquery-ui-1.10.3.custom.min',
@@ -35,8 +35,8 @@ define(function() {
 			'bootstrap'   : ['jquery'],
 			'chosen'      : ['jquery'],
 			'jquery-ui'   : ['jquery'],
-			'powertip'    : ['jquery'],
-			'hoverintent' : ['jquery'],
+			//'powertip'  : ['jquery'],
+			//'hoverintent' : ['jquery'],
 			'jquery.i18n.properties': ['jquery'],
 			'jquery.hoverIntent'    : ['jquery'],
 			'underscore'  : {
@@ -52,7 +52,7 @@ define(function() {
 				//'import-dependencies',
 				//'hoverintent',
 				//'jquery-ui',				
-				'powertip',
+				//'powertip',
 				'jquery.i18n.properties',
 				'fenix-map-config',
 				'jquery.hoverIntent'

@@ -7,7 +7,10 @@ FM.guiController = {
             '</div>',
 
     baselayerIcon:
-    '<div class="fm-box-zindex fx-toolbar-map-holder "><div class="fm-icon-sprite fm-baselayers" id="REPLACE-controller-baselayerIcon"><div></div>',
+    '<div class="fm-box-zindex fx-toolbar-map-holder ">'+
+        '<div class="fm-icon-sprite fm-baselayers" id="REPLACE-controller-baselayerIcon"><div>'+
+    '</div>',
+
     baselayerBox:
     '<div class="fm-box-zindex fx-toolbar-map-holder " id="REPLACE-controller-baselayer-box">' +
         '<div id="REPLACE-controller-baselayer-title" class="fm-controller-box-title">Baselayers</div>' +
@@ -73,6 +76,7 @@ FM.guiController = {
 
     wmsLoaderIcon:
     "<div class='fm-box-zindex fx-toolbar-map-holder '><div class='fm-icon-sprite fm-wmsloader' id='REPLACE-controller-wmsLoaderIcon'></div></div>",
+    
     wmsLoaderBox:
     '<div class="fm-box-zindex fx-toolbar-map-holder " id="REPLACE-controller-wmsLoader-box" style="display:none; min-height:300px;">' +
         '<div id="REPLACE-controller-wmsLoader-title" class="fm-controller-box-title">WMS Loader</div>' +

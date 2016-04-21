@@ -133,25 +133,27 @@ FM.Map = FM.Class.extend({
         }
 
         if(this.options.boundaries) {
-            this.addTileLayer( new FM.layer({
+
+            this.layerBoundaries = new FM.layer({
                 layers: this.options.url.LAYER_BOUNDARIES,
                 urlWMS: this.options.url.DEFAULT_WMS_SERVER,
                 layertitle: 'Country Boundaries',
                 lang: 'EN',
-                opacity: 0.9                
-            }) );
+                opacity: 0.9
+            });
+            this.addTileLayer( this.layerBoundaries );
         }
 
         if(this.options.labels) {
-            this.addTileLayer( new FM.layer({
+            this.layerLabels = new FM.layer({
                 layers: L.Util.template(this.options.url.LAYER_LABELS, 'en'),
                 urlWMS: this.options.url.DEFAULT_WMS_SERVER,
-                layertitle: 'Country Labels',                
+                layertitle: 'Country Labels',
                 lang: 'EN',
-                opacity: 0.9                
-            }) );
-        }                
-
+                opacity: 0.9
+            });
+            this.addTileLayer( this.layerLabels );
+        }
 
         return this;
     },
@@ -165,12 +167,14 @@ FM.Map = FM.Class.extend({
     },
 
     addTileLayer: function(l, isBaseLayer) {
-        if ( isBaseLayer ) this.controller.addBaseLayer(l);
+        if ( isBaseLayer )
+            this.controller.addBaseLayer(l);
         else  {
            this.controller.layerAdded(l);
            this.map.addLayer(l.leafletLayer);
         }
         this.controller.setZIndex(l);
+        return this;
     },
 
     /** TODO: make it nicer **/
@@ -283,7 +287,7 @@ FM.Map = FM.Class.extend({
     _openlegend: function(l, isReload) {
         try {
             if (l.layer.openlegend) {
-                FM.LayerLegend.getLegend(l, l.id + '-controller-item-getlegend', isReload)
+                FM.LayerLegend.getLegend(l, l.id + '-controller-item-getlegend', isReload);
             }
         }catch (e) {
             console.war("_openlegend error:" + e);
@@ -455,27 +459,22 @@ FM.Map = FM.Class.extend({
     },
 
     _getMapOptions:function() {
-        var o = {
-            options: {},
-            mapOptions: {}
+        return {
+            options: $.extend(true, {}, this.options),
+            plugins: $.extend(true, {}, this.plugins),
+            mapOptions: $.extend(true, _getCurrentMapOptions, this.mapOptions)            
         };
-        o.options    =  $.extend(true, {}, this.options);
-        o.mapOptions =  $.extend(true, _getCurrentMapOptions, this.mapOptions);
-        o.plugins =  $.extend(true, {}, this.plugins);
-        return o;
     },
 
     _getMapLayers:function() {
-        var o = {}
-        o.overlays = this.controller.exportOverlays();
-        return o
+        return {
+            overlays: this.controller.exportOverlays()
+        };
     },
 
     loadOverlays: function(overlays) {
         for(var i =0; i < overlays.length; i++) {
-            // TODO: add a switch based on the layertype? i.e. what for markers
-            var l = new FM.layer(overlays[i]);
-            this.addLayer(l);
+            this.addLayer( new FM.layer(overlays[i]) );
         }
     },
 
@@ -489,6 +488,16 @@ FM.Map = FM.Class.extend({
 
     getSLDfromCSS: function(layername, css) {
         FM.MapUtils.getSLDfromCSS(layername, css, this.options.url.CSS_TO_SLD);
+    },
+
+    labelsShow: function() {
+        console.log(this.layerLabels);
+        this.addLayer(this.layerLabels);
+    },
+
+    labelsHide: function() {
+        console.log(this.layerLabels);
+        this.removeLayer(this.layerLabels);
     }
 });
 

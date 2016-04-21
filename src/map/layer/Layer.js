@@ -136,15 +136,6 @@ FM.Layer = FM.Class.extend({
         }
     },
 
-    /** TOODO: remove layer also from the layers list **/
-    removeLayer: function(fenixmap) {
-        /** TODO: remove it from the list **/
-        if ( fenixmap )
-            fenixmap.removeLayer(this);
-        else if ( this._fenixmap)
-            this._fenixmap.removeLayer(this);
-    },
-
     /** shortcut **/
     addPointLayer: function(fenixmap) {
         if ( fenixmap )
@@ -165,6 +156,15 @@ FM.Layer = FM.Class.extend({
             fenixmap.addLayer(this);
         else if ( this._fenixmap)
             this._fenixmap.addLayer(this);
+    },
+    
+    /** TOODO: remove layer also from the layers list **/
+    removeLayer: function(fenixmap) {
+        /** TODO: remove it from the list **/
+        if ( fenixmap )
+            fenixmap.removeLayer(this);
+        else if ( this._fenixmap)
+            this._fenixmap.removeLayer(this);
     },
 
     addShadedLayer: function(fenixmap) {

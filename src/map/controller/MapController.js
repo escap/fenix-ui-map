@@ -79,7 +79,7 @@ FM.MAPController = FM.Class.extend({
                 var $div = $('<div class="fm-controller-external">')
                     .append(self.$boxIcons, self.$boxMenu);
 
-                $div.appendTo(self._guiController.container);
+                $div.prependTo(self._guiController.container);
 
                 visibleBoxMenu = true;
             }
@@ -161,10 +161,7 @@ FM.MAPController = FM.Class.extend({
         if(visibleBox===true)
             this.$boxIcons.hide();
 
-        //TODO REMOVE powerTip
-        try {
-            $boxIcon.powerTip({placement: 'ne'});
-        } catch (e) {}
+        $boxIcon.tooltip();
 
         var _this = this;
         var $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
@@ -296,15 +293,16 @@ FM.MAPController = FM.Class.extend({
             this.layersMapZIndexes.set(l.layer.zindex, l.id)
 
             // drag and drop layer
-            $(idItem).attr( "title", $.i18n.prop('_dragdroplayer'));
-            try { $(idItem).powerTip({placement: 'e'}); } catch (e) {}
+            $(idItem)
+            .attr( "title", $.i18n.prop('_dragdroplayer'))
+            .tooltip();
 
             var _this = this;
             // listeners
             self._fenixMap.$map.find(idItem + '-title')
                 .append(l.layer.layertitle)
-                .attr( "title", l.layer.layertitle);
-            try { $(idItem + '-title').powerTip({placement: 'se'}); } catch (e) {}
+                .attr( "title", l.layer.layertitle)
+                .tooltip();
 
             // Remove Layer
             var $removeLayer = $(idItem+ '-remove');
@@ -316,16 +314,17 @@ FM.MAPController = FM.Class.extend({
                 event.preventDefault();
 
             });
-            $removeLayer.attr( "title", $.i18n.prop('_removelayer'));
-            try { removeLayer.powerTip({placement: 'n'}); } catch (e) {}
+            $removeLayer
+                .attr( "title", $.i18n.prop('_removelayer'))
+                .tooltip();
 
             // Enable/Disable layer
-            var $enabledisablelayer = $(idItem+ '-enabledisable');
-            $enabledisablelayer.on('click', {id:l.id}, function(event) {
-                _this.showHide(event.data.id)
-            });
-            $enabledisablelayer.attr( "title", $.i18n.prop('_enabledisablelayer'));
-            try { $enabledisablelayer.powerTip({placement: 'se'}); } catch (e) {}
+            $(idItem+ '-enabledisable')
+                .on('click', {id:l.id}, function(event) {
+                    _this.showHide(event.data.id)
+                })
+                .attr( "title", $.i18n.prop('_enabledisablelayer'))
+                .tooltip();
 
             // Layer Opacity
             var opacity = 1;
@@ -345,7 +344,7 @@ FM.MAPController = FM.Class.extend({
                     }
                 });
                 $layeropacity.attr( "title", $.i18n.prop('_layeropacity'));
-                try { $layeropacity.powerTip({placement: 'se'}); } catch (e) {}
+                try { $layeropacity.tooltip({placement: 'se'}); } catch (e) {}
             } catch(e) {
                 // console.log('jquery-ui is not loaded');
             }
@@ -372,7 +371,7 @@ FM.MAPController = FM.Class.extend({
                     }
                 });
                 $layergfi.attr( "title", $.i18n.prop('_getfeatureinfo'));
-                try { $layergfi.powerTip({placement: 'se'});} catch (e) {}
+                try { $layergfi.tooltip({placement: 'se'});} catch (e) {}
                 if ( l.layer.defaultgfi ) {
                     // TODO: set default gfi style on the layer
                     this.selectedLayer = l;
@@ -393,7 +392,7 @@ FM.MAPController = FM.Class.extend({
                 });
             }
             $getlegend.attr( "title", $.i18n.prop('_showhidelegend'));
-            try { $getlegend.powerTip({placement: 'se'}); } catch (e) {}
+            try { $getlegend.tooltip({placement: 'se'}); } catch (e) {}
             $getlegend.css("display","inline-block");
 
             // Switch JoinType (From shaded to Point Layer)
@@ -411,7 +410,7 @@ FM.MAPController = FM.Class.extend({
                         else if ( l.layer.jointype.toLowerCase() == 'shaded')  {
                             $(idItem+ '-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'))
                         }
-                        try { $(idItem+ "-switchjointype").powerTip({placement: 'se'}); } catch (e) {}
+                        try { $(idItem+ "-switchjointype").tooltip({placement: 'se'}); } catch (e) {}
                     }
                 }
             }
@@ -470,7 +469,7 @@ FM.MAPController = FM.Class.extend({
             });
             $subiconsshowhide.attr( "title", $.i18n.prop('_layersubicons'))
             try {
-                $subiconsshowhide.powerTip({placement: 'n'});
+                $subiconsshowhide.tooltip({placement: 'n'});
             } catch (e) { }
         }
     },
@@ -635,7 +634,7 @@ FM.MAPController = FM.Class.extend({
      */
     switchJoinType: function(id) {
         var l = this.layersMap.get(id);
-        try { $.powerTip.destroy($("#" + l.id +  "-controller-item-switchjointype")); } catch (e) {}
+        try { $.tooltip.destroy($("#" + l.id +  "-controller-item-switchjointype")); } catch (e) {}
         if (  l.layer.jointype.toLowerCase() == 'point') {
             // alert('point')
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'));
@@ -646,7 +645,7 @@ FM.MAPController = FM.Class.extend({
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'));
             this.switchToPoint(id);
         }
-        try { $("#" + l.id +  "-controller-item-switchjointype").powerTip({placement: 'se'}); } catch (e) {}
+        try { $("#" + l.id +  "-controller-item-switchjointype").tooltip({placement: 'se'}); } catch (e) {}
     },
 
     /*

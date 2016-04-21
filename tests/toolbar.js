@@ -22,6 +22,7 @@ requirejs(['../src/paths'], function (paths) {
 
 		window.map = new FM.Map('#map', {
 			plugins: {
+				fullscreen: false,
 				disclaimerfao: true,
 				geosearch: true,
 				mouseposition: false,
@@ -35,7 +36,7 @@ requirejs(['../src/paths'], function (paths) {
 				MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/'
 			},
 			guiController: {
-				container: '#controller_wrapper',
+				container: '#toolbar',
 				overlay: true,
 				baselayer: true,
 				wmsLoader: false
@@ -72,26 +73,18 @@ requirejs(['../src/paths'], function (paths) {
 			lang: 'EN'
 		}) );
 
-		var labelsLayer = new FM.layer({
-	        layername: 'labels',
-	        layertype: 'TILE',
-	        layertitle: 'Country Labels',
-	        lang: 'EN'
-	    });
-
-		labelsLayer.leafletLayer = new L.TileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-			subdomains: 'abcd',
-			maxZoom: 19,
-			opacity: 0.8,
-			updateWhenIdle: false
+		//map.zoomTo("country", "iso3", ["THA"]);
+		//map.zoomTo("country", "iso2", "GE");
+		
+		$('#cklabels').on('change', function(e) {
+			
+			if(e.target.checked)
+				map.labelsShow();
+			else
+				map.labelsHide();
 		});
 
-		map.addLayer(labelsLayer);
-	   //map.zoomTo("country", "iso3", ["THA"]);
-	   //map.zoomTo("country", "iso2", "GE");
 	});
-
 });
 
 
