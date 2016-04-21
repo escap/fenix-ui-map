@@ -39,15 +39,14 @@
     display: inline-block;
 }
 
-
 .fm-controller-box-item {
     padding: 2px;
     margin: 3px 10px 3px 5px;
     border-bottom: 1px solid #CCCCCC;
     border-width: 1px 0;
     margin: 4px 0;
-    cursor: pointer;
     position: relative;
+    cursor: pointer;
     height: auto;
     min-height: 55px;
     overflow: hidden;
@@ -104,11 +103,12 @@
     /* border-bottom: 1px solid #E5E5E5; */
 }
 
-div.fm-controller-box-header-text{
+div.fm-controller-box-header-text {
     display: inline;
 }
 
 .fm-controller-box-subtitle {
+    
 }
 
 .fm-controller-box-footer {
@@ -633,15 +633,13 @@ div#legend.bottomright div table {
     display: none;
 }
 
-/** CountrySTAT **/
 .fm-icon-box-background {
-    z-index:10;
-    background-color: #f9f7f3;
-    border: 1px solid #FFFFFF;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-
     float: left;
+    background-color: #f9f7f3;
+}
+
+.fm-controller-external .fm-icon-box-background {
+    float: none;
 }
 
 .fm-controller-box-icons-container {
@@ -710,18 +708,7 @@ div#legend.bottomright div table {
 
 
 .fm-controller-box {
-    font-size: 11px;
-    line-height: 16px;
-    outline: none;
-    overflow:auto;
-    z-index: 0;
-    width:250px;
-    padding: 5px;
 
-    max-height: -moz-calc(100% - 26px);
-    max-height: -webkit-calc(100% - 26px);
-    max-height: -o-calc(100% - 26px);
-    max-height: calc(100% - 26px);
 }
 
 
@@ -978,6 +965,15 @@ div#legend.bottomright div table {
     transition: background-color 200ms cubic-bezier(0.52, 0, 0.48, 1) 0s;
     width: 400px;
     z-index: 0;
+}
+
+.fm-controller-external .fm-icon-close-panel-sprite.fm-icon-close {
+    display: none;
+}
+
+.fm-controller-external .fx-toolbar-map-holder {
+    float: left;
+    width:250px;
 }
 
 #powerTip {
