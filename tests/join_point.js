@@ -107,7 +107,7 @@ require([
 		urlWMS: 'http://fenix.fao.org/geoserver',
 		opacity: '0.9',
 		lang: 'en'
-	}));
+	}) );
 
 
 	var r = {

@@ -1212,27 +1212,21 @@ FM.Map = FM.Class.extend({
 
             this.addTileLayer(l, true);
         }
-
-        if(this.options.boundaries) {
-
-            this.layerBoundaries = new FM.layer({
-                layers: this.options.url.LAYER_BOUNDARIES,
-                urlWMS: this.options.url.DEFAULT_WMS_SERVER,
+/*
+        if(this.options.url.LAYER_BOUNDARIES) {
+            var wmsLayer = new FM.layer({
+                layers: 'fenix:gaul0_line_3857',
                 layertitle: 'Country Boundaries',
-                lang: 'EN',
-                opacity: 0.9
+                urlWMS: 'http://fenix.fao.org/geoserver',
+                opacity: '0.9',
+                lang: 'en'
             });
-            this.addTileLayer( this.layerBoundaries );
-        }
+            console.log(wmsLayer)
+            this.layerBoundaries = wmsLayer.leafletLayer;
+        }*/
 
-        if(this.options.url.LAYER_LABELS) {
-/*            var url = L.Util.template(this.options.url.LAYER_LABELS, {lang: 'en'});
-            this.layerLabels = new L.TileLayer(url, {
-                subdomains: 'abcd',
-                opacity: 0.9
-            });*/
-        
-            this.layerLabels = new L.TileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+        if(this.options.url.LAYER_LABELS) {        
+            this.layerLabels = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
                 subdomains: 'abcd',
                 maxZoom: 19,
@@ -1357,7 +1351,7 @@ FM.Map = FM.Class.extend({
 
         // open legend
         this._openlegend(l, isReload);
-ind
+
         // check layer visibility
         this.controller.showHide(l.id, isReload)
     },
@@ -1581,6 +1575,14 @@ ind
 
     labelsHide: function() {
         this.map.removeLayer(this.layerLabels);
+    },
+
+    boundariesShow: function() {
+        this.layerBoundaries.addTo(this.map).bringToFront();
+    },
+
+    boundariesHide: function() {
+        this.map.removeLayer(this.layerBoundaries);
     }
 });
 

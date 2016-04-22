@@ -65,24 +65,30 @@ requirejs(['../src/paths'], function (paths) {
 		
 		map.createMap(0,0,3);
 
-		map.addLayer( new FM.layer({
-			layers: 'fenix:gaul0_line_3857',
-			layertitle: 'Country Boundaries',
-			urlWMS: 'http://fenixapps.fao.org/geoserver',
-			//opacity: '0.8',
-			lang: 'EN'
-		}) );
-
 		//map.zoomTo("country", "iso3", ["THA"]);
 		//map.zoomTo("country", "iso2", "GE");
 		
+/*		map.addLayer(new FM.layer({
+            layers: 'fenix:gaul0_line_3857',
+            layertitle: 'Country Boundaries',
+            urlWMS: 'http://fenixapps.fao.org/geoserver',
+            opacity: '0.9',
+            lang: 'en'
+        }));*/
+
 		$('#cklabels').on('change', function(e) {
-			
 			if(e.target.checked)
 				map.labelsShow();
 			else
 				map.labelsHide();
 		});
+
+		$('#ckbounds').on('change', function(e) {
+			if(e.target.checked)
+				map.boundariesShow();
+			else
+				map.boundariesHide();
+		});		
 
 	});
 });

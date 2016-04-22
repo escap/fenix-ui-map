@@ -63,21 +63,6 @@ requirejs(['../src/paths'], function (paths) {
 		
 		map.createMap(0,0,3);
 
-		map.addLayer( new FM.layer({
-			layers: 'fenix:gaul0_line_3857',
-			layertitle: 'Country Boundaries',
-			urlWMS: 'http://fenixapps.fao.org/geoserver',
-			//opacity: '0.8',
-			lang: 'EN'
-		}) );
-
-		var labelsLayer = new FM.layer({
-	        layername: 'labels',
-	        layertype: 'TILE',
-	        layertitle: 'Country Labels',
-	        lang: 'EN'
-	    });
-
 	});
 
 });
