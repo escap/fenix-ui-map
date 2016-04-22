@@ -28,8 +28,10 @@ if (typeof exports !== undefined + '') {
     window.FM = FM;
 }
 
-FM.version = '0.0.1';
-FM.author = 'Simone Murzilli - simone.murzilli@gmail.com; simone.murzilli@fao.org';;
+FM.authors = [
+	{name: 'Stefano Cudini', email: 'stefano.cudini@fao.org'},
+	{name: 'Simone Murzilli', email: 'simone.murzilli@gmail.com; simone.murzilli@fao.org'}
+];;
 FM.Class = function () {};
 
 FM.Class.extend = function (props) {
@@ -1117,7 +1119,7 @@ FM.Map = FM.Class.extend({
         lat: 0,
         lng: 0,
         zoom: 1
-    },    
+    },
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
 
@@ -1223,15 +1225,20 @@ FM.Map = FM.Class.extend({
             this.addTileLayer( this.layerBoundaries );
         }
 
-        if(this.options.labels) {
-            this.layerLabels = new FM.layer({
-                layers: L.Util.template(this.options.url.LAYER_LABELS, 'en'),
-                urlWMS: this.options.url.DEFAULT_WMS_SERVER,
-                layertitle: 'Country Labels',
-                lang: 'EN',
+        if(this.options.url.LAYER_LABELS) {
+/*            var url = L.Util.template(this.options.url.LAYER_LABELS, {lang: 'en'});
+            this.layerLabels = new L.TileLayer(url, {
+                subdomains: 'abcd',
                 opacity: 0.9
+            });*/
+        
+            this.layerLabels = new L.TileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+                subdomains: 'abcd',
+                maxZoom: 19,
+                opacity: 0.8
             });
-            this.addTileLayer( this.layerLabels );
+            map.bringToFront(this.layerLabels);
         }
 
         return this;
@@ -1351,7 +1358,7 @@ FM.Map = FM.Class.extend({
 
         // open legend
         this._openlegend(l, isReload);
-
+ind
         // check layer visibility
         this.controller.showHide(l.id, isReload)
     },
@@ -1523,17 +1530,17 @@ FM.Map = FM.Class.extend({
 
     /** functionality to export the map definition **/
     exportMap:function() {
-        return {
-            map: this._getMapOptions(),
-            layers: this._getMapLayers()
-        };
+       var o = {};
+       o.map   = this._getMapOptions();
+       o.layers = this._getMapLayers();
+       return o;
     },
 
     exportMapToJSONFile:function() {
-        var json = this.exportMap(),
-            id = FM.Util.randomID(),
-            uriContent = "data:application/octet-stream;filename=mapview-"+ id +".fnx," + encodeURIComponent(JSON.stringify(json)),
-            _window = window.open(uriContent, "mapview-"+ id +".fnx");
+        var json = this.exportMap();
+        var id = FM.Util.randomID();
+        var uriContent = "data:application/octet-stream;filename=mapview-"+ id +".fnx," + encodeURIComponent(JSON.stringify(json));
+        var _window = window.open(uriContent, "mapview-"+ id +".fnx");
         _window.focus();
     },
 
@@ -1570,13 +1577,11 @@ FM.Map = FM.Class.extend({
     },
 
     labelsShow: function() {
-        console.log(this.layerLabels);
-        this.addLayer(this.layerLabels);
+        this.map.addLayer(this.layerLabels);
     },
 
     labelsHide: function() {
-        console.log(this.layerLabels);
-        this.removeLayer(this.layerLabels);
+        this.map.removeLayer(this.layerLabels);
     }
 });
 

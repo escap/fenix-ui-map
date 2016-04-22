@@ -78,17 +78,6 @@ requirejs(['../src/paths'], function (paths) {
 	        lang: 'EN'
 	    });
 
-		labelsLayer.leafletLayer = new L.TileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-			subdomains: 'abcd',
-			maxZoom: 19,
-			opacity: 0.8,
-			updateWhenIdle: false
-		});
-
-		map.addLayer(labelsLayer);
-	   //map.zoomTo("country", "iso3", ["THA"]);
-	   //map.zoomTo("country", "iso2", "GE");
 	});
 
 });

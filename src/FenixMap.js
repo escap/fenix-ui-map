@@ -23,5 +23,7 @@ if (typeof exports !== undefined + '') {
     window.FM = FM;
 }
 
-FM.version = '0.0.1';
-FM.author = 'Simone Murzilli - simone.murzilli@gmail.com; simone.murzilli@fao.org';
+FM.authors = [
+	{name: 'Stefano Cudini', email: 'stefano.cudini@fao.org'},
+	{name: 'Simone Murzilli', email: 'simone.murzilli@gmail.com; simone.murzilli@fao.org'}
+];

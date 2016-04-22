@@ -38,7 +38,7 @@
     "requirejs": "~2.1.14",
     "handlebars": "~2.0.0",
     "underscore": "~1.7.0",
-    "leaflet": "~0.7.3",
+    "leaflet": "~0.7.7",
     "leaflet.markercluster": "~0.4.0",
     "chosen-jquery": "~0.1.1",
     "text": "https://github.com/requirejs/text/tarball/master",
