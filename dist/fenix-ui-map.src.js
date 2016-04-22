@@ -1238,7 +1238,6 @@ FM.Map = FM.Class.extend({
                 maxZoom: 19,
                 opacity: 0.8
             });
-            map.bringToFront(this.layerLabels);
         }
 
         return this;
@@ -1577,7 +1576,7 @@ ind
     },
 
     labelsShow: function() {
-        this.map.addLayer(this.layerLabels);
+        this.layerLabels.addTo(this.map).bringToFront();
     },
 
     labelsHide: function() {
