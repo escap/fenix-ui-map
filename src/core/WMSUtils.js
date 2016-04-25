@@ -104,10 +104,8 @@ FM.WMSUtils = FM.Class.extend({
 
                 $("#" + id).append(layerPanel);
                 $('#' + rand + '-WMSLayer-title')
-                    .append(layer.layertitle)
-                    .attr("title", layer.layertitle);
-                
-                $('#' + rand + '-WMSLayer-title').tooltip();
+                    .tooltip({title: layer.layertitle})
+                    .append(layer.layertitle);
 
 
                 // TODO: get bounding box with the current CRS

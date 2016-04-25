@@ -154,17 +154,18 @@ FM.MAPController = FM.Class.extend({
         }
         
         var $boxIcon = $(FM.Util.replaceAll(FM.guiController[guiIcon], 'REPLACE', this.suffix));
-        $boxIcon.attr('title', $.i18n.prop('_' + toLoad));
+        $boxIcon.tooltip({title: $.i18n.prop('_' + toLoad) });
 
         $boxIcon.appendTo(this.$boxIcons);
 
         if(visibleBox===true)
             this.$boxIcons.hide();
 
-        $boxIcon.tooltip();
+        
 
-        var _this = this;
-        var $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
+        var _this = this,
+            $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
+
         $('#' + this.suffix + '-controller-' + toLoad + 'Icon')
         .on('click', {
                 $id: $id,
@@ -293,16 +294,13 @@ FM.MAPController = FM.Class.extend({
             this.layersMapZIndexes.set(l.layer.zindex, l.id)
 
             // drag and drop layer
-            $(idItem)
-            .attr( "title", $.i18n.prop('_dragdroplayer'))
-            .tooltip();
+            $(idItem).tooltip({title: $.i18n.prop('_dragdroplayer') });
 
             var _this = this;
             // listeners
             self._fenixMap.$map.find(idItem + '-title')
-                .append(l.layer.layertitle)
-                .attr( "title", l.layer.layertitle)
-                .tooltip();
+                .tooltip({title: l.layer.layertitle })
+                .append(l.layer.layertitle);
 
             // Remove Layer
             var $removeLayer = $(idItem+ '-remove');
@@ -314,25 +312,23 @@ FM.MAPController = FM.Class.extend({
                 event.preventDefault();
 
             });
-            $removeLayer
-                .attr( "title", $.i18n.prop('_removelayer'))
-                .tooltip();
+            $removeLayer.tooltip({title: $.i18n.prop('_removelayer') });
 
             // Enable/Disable layer
             $(idItem+ '-enabledisable')
+                .tooltip({title: $.i18n.prop('_enabledisablelayer') })
                 .on('click', {id:l.id}, function(event) {
                     _this.showHide(event.data.id)
-                })
-                .attr( "title", $.i18n.prop('_enabledisablelayer'))
-                .tooltip();
+                });
 
             // Layer Opacity
             var opacity = 1;
             if ( l.layer.opacity != null )
                 opacity = l.layer.opacity;
-            try {
-                var $layeropacity = $(idItem+ '-opacity');
-                $layeropacity.slider({
+
+            $(idItem+ '-opacity')
+                .tooltip({title: $.i18n.prop('_layeropacity') })
+                .slider({
                     orientation: "horizontal",
                     range: "min",
                     min: 0,
@@ -343,16 +339,15 @@ FM.MAPController = FM.Class.extend({
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
                     }
                 });
-                $layeropacity.attr( "title", $.i18n.prop('_layeropacity'));
-                try { $layeropacity.tooltip({placement: 'se'}); } catch (e) {}
-            } catch(e) {
-                // console.log('jquery-ui is not loaded');
-            }
 
             // Layer GetFeatureInfo
             var $layergfi = $(idItem+ '-getfeatureinfo');
-            if ( !l.layer.enablegfi ) $(idItem+ '-getfeatureinfo').css("display","none");
-            else {
+
+            if ( !l.layer.enablegfi ) {
+                $(idItem+ '-getfeatureinfo').css("display","none");
+            }
+            else
+            {
                 $layergfi.on('click', {id:l.id}, function(event) {
                     var l = _this.layersMap.get(event.data.id);
                     if ( _this.selectedLayer.id == event.data.id) {
@@ -370,8 +365,9 @@ FM.MAPController = FM.Class.extend({
                         l.layer.defaultgfi = true;
                     }
                 });
-                $layergfi.attr( "title", $.i18n.prop('_getfeatureinfo'));
-                try { $layergfi.tooltip({placement: 'se'});} catch (e) {}
+                
+                $layergfi.tooltip({title: $.i18n.prop('_getfeatureinfo') });
+
                 if ( l.layer.defaultgfi ) {
                     // TODO: set default gfi style on the layer
                     this.selectedLayer = l;
@@ -391,26 +387,20 @@ FM.MAPController = FM.Class.extend({
                     FM.LayerLegend.getLegend(l, event.data.idToRender)
                 });
             }
-            $getlegend.attr( "title", $.i18n.prop('_showhidelegend'));
-            try { $getlegend.tooltip({placement: 'se'}); } catch (e) {}
-            $getlegend.css("display","inline-block");
+            
+            $getlegend.tooltip({title: $.i18n.prop('_showhidelegend') })
+                .css("display","inline-block");
 
             // Switch JoinType (From shaded to Point Layer)
             if (l.layer.layertype ) {
                 if (l.layer.layertype == 'JOIN' ) {
                     if (l.layer.switchjointype == null || l.layer.switchjointype ) {
-                        $(idItem+ '-switchjointype').css("display","inline-block");
-                        $(idItem+ '-switchjointype').on('click', {id:l.id}, function(event) {
+                        $(idItem+ '-switchjointype')
+                        .tooltip({title: $.i18n.prop('_switchto'+ l.layer.jointype.toLowerCase()) })
+                        .css("display","inline-block")
+                        .on('click', {id:l.id}, function(event) {
                             _this.switchJoinType(event.data.id);
-                        });
-
-                        if (  l.layer.jointype.toLowerCase() == 'point') {
-                            $(idItem+ '-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'))
-                        }
-                        else if ( l.layer.jointype.toLowerCase() == 'shaded')  {
-                            $(idItem+ '-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'))
-                        }
-                        try { $(idItem+ "-switchjointype").tooltip({placement: 'se'}); } catch (e) {}
+                        })
                     }
                 }
             }
@@ -454,23 +444,21 @@ FM.MAPController = FM.Class.extend({
             var $subiconsshowhide  = $(idItem+ '-showhide-subicons');
             var $subiconscontainer = $(idItem+ '-subicons');
             
-            $subiconsshowhide.on('click', function(event) {
+            $subiconsshowhide
+                .tooltip({title: $.i18n.prop('_layersubicons') })
+                .on('click', function(event) {
 
-                $subiconscontainer.slideToggle('fast');
+                    $subiconscontainer.slideToggle('fast');
 
-                if ( $subiconsshowhide.hasClass("fm-icon-up")) {
-                    $subiconsshowhide.removeClass("fm-icon-up")
-                    $subiconsshowhide.addClass("fm-icon-down")
-                }
-                else {
-                    $subiconsshowhide.removeClass("fm-icon-down")
-                    $subiconsshowhide.addClass("fm-icon-up")
-                }
-            });
-            $subiconsshowhide.attr( "title", $.i18n.prop('_layersubicons'))
-            try {
-                $subiconsshowhide.tooltip({placement: 'n'});
-            } catch (e) { }
+                    if ( $subiconsshowhide.hasClass("fm-icon-up")) {
+                        $subiconsshowhide.removeClass("fm-icon-up")
+                        $subiconsshowhide.addClass("fm-icon-down")
+                    }
+                    else {
+                        $subiconsshowhide.removeClass("fm-icon-down")
+                        $subiconsshowhide.addClass("fm-icon-up")
+                    }
+                });
         }
     },
 
@@ -634,7 +622,7 @@ FM.MAPController = FM.Class.extend({
      */
     switchJoinType: function(id) {
         var l = this.layersMap.get(id);
-        try { $.tooltip.destroy($("#" + l.id +  "-controller-item-switchjointype")); } catch (e) {}
+
         if (  l.layer.jointype.toLowerCase() == 'point') {
             // alert('point')
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'));
@@ -645,7 +633,7 @@ FM.MAPController = FM.Class.extend({
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'));
             this.switchToPoint(id);
         }
-        try { $("#" + l.id +  "-controller-item-switchjointype").tooltip({placement: 'se'}); } catch (e) {}
+        $("#" + l.id +  "-controller-item-switchjointype").tooltip({title: $.i18n.prop('_switchtoshaded') });
     },
 
     /*

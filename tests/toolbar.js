@@ -72,24 +72,18 @@ requirejs(['../src/paths'], function (paths) {
             return v;
         });
         
-        var joincolumnlabel = 'areanamee',
-        	joincolumn = 'faost_code',
-        	mu = 'Tonnes';
-
         map.addLayer( new FM.layer({
             layers: 'fenix:gaul0_faostat_3857',
             layertitle: 'Rice Paddy Production 2013',
             opacity: '0.7',
-            joincolumn: joincolumn,
-            joincolumnlabel: joincolumnlabel,
-            joindata: data,
-            mu: mu,
-            measurementunit: mu,
             layertype: 'JOIN',
-            jointype: 'shaded',
-            openlegend: true,
+            jointype: 'shaded',            
+            joindata: data,            
+            joincolumn: 'faost_code',
+            joincolumnlabel: 'areanamee',
+            mu: 'Tonnes',
             defaultgfi: true,
-            colorramp: 'Reds',
+            colorramp: 'Greens',
             lang: 'en',
             customgfi: {
             	showpopup: true
