@@ -20,14 +20,18 @@
 #map {
 	height: 350px;
 	width: 1000px;
-	border:1px solid red;
 	margin: 0 20px;
+	border:1px solid red;	
 }
 #toolbar {
 	margin: 0 20px;
 	width: 1000px;
-	min-height: 100px;
 	border: 1px solid blue;
+	display: block;
+}
+.fx-toolbar-map-holder {
+	background: #eee;
+	margin: 4px;
 }
 </style>
 </head>
@@ -35,18 +39,20 @@
 <body>
 
 <div id="toolbar">
+	<div id="gui_controller" class="fx-toolbar-map-holder">
+		
+	</div>
 	<div class="fx-toolbar-map-holder">
-	<label>
-		<input id="cklabels" type="checkbox" />
-		<label for="cklabels">Labels</label>
-		<br /><br />
-	</label>
-	<label>
-		<input id="ckbounds" type="checkbox" />
-		<label for="ckbounds">Boundaries</label>
-		<br /><br />
-	</label>
-
+		<label>
+			<input id="cklabels" type="checkbox" />
+			<label for="cklabels">Labels</label>
+			<br /><br />
+		</label>
+		<label>
+			<input id="ckbounds" type="checkbox" />
+			<label for="ckbounds">Boundaries</label>
+			<br /><br />
+		</label>
 	</div>
 </div>
 

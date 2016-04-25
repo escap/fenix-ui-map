@@ -131,18 +131,18 @@ FM.Map = FM.Class.extend({
 
             this.addTileLayer(l, true);
         }
-/*
+
         if(this.options.url.LAYER_BOUNDARIES) {
-            var wmsLayer = new FM.layer({
-                layers: 'fenix:gaul0_line_3857',
+            this.layerBoundaries = new FM.layer({
+                layers: this.options.url.LAYER_BOUNDARIES,
                 layertitle: 'Country Boundaries',
-                urlWMS: 'http://fenix.fao.org/geoserver',
+                urlWMS: this.options.url.DEFAULT_WMS_SERVER,
                 opacity: '0.9',
-                lang: 'en'
+                lang: 'en',
+                hideLayerInControllerList: true
             });
-            console.log(wmsLayer)
-            this.layerBoundaries = wmsLayer.leafletLayer;
-        }*/
+            //this.addLayer(this.layerBoundaries)
+        }
 
         if(this.options.url.LAYER_LABELS) {        
             this.layerLabels = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
@@ -497,11 +497,12 @@ FM.Map = FM.Class.extend({
     },
 
     boundariesShow: function() {
-        this.layerBoundaries.addTo(this.map).bringToFront();
+        this.addLayer( this.layerBoundaries );
+        //TODO .bringToFront()
     },
 
     boundariesHide: function() {
-        this.map.removeLayer(this.layerBoundaries);
+        this.removeLayer( this.layerBoundaries );
     }
 });
 
