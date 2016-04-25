@@ -10,10 +10,11 @@ requirejs(['../src/paths'], function (paths) {
 		'jquery','jquery','underscore','bootstrap','handlebars',
 		'fenix-map',
 		'fenix-map-config',
+		'tests/data/rise',
 		'domready!'
 	], function($,jQuery,_,bts,Handlebars,
-		FenixMap, FenixMapConf) {
-
+		FenixMap, FenixMapConf,
+		Data) {
 		
 		_.extend(FenixMapConf, {
 			BASEURL: '../dist',
@@ -65,16 +66,41 @@ requirejs(['../src/paths'], function (paths) {
 		
 		map.createMap(0,0,3);
 
-		//map.zoomTo("country", "iso3", ["THA"]);
-		//map.zoomTo("country", "iso2", "GE");
-		
-/*		map.addLayer(new FM.layer({
-            layers: 'fenix:gaul0_line_3857',
-            layertitle: 'Country Boundaries',
-            urlWMS: 'http://fenixapps.fao.org/geoserver',
-            opacity: '0.9',
-            lang: 'en'
-        }));*/
+        var data = _.map(Data, function(d){
+            var v = {};
+            v[d[0]] = parseFloat(d[2])
+            return v;
+        });
+        
+        var joincolumnlabel = 'areanamee',
+        	joincolumn = 'faost_code',
+        	mu = 'Tonnes';
+
+        map.addLayer( new FM.layer({
+            layers: 'fenix:gaul0_faostat_3857',
+            layertitle: 'Rice Paddy Production 2013',
+            opacity: '0.7',
+            joincolumn: joincolumn,
+            joincolumnlabel: joincolumnlabel,
+            joindata: data,
+            mu: mu,
+            measurementunit: mu,
+            layertype: 'JOIN',
+            jointype: 'shaded',
+            openlegend: true,
+            defaultgfi: true,
+            colorramp: 'Reds',
+            lang: 'en',
+            customgfi: {
+            	showpopup: true,
+                content: {
+                    en: '<div class="fm-popup">'+
+                    		'{{' + joincolumnlabel + '}} <br />'+
+                    		'<b>{{{' + joincolumn + '}}} </b> '+ mu +
+                    	'</div>'
+                }
+            }
+        }) );//*/
 
 		$('#cklabels').on('change', function(e) {
 			if(e.target.checked)
