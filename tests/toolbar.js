@@ -92,13 +92,7 @@ requirejs(['../src/paths'], function (paths) {
             colorramp: 'Reds',
             lang: 'en',
             customgfi: {
-            	showpopup: true,
-                content: {
-                    en: '<div class="fm-popup">'+
-                    		'{{' + joincolumnlabel + '}} <br />'+
-                    		'<b>{{{' + joincolumn + '}}} </b> '+ mu +
-                    	'</div>'
-                }
+            	showpopup: true
             }
         }) );//*/
 

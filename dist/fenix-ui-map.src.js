@@ -3402,6 +3402,26 @@ FM.SpatialQuery = {
         }
     },
 
+    customPopup: function(response, custompopup, lang, joindata, layer) {
+
+        var html = '<div class="fm-popup">'+
+                '{{' + layer.joincolumnlabel + '}} <br />'+
+                '<b>{{{' + layer.joincolumn + '}}} </b> '+ layer.mu +
+            '</div>';
+
+        if(custompopup.content && custompopup.content[lang])
+            html = custompopup.content[lang];
+
+        var values = this._parseHTML(html);
+        if ( values.id.length > 0 || values.joinid.length > 0) {
+            var h = $('<div></div>').append(response);
+            var responsetable = h.find('table');
+            if ( responsetable) {
+                return FM.SpatialQuery._customizePopUp(html, values, responsetable, joindata, layer );
+            }
+        }
+
+    },
 
     // TODO: use an isOnHover flag?
     getFeatureInfoJoinRequest: function(url, requestType, latlon, map, l) {
@@ -3460,18 +3480,6 @@ FM.SpatialQuery = {
                 }
             }
         });
-    },
-
-    customPopup: function(response, custompopup, lang, joindata, layer) {
-        var values = this._parseHTML(custompopup.content[lang]);
-        if ( values.id.length > 0 || values.joinid.length > 0) {
-            var h = $('<div></div>').append(response);
-            var responsetable = h.find('table');
-            if ( responsetable) {
-                return FM.SpatialQuery._customizePopUp(custompopup.content[lang], values, responsetable, joindata, layer );
-            }
-        }
-
     },
 
     /** TODO: how to check it?  **/
