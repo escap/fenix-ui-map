@@ -12,7 +12,7 @@ define(function() {
 			'domready'              :FENIX_CDN+'requirejs/plugins/domready/2.0.1/domReady',
 
 			'jquery'                :FENIX_CDN+'jquery/2.1.1/jquery.min',
-			'bootstrap'             :FENIX_CDN+'bootstrap/3.2/js/bootstrap.min',
+			'bootstrap'             :FENIX_CDN+'bootstrap/3.3.4/js/bootstrap.min',
 			'underscore'            :FENIX_CDN+'underscore/1.7.0/underscore-min',
 			'handlebars'            :FENIX_CDN+'handlebars/2.0.0/handlebars.min',
 			
