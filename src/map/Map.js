@@ -48,7 +48,7 @@ FM.Map = FM.Class.extend({
 
         // extent if exist FM.CONFIG
         if (FMCONFIG)
-            this.options.url = $.extend(true, {}, FMCONFIG, options.url);
+            this.options.url = $.extend(true, {}, FMCONFIG, options && options.url );
 
         // setting up the lang properties
         FM.initializeLangProperties(this.options.lang);
