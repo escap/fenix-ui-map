@@ -518,7 +518,7 @@ FM.MAPController = FM.Class.extend({
         var opacity = 1;
         if ( l.layer.opacity != null )
             opacity = l.layer.opacity;
-        try {
+        /*try {
             $(idItem+ '-opacity').slider({
                 orientation: "horizontal",
                 range: "min",
@@ -530,7 +530,7 @@ FM.MAPController = FM.Class.extend({
                     FM.LayerUtils.setLayerOpacity(l, ui.value);
                 }
             });
-        }catch(e) { }
+        }catch(e) { }//*/
 
         $('#' + l.id + '-controller-box-item')
         .on('click', {
