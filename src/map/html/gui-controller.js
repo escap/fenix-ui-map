@@ -43,7 +43,7 @@ FM.guiController = {
         '<div id="REPLACE-controller-overlay-title" class="fm-controller-box-title">Selected Layers</div>' +
         '<div id="REPLACE-controller-overlay-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
         '<div class="fm-standard-hr"></div>' +
-        '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>' +
+        '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>'+
     '</div>',
 
     overlay:
