@@ -38,7 +38,19 @@ FM.LayerLegend = {
                  url +=  '&sld=' + l.layer.sldurl;
 
             var alternativeUrl = url;
-            url += '&LEGEND_OPTIONS=forceLabels:on;forceRule:True;dx:0;dy:0;mx:0;my:0;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3';
+            url += '&LEGEND_OPTIONS='+
+                'forceLabels:on;'+
+                'forceRule:True;'+
+                'dx:0;'+
+                'dy:0;'+
+                'mx:0;'+
+                'my:0;'+
+                'border:false;'+
+                'fontAntiAliasing:true;';
+
+            if(l.layer.legendOptions)
+                for(var k in l.layer.legendOptions)
+                    url += k+':'+l.layer.legendOptions[k]+';'
 
             FM.LayerLegend._loadLegend(url, alternativeUrl, toRendedID)
         }

@@ -29,7 +29,12 @@ FM.Map = FM.Class.extend({
         },
         baselayers: null,
         boundaries: null,
-        labels: null
+        labels: null,
+        legendOptions: {
+            fontColor: '0x47576F',
+            fontSize: '10',
+            bgColor: '0xF9F7F3'
+        }
     },
     mapOptions: {
 		zoomControl: false,

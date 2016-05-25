@@ -88,7 +88,13 @@ requirejs(['../src/paths'], function (paths) {
             openlegend: true,
             customgfi: {
             	showpopup: true
-            }
+            },
+            //http://docs.geoserver.org/2.7.0/user/services/wms/get_legend_graphic/legendgraphic.html#controlling-legend-appearance-with-legend-options
+			legendOptions: {
+	            fontColor: '0xFF0000',
+	            fontSize: '15',
+	            bgColor: '0x00FF00'
+			}//*/
         }) );//*/
 
 		$('#cklabels').on('change', function(e) {
