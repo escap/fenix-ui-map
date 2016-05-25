@@ -85,6 +85,7 @@ requirejs(['../src/paths'], function (paths) {
             defaultgfi: true,
             colorramp: 'Greens',
             lang: 'en',
+            openlegend: true,
             customgfi: {
             	showpopup: true
             }
