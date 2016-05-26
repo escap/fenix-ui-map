@@ -158,6 +158,12 @@ FM.Map = FM.Class.extend({
         return this;
     },
 
+    destroyMap: function() {
+        //TODO unbind events
+        this.map.remove();
+        this.$map.empty();
+    },
+
     /** TODO: make it nicer **/
     setTilePaneID: function() {
         this.tilePaneID = this.suffix + '-leaflet-tile-pane';
