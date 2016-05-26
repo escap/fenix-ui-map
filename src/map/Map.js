@@ -185,14 +185,16 @@ FM.Map = FM.Class.extend({
             l.layer.legendOptions = $.extend(l.layer.legendOptions, this.options.legendOptions);
 
         if (l.layer.layertype ) {
-           switch(l.layer.layertype ) {
-               case 'JOIN':
-                   if (l.layer.jointype.toLocaleUpperCase() == 'SHADED') this.addShadedLayer(l);
-                   else if (l.layer.jointype.toLocaleUpperCase() == 'POINT') this.addPointLayer(l);
-               break;
-               case 'WMS': this.addLayerWMS(l); break;
-               default: this.addLayerWMS(l); break;
-           }
+            switch(l.layer.layertype ) {
+                case 'JOIN':
+                    if (l.layer.jointype.toLocaleUpperCase() == 'SHADED')
+                        this.addShadedLayer(l);
+                    else if (l.layer.jointype.toLocaleUpperCase() == 'POINT')
+                        this.addPointLayer(l);
+                break;
+                case 'WMS': this.addLayerWMS(l); break;
+                default: this.addLayerWMS(l); break;
+            }
         }
         else {
            /* DEFAULT request**/
