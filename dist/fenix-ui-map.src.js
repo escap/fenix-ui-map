@@ -1930,9 +1930,7 @@ FM.MAPController = FM.Class.extend({
                 .slider({
                     orientation: "horizontal",
                     range: "min",
-                    min: 0,
-                    max: 1,
-                    step: 0.1,
+                    min: 0, max: 1, step: 0.1,
                     value: opacity,
                     slide: function( event, ui ) {
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
