@@ -1,3 +1,4 @@
+
 FM.MAPController = FM.Class.extend({
 
     id: '',
@@ -72,7 +73,7 @@ FM.MAPController = FM.Class.extend({
             
             self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
 
-            var visibleBoxMenu;
+            self.visibleBoxMenu;
 
             if( self._guiController.container ) {
 
@@ -81,11 +82,11 @@ FM.MAPController = FM.Class.extend({
 
                 $div.prependTo(self._guiController.container);
 
-                visibleBoxMenu = true;
+                self.visibleBoxMenu = true;
             }
             else
             {
-                visibleBoxMenu = false;
+                self.visibleBoxMenu = false;
 
                 var guiControl = (function() {
                     var control = new L.Control({position: 'bottomleft'});
@@ -110,15 +111,15 @@ FM.MAPController = FM.Class.extend({
 
             /** TODO: make it nicer and more dynamic, with a more consistent name **/
             if ( self._guiController.overlay) {
-                self.loadIcon('overlay', visibleBoxMenu);
+                self.loadIcon('overlay', self.visibleBoxMenu);
                 self.initializeOverlayDragging();
             }
             if ( self._guiController.baselayer) {
-                self.loadIcon('baselayer', visibleBoxMenu);
+                self.loadIcon('baselayer', self.visibleBoxMenu);
             }
 
             if ( self._guiController.wmsLoader) {
-                self.loadIcon('wmsLoader', visibleBoxMenu);
+                self.loadIcon('wmsLoader', self.visibleBoxMenu);
                 var wmsUtils = new FM.WMSUtils(),
                     idDD = this.suffix + '-controller-wmsLoader-dropdown',
                     idContent = this.suffix + '-controller-wmsLoader-content',
@@ -192,7 +193,7 @@ FM.MAPController = FM.Class.extend({
                 }
         });
 
-        // close icon
+        // close panel
         $('#' + this.suffix + '-controller-' + toLoad + '-remove')
         .on('click', {
             $id: $id,
@@ -203,7 +204,7 @@ FM.MAPController = FM.Class.extend({
 
             $('#' + suffix + '-controller-box').slideUp();
             $id.hide();
-        });
+        });//*/
     },
 
     /**
@@ -301,18 +302,6 @@ FM.MAPController = FM.Class.extend({
             self._fenixMap.$map.find(idItem + '-title')
                 .tooltip({title: l.layer.layertitle })
                 .append(l.layer.layertitle);
-
-            // Remove Layer
-            var $removeLayer = $(idItem+ '-remove');
-            $removeLayer.on('click', {l:l}, function(event){
-                event.stopPropagation();
-                if(confirm( $.i18n.prop('_confirmremovelayer'))) {
-                    _this.removeLayer(event.data.l);
-                }
-                event.preventDefault();
-
-            });
-            $removeLayer.tooltip({title: $.i18n.prop('_removelayer') });
 
             // Enable/Disable layer
             $(idItem+ '-enabledisable')
@@ -443,7 +432,6 @@ FM.MAPController = FM.Class.extend({
             var $subiconscontainer = $(idItem+ '-subicons');
             
             $subiconsshowhide
-                .tooltip({title: $.i18n.prop('_layersubicons') })
                 .on('click', function(event) {
 
                     $subiconscontainer.slideToggle('fast');

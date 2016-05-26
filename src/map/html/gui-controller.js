@@ -51,26 +51,24 @@ FM.guiController = {
         '<div id="REPLACE-controller-item" class="fm-controller-box-header">' +
             '<div class="fm-controller-box-header-text">' +
                 '<div class="fm-controller-item-title" id="REPLACE-controller-item-title" ></div>' +
-                    '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-down" id="REPLACE-controller-item-showhide-subicons"></div>' +
-                        '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-panel-remove" id="REPLACE-controller-item-remove"></div>' +
-                        '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-panel-info" id="REPLACE-controller-item-icon" ></div>' +
-                    '</div>' +
-                    '<div style="clear:both"></div>' +
-                    '<div class="fm-controller-box-icons">' +
-                        '<div class="fm-icon-enable" id="REPLACE-controller-item-enabledisable"></div>' +
-                        '<div class="fm-opacity-slider" style="margin-right:10px;" id="REPLACE-controller-item-opacity"></div>' +
-                    '</div>' +
-                    '<div style="clear:both"></div>' +
-                    '<div class="fm-controller-box-subicons" id="REPLACE-controller-item-subicons" style="display:none;">' +
-                        '<div class="fm-icon-layer-subicons-sprite fm-icon-getlegend" id="REPLACE-controller-item-getlegend"></div>' +
-                        '<div class="fm-icon-layer-subicons-sprite fm-icon-getfeatureinfo" id="REPLACE-controller-item-getfeatureinfo"></div>' +
-                        '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-switchjointype" style="display:none"></div>' +
-                        '<div class="fm-icon-layer-subicons-sprite fm-icon-zoomto" id="REPLACE-controller-item-zoomtolayer" style="display:none"></div>' +
-                        '<div class="fm-icon-layer-subicons-sprite fm-icon-swipe" id="REPLACE-controller-item-swipe"></div>' +
-                        '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-joinsettings" style="display:none"></div>' +
-                    '</div>' +
-                '</div>' +
+                '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-down" id="REPLACE-controller-item-showhide-subicons"></div>' +
             '</div>' +
+            '<div style="clear:both"></div>' +
+            '<div class="fm-controller-box-icons">' +
+                '<div class="fm-icon-enable" id="REPLACE-controller-item-enabledisable"></div>' +
+                '<div class="fm-opacity-slider" style="margin-right:10px;" id="REPLACE-controller-item-opacity"></div>' +
+            '</div>' +
+            '<div style="clear:both"></div>' +
+            '<div class="fm-controller-box-subicons" id="REPLACE-controller-item-subicons" style="display:none;">' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-getlegend" id="REPLACE-controller-item-getlegend"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-getfeatureinfo" id="REPLACE-controller-item-getfeatureinfo"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-switchjointype" style="display:none"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-zoomto" id="REPLACE-controller-item-zoomtolayer" style="display:none"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-swipe" id="REPLACE-controller-item-swipe"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-joinsettings" style="display:none"></div>' +
+            '</div>' +
+            /*    '</div>' +
+            '</div>' +*/
         '</div>' +
     '</div>',
 
