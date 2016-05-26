@@ -1109,11 +1109,8 @@ FM.Map = FM.Class.extend({
         baselayers: null,
         boundaries: null,
         labels: null,
-        legendOptions: {
-            fontColor: '0x47576F',
-            fontSize: '10',
-            bgColor: '0xF9F7F3'
-        }
+        //http://goo.gl/MUIt8Z
+        legendOptions: null
     },
     mapOptions: {
 		zoomControl: false,
@@ -1262,6 +1259,10 @@ FM.Map = FM.Class.extend({
     /** TODO: make it nicer **/
     addLayer:function (l) {
         l._fenixmap = this;
+
+        if(this.options.legendOptions)
+            l.layer.legendOptions = $.extend(l.layer.legendOptions, this.options.legendOptions);
+
         if (l.layer.layertype ) {
            switch(l.layer.layertype ) {
                case 'JOIN':
@@ -1369,7 +1370,7 @@ FM.Map = FM.Class.extend({
     _openlegend: function(l, isReload) {
         try {
             if (l.layer.openlegend) {
-                FM.LayerLegend.getLegend(l, l.id + '-controller-item-getlegend', isReload);
+                FM.Legend.getLegend(l, l.id + '-controller-item-getlegend', isReload);
             }
         }catch (e) {
             console.war("_openlegend error:" + e);
@@ -1593,119 +1594,6 @@ FM.Map = FM.Class.extend({
 FM.map = function (id, options, mapOptions) {
     return new FM.Map(id, options, mapOptions);
 };
-;
-FM.LayerLegend = {
-
-    getLegend: function(l, toRendedID, isReload) {
-        // based on the layer type get the legendURL or Request
-        $('#' + toRendedID + '-legend-layertitle').empty();
-        $('#' + toRendedID + '-legendtitle').empty();
-        $('#' + toRendedID + '-legendsubtitle').empty();
-        $('#' + toRendedID + '-content').empty();
-
-        if (l.layer.layertitle) {
-            $('#' + toRendedID + '-legend-layertitle').append(l.layer.layertitle);
-        }
-        if (l.layer.legendtitle) {
-            $('#' + toRendedID + '-legendtitle').append(l.layer.legendtitle);
-        }
-        if (l.layer.legendsubtitle) {
-            $('#' + toRendedID + '-legendsubtitle').append(l.layer.legendsubtitle);
-        }
-
-
-        /* TODO: handle better, especially the l.layer.openlegend value*/
-        var html = '';
-        if (l.layer.legendHTML) {
-            html = l.layer.legendHTML;
-            $('#' + toRendedID + '-content').append(html);
-        }
-        else {
-            var url = l.layer.urlWMS  + '?';
-            url += '&service=WMS' +
-                '&version=1.1.0' +
-                '&REQUEST=GetLegendGraphic' +
-                '&layer=' + l.layer.layers +
-                '&Format=image/png';
-                //'&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3';
-            if (l.layer.style != null && l.layer.style != '' )
-                url +=  '&style=' + l.layer.style;
-            if (l.layer.sldurl )
-                 url +=  '&sld=' + l.layer.sldurl;
-
-            var alternativeUrl = url;
-            url += '&LEGEND_OPTIONS='+
-                'forceLabels:on;'+
-                'forceRule:True;'+
-                'dx:0;'+
-                'dy:0;'+
-                'mx:0;'+
-                'my:0;'+
-                'border:false;'+
-                'fontAntiAliasing:true;';
-
-            if(l.layer.legendOptions)
-                for(var k in l.layer.legendOptions)
-                    url += k+':'+l.layer.legendOptions[k]+';'
-
-            FM.LayerLegend._loadLegend(url, alternativeUrl, toRendedID)
-        }
-
-        if ( isReload ) {
-            if(($('#' + toRendedID + '-holder').is(":visible"))) {
-                $('#' + toRendedID + '-holder').hide();
-                $('#' + toRendedID + '-holder').slideDown();
-                l.layer.openlegend = true;
-            }
-            else {
-            }
-        }
-        else{
-            if(!($('#' + toRendedID + '-holder').is(":visible"))) {
-                $('#' + toRendedID + '-holder').slideDown();
-                l.layer.openlegend = true;
-            } else {
-                $('#' + toRendedID + '-holder').slideUp();
-                l.layer.openlegend = false;
-            }
-        }
-
-        //$('#' + toRendedID + '-holder').draggable();
-        $('#' + toRendedID+ '-remove').click({id:toRendedID + '-holder'}, function(event) {
-            $('#' + event.data.id).slideUp();
-            l.layer.openlegend = false;
-        });
-    },
-
-    _loadLegend: function(url, alternativeUrl, toRendedID) {
-        var img = new Image();
-        img.name = url;
-        img.src = url;
-
-        var html = '<img id="'+toRendedID + '-img" src="'+ img.src +'" class="decoded">';
-        img.onload = function() {
-            $('#' + toRendedID + '-content').append(html);
-            $('#' + toRendedID + '-img').css('width', this.width);
-            $('#' + toRendedID + '-img').css('height', this.height);
-        }
-        img.onerror  = function() {
-            if ( alternativeUrl )
-                FM.LayerLegend._loadLegend(alternativeUrl, null, toRendedID)
-            else
-                FM.LayerLegend._nolegend(toRendedID);
-            // reload the image with different parameters (without legend_options)
-            // if returns again error, then le legend is not available
-            // '&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3'+
-        }
-    },
-
-    _nolegend: function(toRendedID) {
-        /** TODO: getLegendURl http://gis.stackexchange.com/questions/21912/how-to-get-wms-legendgraphics-using-geoserver-and-geowebcache **/
-        var html = '<div class="fm-legend-layertitle">'+ $.i18n.prop('_nolegendavailable')+ '</div>';
-        $('#' + toRendedID + '-content').append(html);
-    }
-    
-}
 ;
 FM.MAPController = FM.Class.extend({
 
@@ -2093,7 +1981,7 @@ FM.MAPController = FM.Class.extend({
             if (l.layer.showlegend == null || l.layer.showlegend != false) {
                 $getlegend.on('click', {id:l.id, idToRender: idControllerItem + '-getlegend'}, function(event) {
                     var l = _this.layersMap.get( event.data.id);
-                    FM.LayerLegend.getLegend(l, event.data.idToRender)
+                    FM.Legend.getLegend(l, event.data.idToRender)
                 });
             }
             
@@ -2608,7 +2496,7 @@ FM.guiController = {
         '<div id="REPLACE-controller-overlay-title" class="fm-controller-box-title">Selected Layers</div>' +
         '<div id="REPLACE-controller-overlay-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
         '<div class="fm-standard-hr"></div>' +
-        '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>' +
+        '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>'+
     '</div>',
 
     overlay:
@@ -2830,67 +2718,6 @@ FM.WFS = function(config) {
 }();
 
 ;
-FM.LayerSwipe = {
-
-    swipeActivate: function(l, handleID, containerID, map) {
-        l.layer.swipeActive = true;
-        var l_parent = l.leafletLayer._container,
-           // handle = document.getElementById(fenixMap.suffix +  '-handle'),
-            handle = document.getElementById(handleID),
-            dragging = false;
-/*        console.log('L_parent');
-        console.log(l_parent);*/
-        handle.onmousedown = function() { dragging = true; return false;}
-        document.onmouseup = function() { dragging = false; }
-        document.onmousemove = function(e) {
-            if (!dragging) return;
-            setDivide(e.x);
-        }
-
-        var _this = this;
-
-        l.redraw = function( e ) {
-            l_parent = l.leafletLayer._container;
-            setDivide(parseInt(handle.style.left));
-        };
-
-        l.mousemoveSwipe = function( e ) {
-            l_parent = l.leafletLayer._container;
-            setDivide(e.containerPoint.x);
-        };
-
-        map.on( "zoomend", l.redraw);
-        map.on( "moveend", l.redraw);
-        map.on( "drag", l.redraw);
-        map.on( "mousemove", l.mousemoveSwipe );
-
-        function setDivide(x) {
-            x = Math.max(0, Math.min(x, map.getSize()['x']));
-            handle.style.left = (x) + 'px';
-            var layerX = map.containerPointToLayerPoint(x,0).x
-            l_parent.style.clip = 'rect(-99999px ' + layerX + 'px 999999px -99999px)';
-        }
-
-        // set 50% of the width, maybe start with 0?
-       // var mydiv =  $('#' + fenixMap.suffix + '-map').width();
-        var mydiv =  $('#' + containerID).width();
-       // console.log(mydiv);
-        setDivide(mydiv / 2);
-    },
-
-    swipeDeactivate: function(l, map) {
-        map.off( "zoomend", l.redraw);
-        map.off( "moveend", l.redraw);
-        map.off( "drag", l.redraw);
-        map.off( "mousemove", l.mousemoveSwipe );
-        l.layer.swipeActive = false;
-
-        var l_parent = l.leafletLayer._container;
-        l_parent.style.clip = 'auto';
-    }
-
-}
-;
 FM.LayerUtils = {
 
     setLayerOpacity: function(l, opacity) {
@@ -2980,6 +2807,128 @@ FM.LayerUtils = {
         l.layer.joindata = JSON.stringify(l.layer.joindata);
         return l;
     }
+}
+;
+
+FM.Legend = {
+
+    getLegend: function(l, id, isReload) {
+
+        var legendOptions = $.extend({
+            forceLabels: 'on',
+            forceRule: 'true',
+            dx: '0',
+            dy: '0',
+            mx: '0',
+            my: '0',
+            fontAntiAliasing: 'true',
+            fontColor: '0x47576F',
+            bgColor: '0xF9F7F3',
+            border: 'false',
+            fontSize: '10'
+        }, l.layer.legendOptions);
+
+        // based on the layer type get the legendURL or Request
+        $('#'+id+'-legend-layertitle').empty();
+        $('#'+id+'-legendtitle').empty();
+        $('#'+id+'-legendsubtitle').empty();
+        $('#'+id+'-content').empty();
+
+        if (l.layer.layertitle) {
+            $('#'+id+'-legend-layertitle').append(l.layer.layertitle);
+        }
+        if (l.layer.legendtitle) {
+            $('#'+id+'-legendtitle').append(l.layer.legendtitle);
+        }
+        if (l.layer.legendsubtitle) {
+            $('#'+id+'-legendsubtitle').append(l.layer.legendsubtitle);
+        }
+
+        /* TODO: handle better, especially the l.layer.openlegend value*/
+        var html = '';
+        if (l.layer.legendHTML) {
+            html = l.layer.legendHTML;
+            $('#'+id+'-content').append(html);
+        }
+        else {
+            var url = l.layer.urlWMS  + '?';
+            url += '&service=WMS' +
+                '&version=1.1.0' +
+                '&REQUEST=GetLegendGraphic' +
+                '&layer=' + l.layer.layers +
+                '&Format=image/png';
+                //'&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3';
+            if (l.layer.style != null && l.layer.style != '' )
+                url +=  '&style=' + l.layer.style;
+            if (l.layer.sldurl )
+                 url +=  '&sld=' + l.layer.sldurl;
+
+            //LEGEND STYLE DOCS
+            //http://goo.gl/MUIt8Z
+            var alternativeUrl = url;
+
+            url += '&LEGEND_OPTIONS=';
+            for(var k in legendOptions) {
+                url += k+':'+legendOptions[k]+';'
+            }
+
+            FM.Legend._loadLegend(url, alternativeUrl, id)
+        }
+
+        if ( isReload ) {
+            if(($('#'+id+'-holder').is(":visible"))) {
+                $('#'+id+'-holder').hide();
+                $('#'+id+'-holder').slideDown();
+                l.layer.openlegend = true;
+            }
+            else {
+            }
+        }
+        else{
+            if(!($('#'+id+'-holder').is(":visible"))) {
+                $('#'+id+'-holder').slideDown();
+                l.layer.openlegend = true;
+            } else {
+                $('#'+id+'-holder').slideUp();
+                l.layer.openlegend = false;
+            }
+        }
+
+        //$('#'+id+'-holder').draggable();
+        $('#' + id+ '-remove').click({id:id + '-holder'}, function(event) {
+            $('#' + event.data.id).slideUp();
+            l.layer.openlegend = false;
+        });
+    },
+
+    _loadLegend: function(url, alternativeUrl, id) {
+        var img = new Image();
+        img.name = url;
+        img.src = url;
+
+        var html = '<img id="'+id + '-img" src="'+ img.src +'" class="decoded">';
+        img.onload = function() {
+            $('#'+id+'-content').append(html);
+            $('#'+id+'-img').css('width', this.width);
+            $('#'+id+'-img').css('height', this.height);
+        }
+        img.onerror = function() {
+            if ( alternativeUrl )
+                FM.Legend._loadLegend(alternativeUrl, null, id)
+            else
+                FM.Legend._nolegend(id);
+            // reload the image with different parameters (without legend_options)
+            // if returns again error, then le legend is not available
+            // '&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3'+
+        }
+    },
+
+    _nolegend: function(id) {
+        /** TODO: getLegendURl http://gis.stackexchange.com/questions/21912/how-to-get-wms-legendgraphics-using-geoserver-and-geowebcache **/
+        var html = '<div class="fm-legend-layertitle">'+ $.i18n.prop('_nolegendavailable')+ '</div>';
+        $('#'+id+'-content').append(html);
+    }
+    
 }
 ;
 FM.MapUtils = function() {
@@ -3677,6 +3626,68 @@ FM.SpatialQuery = {
 
 }
 ;
+FM.LayerSwipe = {
+
+    swipeActivate: function(l, handleID, containerID, map) {
+        l.layer.swipeActive = true;
+        var l_parent = l.leafletLayer._container,
+           // handle = document.getElementById(fenixMap.suffix +  '-handle'),
+            handle = document.getElementById(handleID),
+            dragging = false;
+/*        console.log('L_parent');
+        console.log(l_parent);*/
+        handle.onmousedown = function() { dragging = true; return false;}
+        document.onmouseup = function() { dragging = false; }
+        document.onmousemove = function(e) {
+            if (!dragging) return;
+            setDivide(e.x);
+        }
+
+        var _this = this;
+
+        l.redraw = function( e ) {
+            l_parent = l.leafletLayer._container;
+            setDivide(parseInt(handle.style.left));
+        };
+
+        l.mousemoveSwipe = function( e ) {
+            l_parent = l.leafletLayer._container;
+            setDivide(e.containerPoint.x);
+        };
+
+        map.on( "zoomend", l.redraw);
+        map.on( "moveend", l.redraw);
+        map.on( "drag", l.redraw);
+        map.on( "mousemove", l.mousemoveSwipe );
+
+        function setDivide(x) {
+            x = Math.max(0, Math.min(x, map.getSize()['x']));
+            handle.style.left = (x) + 'px';
+            var layerX = map.containerPointToLayerPoint(x,0).x
+            l_parent.style.clip = 'rect(-99999px ' + layerX + 'px 999999px -99999px)';
+        }
+
+        // set 50% of the width, maybe start with 0?
+       // var mydiv =  $('#' + fenixMap.suffix + '-map').width();
+        var mydiv =  $('#' + containerID).width();
+       // console.log(mydiv);
+        setDivide(mydiv / 2);
+    },
+
+    swipeDeactivate: function(l, map) {
+        map.off( "zoomend", l.redraw);
+        map.off( "moveend", l.redraw);
+        map.off( "drag", l.redraw);
+        map.off( "mousemove", l.mousemoveSwipe );
+        l.layer.swipeActive = false;
+
+        var l_parent = l.leafletLayer._container;
+        l_parent.style.clip = 'auto';
+    }
+
+}
+;
+
 FM.Layer = FM.Class.extend({
 
     _fenixmap: '',
@@ -3715,7 +3726,19 @@ FM.Layer = FM.Class.extend({
         enablegfi: true,
         layertype: 'WMS', //['WMS', 'JOIN', 'TILE']
         openlegend: false,
-
+        legendOptions: {
+            forceLabels: 'on',
+            forceRule: 'true',
+            dx: '0',
+            dy: '0',
+            mx: '0',
+            my: '0',
+            fontAntiAliasing: 'true',
+            fontColor: '0x47576F',
+            bgColor: '0xF9F7F3',
+            border: 'false',            
+            fontSize: '15'            
+        },
         // JOIN default options
         switchjointype: false,
 

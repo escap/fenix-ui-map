@@ -1,3 +1,4 @@
+
 FM.Layer = FM.Class.extend({
 
     _fenixmap: '',
@@ -36,7 +37,19 @@ FM.Layer = FM.Class.extend({
         enablegfi: true,
         layertype: 'WMS', //['WMS', 'JOIN', 'TILE']
         openlegend: false,
-
+        legendOptions: {
+            forceLabels: 'on',
+            forceRule: 'true',
+            dx: '0',
+            dy: '0',
+            mx: '0',
+            my: '0',
+            fontAntiAliasing: 'true',
+            fontColor: '0x47576F',
+            bgColor: '0xF9F7F3',
+            border: 'false',            
+            fontSize: '15'            
+        },
         // JOIN default options
         switchjointype: false,
 

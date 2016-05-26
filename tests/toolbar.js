@@ -61,7 +61,13 @@ requirejs(['../src/paths'], function (paths) {
 					attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
 					maxZoom: 16
 				}
-			}
+			},
+			//http://goo.gl/MUIt8Z
+			legendOptions: {
+	            fontColor: '0x006600',
+	            fontSize: '20',
+	            bgColor: '0xEEFFEE'
+			}//*/
 		});
 		
 		map.createMap(0,0,3);
@@ -88,13 +94,7 @@ requirejs(['../src/paths'], function (paths) {
             openlegend: true,
             customgfi: {
             	showpopup: true
-            },
-            //http://docs.geoserver.org/2.7.0/user/services/wms/get_legend_graphic/legendgraphic.html#controlling-legend-appearance-with-legend-options
-			legendOptions: {
-	            fontColor: '0xFF0000',
-	            fontSize: '15',
-	            bgColor: '0x00FF00'
-			}//*/
+            }
         }) );//*/
 
 		$('#cklabels').on('change', function(e) {

@@ -30,11 +30,8 @@ FM.Map = FM.Class.extend({
         baselayers: null,
         boundaries: null,
         labels: null,
-        legendOptions: {
-            fontColor: '0x47576F',
-            fontSize: '10',
-            bgColor: '0xF9F7F3'
-        }
+        //http://goo.gl/MUIt8Z
+        legendOptions: null
     },
     mapOptions: {
 		zoomControl: false,
@@ -183,6 +180,10 @@ FM.Map = FM.Class.extend({
     /** TODO: make it nicer **/
     addLayer:function (l) {
         l._fenixmap = this;
+
+        if(this.options.legendOptions)
+            l.layer.legendOptions = $.extend(l.layer.legendOptions, this.options.legendOptions);
+
         if (l.layer.layertype ) {
            switch(l.layer.layertype ) {
                case 'JOIN':
@@ -290,7 +291,7 @@ FM.Map = FM.Class.extend({
     _openlegend: function(l, isReload) {
         try {
             if (l.layer.openlegend) {
-                FM.LayerLegend.getLegend(l, l.id + '-controller-item-getlegend', isReload);
+                FM.Legend.getLegend(l, l.id + '-controller-item-getlegend', isReload);
             }
         }catch (e) {
             console.war("_openlegend error:" + e);

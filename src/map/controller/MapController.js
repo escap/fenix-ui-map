@@ -384,7 +384,7 @@ FM.MAPController = FM.Class.extend({
             if (l.layer.showlegend == null || l.layer.showlegend != false) {
                 $getlegend.on('click', {id:l.id, idToRender: idControllerItem + '-getlegend'}, function(event) {
                     var l = _this.layersMap.get( event.data.id);
-                    FM.LayerLegend.getLegend(l, event.data.idToRender)
+                    FM.Legend.getLegend(l, event.data.idToRender)
                 });
             }
             
