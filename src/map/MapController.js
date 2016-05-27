@@ -250,10 +250,10 @@ FM.MAPController = FM.Class.extend({
         l.layerAdded = true;
         /** TODO: check if works always this solution **/
         if ( !l.layer.zindex ) {
-            l.layer.zindex = this.zIndex;
+            l.layer.zindex = self.zIndex;
             l.leafletLayer.setZIndex = l.layer.zindex;
         }
-        this.zIndex = this.zIndex + 2;
+        self.zIndex = self.zIndex + 2;
 
         if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
@@ -271,7 +271,7 @@ FM.MAPController = FM.Class.extend({
             
 
             // creating the HTML controller-overlay-item structure
-            var idStructure =  '#'+ this.suffix + '-controller-overlay-content';
+            var idStructure =  '#'+ self.suffix + '-controller-overlay-content';
             var idItem = '#'+ l.id + '-controller-item';
             var idControllerItem = l.id + '-controller-item';
             var overlayStructure = FM.Util.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
@@ -280,34 +280,25 @@ FM.MAPController = FM.Class.extend({
 
             $(idStructure).prepend(overlayStructure);
 
-
-
             // saving the layer information (it's too many information TODO: please set only ID and needed infos
             $( '#'+ l.id  + '-controller-item-box' ).data( "layer", l );
 
-            var index = $('#'+ l.id  + '-controller-item-box').index() + 1;
+            var index = $('#'+l.id+'-controller-item-box').index() + 1;
 
             // setting up the layer GUI options
-            this._layerGUIOptions(l);
+            self._layerGUIOptions(l);
 
             // setting the layer to the HashMap to handle the ID and ZIndex
-            this.layersMap.set(l.id, l);
-            this.layersMapZIndexes.set(l.layer.zindex, l.id)
+            self.layersMap.set(l.id, l);
+            self.layersMapZIndexes.set(l.layer.zindex, l.id)
 
-            // drag and drop layer
-            $(idItem).tooltip({title: $.i18n.prop('_dragdroplayer') });
-
-            var _this = this;
-            // listeners
-            self._fenixMap.$map.find(idItem + '-title')
-                .tooltip({title: l.layer.layertitle })
-                .append(l.layer.layertitle);
+            $(idItem+'-title').text(l.layer.layertitle);
 
             // Enable/Disable layer
             $(idItem+ '-enabledisable')
                 .tooltip({title: $.i18n.prop('_enabledisablelayer') })
                 .on('click', {id:l.id}, function(event) {
-                    _this.showHide(event.data.id)
+                    self.showHide(event.data.id)
                 });
 
             // Layer Opacity
@@ -336,19 +327,19 @@ FM.MAPController = FM.Class.extend({
             else
             {
                 $layergfi.on('click', {id:l.id}, function(event) {
-                    var l = _this.layersMap.get(event.data.id);
-                    if ( _this.selectedLayer.id == event.data.id) {
+                    var l = self.layersMap.get(event.data.id);
+                    if ( self.selectedLayer.id == event.data.id) {
                         // the layer select is equal to the new one, so deselect it
-                        $('#' + _this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
-                        _this.selectedLayer = '';
+                        $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                        self.selectedLayer = '';
                         l.layer.defaultgfi = false;
                     }
                     else {
                         // unselect old layer icon
-                        $('#' + _this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                        $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
                         // select new layer icon
                         $('#' + event.data.id + '-controller-item-getfeatureinfo').addClass('fm-icon-getfeatureinfo-selected');
-                        _this.selectedLayer = l;
+                        self.selectedLayer = l;
                         l.layer.defaultgfi = true;
                     }
                 });
@@ -357,8 +348,8 @@ FM.MAPController = FM.Class.extend({
 
                 if ( l.layer.defaultgfi ) {
                     // TODO: set default gfi style on the layer
-                    this.selectedLayer = l;
-                    $('#' + this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                    self.selectedLayer = l;
+                    $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
                     // select new layer icon
                     $('#' + l.id + '-controller-item-getfeatureinfo').addClass('fm-icon-getfeatureinfo-selected');
                 }
@@ -370,7 +361,7 @@ FM.MAPController = FM.Class.extend({
             var $getlegend = $(idItem+ '-getlegend');
             if (l.layer.showlegend == null || l.layer.showlegend != false) {
                 $getlegend.on('click', {id:l.id, idToRender: idControllerItem + '-getlegend'}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
+                    var l = self.layersMap.get( event.data.id);
                     FM.Legend.getLegend(l, event.data.idToRender)
                 });
             }
@@ -386,7 +377,7 @@ FM.MAPController = FM.Class.extend({
                         .tooltip({title: $.i18n.prop('_switchto'+ l.layer.jointype.toLowerCase()) })
                         .css("display","inline-block")
                         .on('click', {id:l.id}, function(event) {
-                            _this.switchJoinType(event.data.id);
+                            self.switchJoinType(event.data.id);
                         })
                     }
                 }
@@ -395,14 +386,14 @@ FM.MAPController = FM.Class.extend({
             // Enable/Disable Swipe
             var $swipelayer = $(idItem+ '-swipe');
             $swipelayer.on('click', {id:l.id}, function(event) {
-                var l = _this.layersMap.get( event.data.id);
+                var l = self.layersMap.get( event.data.id);
                 if (l.layer.swipeActive == null || !l.layer.swipeActive) {
-                    FM.LayerSwipe.swipeActivate(l, _this._fenixMap.suffix + '-handle', _this._fenixMap.suffix + '-map', _this._map);
+                    FM.LayerSwipe.swipeActivate(l, self._fenixMap.suffix + '-handle', self._fenixMap.suffix + '-map', self._map);
                     // select icon
                     $swipelayer.addClass('fm-icon-swipe-selected')
                 }
                 else {
-                    FM.LayerSwipe.swipeDeactivate(l, _this._map);
+                    FM.LayerSwipe.swipeDeactivate(l, self._map);
                     // deselect icon
                     $swipelayer.removeClass('fm-icon-swipe-selected')
                 }
@@ -414,16 +405,16 @@ FM.MAPController = FM.Class.extend({
                 $zoomtolayer.css("display","inline-block");
                 $zoomtolayer.attr( "title", $.i18n.prop('_zoomtolayer'));
                 $zoomtolayer.on('click', {id:l.id}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerUtils.zoomToLayer(_this._map, l.layer)
+                    var l = self.layersMap.get( event.data.id);
+                    FM.LayerUtils.zoomToLayer(self._map, l.layer)
                 });
             }
             if (l.layer.zoomTo ) {
                 $zoomtolayer.css("display","inline-block");
                 $zoomtolayer.attr( "title", $.i18n.prop('_zoomtolayer'));
                 $zoomtolayer.on('click', {id:l.id}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerUtils.zoomToLayer(_this._map, l.layer)
+                    var l = self.layersMap.get( event.data.id);
+                    FM.LayerUtils.zoomToLayer(self._map, l.layer)
                 });
             }
 

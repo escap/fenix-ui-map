@@ -189,7 +189,7 @@ FM.Map = FM.Class.extend({
 
         if(this.options.legendOptions)
             l.layer.legendOptions = $.extend(l.layer.legendOptions, this.options.legendOptions);
-
+        
         if (l.layer.layertype ) {
             switch(l.layer.layertype ) {
                 case 'JOIN':
