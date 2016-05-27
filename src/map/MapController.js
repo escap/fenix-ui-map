@@ -225,7 +225,7 @@ FM.MAPController = FM.Class.extend({
                 var zIndexBase = 0;
                 for(var i=children.length-1; i >= 0; i-- ) {
                     var id = $(children[i]).data("layer").id;
-                    var layertitle = $(children[i]).data( "layer").layer.layertitle;
+                    var layertitle = $(children[i]).data("layer").layer.layertitle;
                     var zIndex =  zIndexBase + 100
                     layerIDs.push($(children[i]).data("layer").id)
                     _this.updateZIndex(id, zIndex);
@@ -481,7 +481,7 @@ FM.MAPController = FM.Class.extend({
         $(idStructure).append(overlayStructure);
 
         // listeners
-        $(idItem + '-title').append(l.layer.layertitle);
+        $(idItem + '-title').text(l.layer.layertitle);
 
         if(self._guiController.layersthumbs)
             $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
