@@ -1901,7 +1901,7 @@ FM.MAPController = FM.Class.extend({
             self.layersMap.set(l.id, l);
             self.layersMapZIndexes.set(l.layer.zindex, l.id)
 
-            $(idItem+'-title').text(l.layer.layertitle);
+            $(idItem+'-title').append(l.layer.layertitle);
 
             // Enable/Disable layer
             $(idItem+ '-enabledisable')
@@ -2090,7 +2090,7 @@ FM.MAPController = FM.Class.extend({
         $(idStructure).append(overlayStructure);
 
         // listeners
-        $(idItem + '-title').text(l.layer.layertitle);
+        $(idItem + '-title').append(l.layer.layertitle);
 
         if(self._guiController.layersthumbs)
             $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
