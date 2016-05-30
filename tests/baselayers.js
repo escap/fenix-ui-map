@@ -37,7 +37,7 @@ requirejs(['../src/paths'], function (paths) {
 			guiController: {
 				overlay: true,
 				baselayer: true,
-				wmsLoader: true																								
+				wmsLoader: true
 			},
 			baselayers: {
 				"world_imagery": {
