@@ -58,7 +58,8 @@ requirejs(['../src/paths'], function (paths) {
 					attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
 					maxZoom: 16
 				}
-			}
+			},
+			zoomToCountry:['DZA']
 		});
 		
 		map.createMap(0,0,3);

@@ -1114,7 +1114,8 @@ FM.Map = FM.Class.extend({
         boundaries: null,
         labels: null,
         //http://goo.gl/MUIt8Z
-        legendOptions: null
+        legendOptions: null,
+        zoomToCountry: null
     },
     mapOptions: {
 		zoomControl: false,
@@ -1180,6 +1181,8 @@ FM.Map = FM.Class.extend({
         // join popup holder
         this.$map.append(FM.Util.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
 
+        if(this.options.zoomToCountry)
+            this.zoomToCountry('iso3',this.options.zoomToCountry);
     },
 
     createMap: function(lat, lng, zoom) {
