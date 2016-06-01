@@ -557,8 +557,11 @@ FM.Map = FM.Class.extend({
                 var gLayer = L.geoJson(json, {
                     style: function (feature) {
                         return {
-                            color: '#f00',
-                            fillColor: '#f00'
+                            color: '#00f',
+                            opacity: 0.8,
+                            weight: 2,
+                            fillColor: '#00e',
+                            fillOpacity: 0.1
                         };
                     }
                 });
