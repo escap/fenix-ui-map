@@ -527,7 +527,7 @@ FM.Map = FM.Class.extend({
         this.removeLayer( this.layerBoundaries );
     },
 
-    highlightCountry: function(codif, code) {
+    highlightCountry: function(codif, codes) {
 
         codif = codif || 'iso3';
 
@@ -544,7 +544,7 @@ FM.Map = FM.Class.extend({
             outputFormat: 'text/javascript',
             format_options: 'callback: getJson',
             //srsName: 'EPSG:3857',
-            viewparams: 'iso3_code:'+code
+            viewparams: 'iso3_code:'+codes[0]
         };
 
         var parameters = L.Util.extend(defaultParameters);
