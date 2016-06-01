@@ -59,7 +59,8 @@ requirejs(['../src/paths'], function (paths) {
 					maxZoom: 16
 				}
 			},
-			zoomToCountry:['DZA']
+			zoomToCountry: ['DZA'],
+			highlightCountry: ['DZA']
 		});
 		
 		map.createMap(0,0,3);

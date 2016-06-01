@@ -1616,7 +1616,9 @@ FM.Map = FM.Class.extend({
 
         var self = this;
 
-        var rootUrl = "http://fenix.fao.org:20200/geoserver/fenix/ows";
+        //var rootUrl = "http://fenix.fao.org:20200/geoserver/fenix/ows";
+        //var rootUrl = this.options.url.DEFAULT_WMS_SERVER+'/demo/fenix/ows'
+        var rootUrl = "http://fenix.fao.org/demo/fenix/geoserver/ows";
 
         var defaultParameters = {
             service: 'WFS',
