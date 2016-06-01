@@ -32,7 +32,8 @@ FM.Map = FM.Class.extend({
         labels: null,
         //http://goo.gl/MUIt8Z
         legendOptions: null,
-        zoomToCountry: null
+        zoomToCountry: null,
+        highlightCountry: null
     },
     mapOptions: {
 		zoomControl: false,
@@ -100,7 +101,11 @@ FM.Map = FM.Class.extend({
 
         if(this.options.zoomToCountry)
             this.zoomToCountry('iso3',this.options.zoomToCountry);
+
+        if(this.options.highlightCountry)
+            this.highlightCountry('iso3', this.options.highlightCountry);
     },
+
 
     createMap: function(lat, lng, zoom) {
         this.mapOptions.lat = lat || this.mapOptions.lat;
@@ -520,6 +525,47 @@ FM.Map = FM.Class.extend({
 
     boundariesHide: function() {
         this.removeLayer( this.layerBoundaries );
+    },
+
+    highlightCountry: function(codif, code) {
+
+        codif = codif || 'iso3';
+
+        var self = this;
+
+        var rootUrl = "http://fenix.fao.org:20200/geoserver/fenix/ows";
+
+        var defaultParameters = {
+            service: 'WFS',
+            version: '1.0.0',
+            request: 'GetFeature',
+            typeName: 'fenix:gaul0_bounds',
+            maxFeatures: 50,
+            outputFormat: 'text/javascript',
+            format_options: 'callback: getJson',
+            //srsName: 'EPSG:3857',
+            viewparams: 'iso3_code:'+code
+        };
+
+        var parameters = L.Util.extend(defaultParameters);
+
+        $.ajax({
+            url: rootUrl + L.Util.getParamString(parameters),
+            dataType: 'jsonp',
+            jsonpCallback: 'getJson',
+            success: function(json) {
+                var gLayer = L.geoJson(json, {
+                    style: function (feature) {
+                        return {
+                            color: '#f00',
+                            fillColor: '#f00'
+                        };
+                    }
+                });
+                self.map.addLayer( gLayer );
+                //self.map.fitBounds( gLayer.getBounds() );
+            }
+        });
     }
 });
 
