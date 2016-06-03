@@ -1196,7 +1196,37 @@ FM.Map = FM.Class.extend({
             this.highlightCountry('iso3', this.options.highlightCountry);
     },
 
+    initStyles: function() {
 
+        $('<h1>PALETTE<h1>').addClass('color-main-light-10').prependTo(this.$map);
+
+        function getStyle(className) {
+            var ret = {},
+                len = document.styleSheets.length-1,
+                classes = document.styleSheets[len].rules || document.styleSheets[len].cssRules;
+            
+            for (var x = 0; x < classes.length; x++) {
+                
+                console.log(classes[x].selectorText)
+
+                if (classes[x].selectorText.indexOf(className)>-1 ) {
+
+                    console.log(classes[x].selectorText)
+
+                    if(!ret[className])
+                        ret[className]=[];
+                    
+                    ret[className].push(classes[x].cssText ? classes[x].cssText : classes[x].style.cssText);
+                }
+            }
+            return ret;
+        }
+
+        this.fenixStyles = getStyle('.color-main');
+
+        console.log('FMMAP fenixStyles',fenixStyles);//*/
+    },
+    
     createMap: function(lat, lng, zoom) {
         this.mapOptions.lat = lat || this.mapOptions.lat;
         this.mapOptions.lng = lng || this.mapOptions.lng;
@@ -1648,7 +1678,7 @@ FM.Map = FM.Class.extend({
             success: function(json) {
                 var gLayer = L.geoJson(json, {
                     style: function (feature) {
-                        return this.options.style;
+                        return self.options.style;
                     }
                 });
                 self.map.addLayer( gLayer );
