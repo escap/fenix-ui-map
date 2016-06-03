@@ -33,7 +33,14 @@ FM.Map = FM.Class.extend({
         //http://goo.gl/MUIt8Z
         legendOptions: null,
         zoomToCountry: null,
-        highlightCountry: null
+        highlightCountry: null,
+        style: {
+            color: '#337ab7',
+            opacity: 0.8,
+            weight: 2,
+            fillColor: '#337ab7',
+            fillOpacity: 0.1
+        }
     },
     mapOptions: {
 		zoomControl: false,
@@ -558,13 +565,7 @@ FM.Map = FM.Class.extend({
             success: function(json) {
                 var gLayer = L.geoJson(json, {
                     style: function (feature) {
-                        return {
-                            color: '#337ab7',
-                            opacity: 0.8,
-                            weight: 2,
-                            fillColor: '#337ab7',
-                            fillOpacity: 0.1
-                        };
+                        return this.options.style;
                     }
                 });
                 self.map.addLayer( gLayer );
