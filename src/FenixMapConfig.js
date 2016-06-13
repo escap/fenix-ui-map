@@ -5,7 +5,7 @@ define(function() {
 		BASEURL_LANG: 'http://fenixrepo.fao.org/cdn/js/fenix-ui-map/0.1.4/i18n/',
 
 		MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
-		DEFAULT_WMS_SERVER: 'http://fenix.fao.org/geoserver',
+		DEFAULT_WMS_SERVER: 'http://fenix.fao.org/demo/fenix/geoserver',
 		MAP_SERVICE_GFI_JOIN: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/',
 		MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/',
 
