@@ -1347,10 +1347,8 @@ FM.Map = FM.Class.extend({
                 default: this.addLayerWMS(l); break;
             }
         }
-        else {
-           /* DEFAULT request**/
+        else
            this.addLayerWMS(l);
-        }
         return this;
     },
 
