@@ -53,6 +53,8 @@ FM.Map = FM.Class.extend({
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
 
+        var self = this;
+
         // merging object with a deep copy
         this.options =  $.extend(true, {}, this.options, options);
         this.mapOptions = $.extend(true, {}, this.mapOptions, mapOptions);
@@ -105,14 +107,10 @@ FM.Map = FM.Class.extend({
 
         // join popup holder
         this.$map.append(FM.Util.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
-
-        if(this.options.zoomToCountry)
-            this.zoomToCountry('iso3',this.options.zoomToCountry);
-
-        if(this.options.highlightCountry)
-            this.highlightCountry('iso3', this.options.highlightCountry);
+     
     },
 
+//TODO
     initStyles: function() {
 
         $('<h1>PALETTE<h1>').addClass('color-main-light-10').prependTo(this.$map);
@@ -200,6 +198,25 @@ FM.Map = FM.Class.extend({
             });
         }
 
+        this.highlightLayer = L.geoJson(null, {
+            style: function(feature) {
+                return self.options.style;
+            }
+        }).addTo(this.map);
+
+        if(this.options.zoomToCountry)
+            this.zoomToCountry('iso3', this.options.zoomToCountry);
+
+        if(this.options.highlightCountry)
+            this.highlightCountry('iso3_code', this.options.highlightCountry);
+
+
+        if(this.options.boundaries)
+            this.boundariesShow();
+        
+        if(this.options.labels)
+            this.labelsShow();  
+        
         return this;
     },
 
@@ -566,42 +583,43 @@ FM.Map = FM.Class.extend({
 
     highlightCountry: function(codif, codes) {
 
-        codif = codif || 'iso3';
+        codif = codif || 'iso3_code';
+        //codif = codif || 'adm0_code';
 
         var self = this;
 
-        //var rootUrl = "http://fenix.fao.org:20200/geoserver/fenix/ows";
-        //var rootUrl = this.options.url.DEFAULT_WMS_SERVER+'/demo/fenix/ows'
-        var rootUrl = "http://fenix.fao.org/demo/fenix/geoserver/ows";
+        var rootUrl = this.options.url.DEFAULT_WMS_SERVER+"/ows";
 
-        var defaultParameters = {
-            service: 'WFS',
-            version: '1.0.0',
-            request: 'GetFeature',
-            typeName: 'fenix:gaul0_bounds',
-            maxFeatures: 50,
-            outputFormat: 'text/javascript',
-            format_options: 'callback: getJson',
-            //srsName: 'EPSG:3857',
-            viewparams: 'iso3_code:'+codes[0]
-        };
+        self.highlightLayer.clearLayers();
 
-        var parameters = L.Util.extend(defaultParameters);
+        for(var c in codes) {
 
-        $.ajax({
-            url: rootUrl + L.Util.getParamString(parameters),
-            dataType: 'jsonp',
-            jsonpCallback: 'getJson',
-            success: function(json) {
-                var gLayer = L.geoJson(json, {
-                    style: function (feature) {
-                        return self.options.style;
-                    }
-                });
-                self.map.addLayer( gLayer );
-                //self.map.fitBounds( gLayer.getBounds() );
-            }
-        });
+            var defaultParameters = {
+                service: 'WFS',
+                version: '1.0.0',
+                request: 'GetFeature',
+                typeName: 'fenix:gaul0_bounds',
+                maxFeatures: 50,
+                outputFormat: 'text/javascript',
+                format_options: 'callback: getJson',
+                //srsName: 'EPSG:3857',
+                viewparams: codif+':'+codes[c]
+            };
+
+            var parameters = L.Util.extend(defaultParameters),
+                url = rootUrl + L.Util.getParamString(parameters);
+
+            $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                jsonpCallback: 'getJson',
+                success: function(json) {
+                    //console.log('JSONP',url, json)
+                    self.highlightLayer.addData(json);
+                    self.highlightLayer.bringToFront();
+                }
+            });
+        }
     }
 });
 
