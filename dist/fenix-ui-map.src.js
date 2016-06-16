@@ -1683,7 +1683,6 @@ FM.Map = FM.Class.extend({
                 maxFeatures: 50,
                 outputFormat: 'text/javascript',
                 format_options: 'callback: getJson',
-                //srsName: 'EPSG:3857',
                 viewparams: codif+':'+codes[c]
             };
 
