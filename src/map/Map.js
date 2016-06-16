@@ -216,7 +216,7 @@ FM.Map = FM.Class.extend({
         
         if(this.options.labels)
             this.labelsShow();  
-        
+
         return this;
     },
 
