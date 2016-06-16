@@ -63,8 +63,12 @@ FM.MAPController = FM.Class.extend({
 
         var self = this;
 
-        if ( self._guiController ) {
-            
+        if ( self._guiController &&
+                (self._guiController.overlay ||
+                 self._guiController.baselayer ||
+                 self._guiController.wmsLoader)
+            ) {
+
             var mapDiv$ = $('#' + self.id);
 
             self.$boxMenu = $(FM.Util.replaceAll(FM.guiController.boxMenu, 'REPLACE', self.suffix));
