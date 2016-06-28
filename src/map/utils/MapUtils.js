@@ -16,7 +16,9 @@ FM.MapUtils = function() {
     };
 
     var zoomTo = function(m, layer, column, codes) {
+
         var url = m.options.url.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+
         $.ajax({
             type: "GET",
             url: url,

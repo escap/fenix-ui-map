@@ -204,8 +204,13 @@ FM.Map = FM.Class.extend({
             }
         }).addTo(this.map);
 
-        if(this.options.zoomToCountry)
-            this.zoomToCountry('iso3', this.options.zoomToCountry);
+        if(this.options.zoomToCountry && this.options.zoomToCountry.length > 0)
+            if(typeof this.options.zoomToCountry[0] === 'string')
+                this.zoomToCountry('iso3', this.options.zoomToCountry);
+
+            else if(typeof this.options.zoomToCountry[0] === 'number')
+                this.zoomToCountry('adm0_code', this.options.zoomToCountry);
+        }
 
         if(this.options.highlightCountry)
             this.highlightCountry('iso3_code', this.options.highlightCountry);
