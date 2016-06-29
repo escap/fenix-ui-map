@@ -1287,7 +1287,7 @@ FM.Map = FM.Class.extend({
             }
         }).addTo(this.map);
 
-        if(this.options.zoomToCountry && this.options.zoomToCountry.length > 0)
+        if(this.options.zoomToCountry && this.options.zoomToCountry.length > 0)   {
             if(typeof this.options.zoomToCountry[0] === 'string')
                 this.zoomToCountry('iso3', this.options.zoomToCountry);
 
