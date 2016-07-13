@@ -129,8 +129,6 @@ FM.Util = {
 
 (function () {
 
-    // inspired by http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-
     function getPrefixed(name) {
         var i, fn,
             prefixes = ['webkit', 'moz', 'o', 'ms'];
