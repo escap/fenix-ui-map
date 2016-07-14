@@ -129,8 +129,6 @@ FM.Util = {
 
 (function () {
 
-    // inspired by http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-
     function getPrefixed(name) {
         var i, fn,
             prefixes = ['webkit', 'moz', 'o', 'ms'];
@@ -177,16 +175,6 @@ FM.Util = {
         }
     };
 
-    /*FM.Util.replaceAll = function(text, stringToFind, stringToReplace) {
-        var temp = text;
-        var index = temp.indexOf(stringToFind);
-        while(index != -1){
-            temp = temp.replace(stringToFind,stringToReplace);
-            index = temp.indexOf(stringToFind);
-        }
-        return temp;
-    };   */
-
     FM.Util.replaceAll = function(text, stringToFind, stringToReplace) {
         return text.replace(new RegExp(stringToFind, 'g'), stringToReplace);
     },
@@ -222,6 +210,5 @@ FM.extend = FM.Util.extend;
 FM.bind = FM.Util.bind;
 FM.stamp = FM.Util.stamp;
 FM.setOptions = FM.Util.setOptions;
-FM.replaceAll = FM.Util.replaceAll;
 FM.loadModuleLibs = FM.Util.loadModuleLibs;
 FM.initializeLangProperties = FM.Util.initializeLangProperties;

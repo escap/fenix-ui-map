@@ -2,3 +2,6 @@
 node_modules/*
 npm-debug.log
 *.iml
+.ftppass
+sftpCache.json
+*.DS_Store

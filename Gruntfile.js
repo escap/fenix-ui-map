@@ -10,13 +10,14 @@ grunt.loadNpmTasks('grunt-contrib-jshint');
 grunt.loadNpmTasks('grunt-contrib-copy');
 grunt.loadNpmTasks('grunt-jsonlint');
 grunt.loadNpmTasks('grunt-contrib-watch');
+grunt.loadNpmTasks('grunt-sftp-deploy');
 
 grunt.initConfig({
 	pkg: grunt.file.readJSON('package.json'),
 	meta: {
 		banner:
 		'/* \n'+
-		' * <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> \n'+
+		' * <%= pkg.name %> v<%= pkg.version %> \n'+
 		' * Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> \n'+
 		' * <%= pkg.author %> \n'+
 		' * \n'+
@@ -30,6 +31,9 @@ grunt.initConfig({
 		js: {
 			src: ['dist/*.js']
 		},
+		css: {
+			src: ['dist/*.css']
+		},		
 		images: {
 			src: ['dist/images/*']
 		}		
@@ -94,7 +98,7 @@ grunt.initConfig({
 				'src/map/config/*.js',
 				'src/map/Map.js',
 				'src/map/utils/LayerLegend.js',
-				'src/map/controller/MapControllerDraggable.js',
+				'src/map/MapController.js',
 				'src/map/html/gui-controller.js',
 				'src/map/html/gui-map.js',
 				'src/map/utils/*.js ',
@@ -130,12 +134,29 @@ grunt.initConfig({
 			src: '<%= cssmin.combine.dest %>'
 		}
 	},
+	'sftp-deploy': {
+		build: {
+			auth: {
+				host: 'fenixrepo.fao.org',
+				port: 22,
+				authKey: {
+					username: 'root'
+				}
+			},
+			cache: 'sftpCache.json',
+			src: 'dist',
+			dest: '/work/prod/nginx/www/cdn/fenix/<%= pkg.name %>/<%= pkg.version %>',
+			serverSep: '/',
+			concurrency: 4,
+			progress: true
+		}
+	},
 	watch: {
 		dist: {
 			options: { livereload: true },
 			files: ['src/**/*','Gruntfile.js'],
-			tasks: ['clean:js','copy:fenixmapconfig','concat','cssmin','jshint']
-		}		
+			tasks: ['clean:js','clean:css','copy:fenixmapconfig','concat','cssmin','jshint']
+		}
 	}
 });
 
@@ -147,6 +168,10 @@ grunt.registerTask('default', [
 	'cssmin',
 	'jsonlint',	
 	'copy'
+]);
+
+grunt.registerTask('deploy', [
+	'sftp-deploy',
 ]);
 
 };

@@ -16,7 +16,9 @@ FM.MapUtils = function() {
     };
 
     var zoomTo = function(m, layer, column, codes) {
-        var url = FMCONFIG.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+
+        var url = m.options.url.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+
         $.ajax({
             type: "GET",
             url: url,
@@ -33,10 +35,11 @@ FM.MapUtils = function() {
         zoomTo(m, "country", column, codes);
     };
 
-    var getSLDfromCSS = function(layername, css) {
+    var getSLDfromCSS = function(layername, css, url) {
         var sld = '';
+        //TODO: change URL
         $.ajax({
-            url: FMCONFIG.CSS_TO_SLD,
+            url: url,
             data: {
                 stylename: layername,
                 style: css

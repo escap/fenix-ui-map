@@ -1,7 +1,12 @@
 FM.WCS = function() {
 
+    // TODO: config are the map.config (to be passed)
+    var config = {
+        url: {}
+    }
+
     // PROXY used to load the requests
-    var PROXY = (FMCONFIG.BASEURL_MAPS)? FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
+    var PROXY = (config.url.MAP_SERVICE_PROXY)? config.url.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
 
     // current version
     var VERSION = '1.1.1';

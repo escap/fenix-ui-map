@@ -100,24 +100,32 @@ FM.WMSUtils = FM.Class.extend({
 
 
                 var rand = FM.Util.randomID();
-                var layerPanel = FM.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
+                var layerPanel = FM.Util.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
 
                 $("#" + id).append(layerPanel);
-                $('#' + rand + '-WMSLayer-title').append(layer.layertitle);
-                $('#' + rand + '-WMSLayer-title').attr( "title",layer.layertitle);
-                try { $('#' + rand + '-WMSLayer-title').powerTip({placement: 'n'}); } catch (e) {}
+                $('#' + rand + '-WMSLayer-title')
+                    .tooltip({title: layer.layertitle})
+                    .append(layer.layertitle);
 
 
                 // TODO: get bounding box with the current CRS
-                $("#" + rand + "-WMSLayer-box").click({fenixmap:fenixmap, layer: layer}, function(event) {
-                    event.data.layer.openlegend = false; // if on add we want to close the legend
-                    var layer = new FM.layer(event.data.layer);
-                    event.data.fenixmap.addLayer(layer);
+                $("#" + rand + "-WMSLayer-box").on('click',
+                    {
+                        fenixmap: fenixmap,
+                        layer: layer
+                    }, function(e) {
 
-                    // TODO: multilanguage PopUp onAdd
-                    var content = 'The Layer <b>' + event.data.layer.layertitle + '</b><br> has been added to the map';
+                    e.data.layer.openlegend = false; // if on add we want to close the legend
+                    
+                    var layer = new FM.layer(e.data.layer);
+
+                    e.data.fenixmap.addLayer(layer);
+
                     try {
-                        FMPopUp.init({parentID: event.data.fenixmap.id, content: content})
+                        FMPopUp.init({
+                            parentID: e.data.fenixmap.id,
+                            content: 'The Layer <b>' + e.data.layer.layertitle + '</b><br> has been added to the map'
+                        })
                     }catch(e) {}
 
                 });

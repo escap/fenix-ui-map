@@ -9,10 +9,10 @@ FM.SpatialQuery = {
      * @param latlng
      * @param map
      */
-    getFeatureInfoJoin: function(l, layerPoint, latlng, map) {
+    getFeatureInfoJoin: function(l, layerPoint, latlng, fenixmap) {
         // setting a custom popup if it's not available
-        if (l.layer.custompopup == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
-        FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, map);
+        if (l.layer.customgfi == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
+        FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, fenixmap);
     },
 
 
@@ -25,23 +25,16 @@ FM.SpatialQuery = {
      * @param latlng
      * @param map
      */
-    getFeatureInfoStandard: function(l, layerPoint, latlng, map) {
+    getFeatureInfoStandard: function(l, layerPoint, latlng, fenixmap) {
 
-        // var latlngStr = '(' + latlng.lat.toFixed(3) + ', ' + latlng.lng.toFixed(3) + ')';
+        // bind to leaflet map
+        var map = fenixmap.map;
+
+        // query parameters for the GFI
         var bounds = map.getBounds();
         var sw = map.options.crs.project(bounds.getSouthWest());
         var ne = map.options.crs.project(bounds.getNorthEast());
         var BBOX = (sw.x ) + ',' + (sw.y) +',' + (ne.x) + ',' + (ne.y);
-        /*
-         var BBOX2 = (sw.x % -20037787) + ',' + (sw.y % 20037787) +',' + (ne.x % -20037787) + ',' + (ne.y % 20037508);
-         console.log('BBOX: ' + BBOX);
-        console.log('BBOX2: ' + BBOX2);
-        //console.log('sw.x: ' + sw.x); //-20037787.81567391
-        console.log('sw.x: ' + sw.x); //-7954342
-        console.log('sw.y: ' + sw.y);
-        console.log('ne.x: ' + ne.x);
-        console.log('ne.y: ' + ne.y);
-         */
         var WIDTH = map.getSize().x;
         var HEIGHT = map.getSize().y;
         var X = map.layerPointToContainerPoint(layerPoint).x;
@@ -51,8 +44,8 @@ FM.SpatialQuery = {
         X = X.toFixed(0) //13.3714
         Y = new Number(Y);
         Y = Y.toFixed(0) //13.3714
-
-        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        var url = fenixmap.options.url.MAP_SERVICE_GFI_STANDARD;
+        //var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
         url += '?SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&REQUEST=GetFeatureInfo';
@@ -73,7 +66,6 @@ FM.SpatialQuery = {
             url += '&SRS=EPSG:3857';
             //l.layer.srs; //EPSG:3857
             url += '&urlWMS=' + l.layer.urlWMS;
-            //  FM.SpatialQuery.getFeatureInfoJoinRequest(url, 'GET', null,latlng, map, outputID, l.layer.custompopup, l.layer.lang, l.layer.joindata);
             FM.SpatialQuery.getFeatureInfoJoinRequest(url, 'GET', latlng, map, l);
         }
         else {
@@ -81,17 +73,35 @@ FM.SpatialQuery = {
         }
     },
 
+    customPopup: function(response, custompopup, lang, joindata, layer) {
+
+        var html = '<div class="fm-popup">'+
+                '{{' + layer.joincolumnlabel + '}} <br />'+
+                '<b>{{{' + layer.joincolumn + '}}} </b> '+ layer.mu +
+            '</div>';
+
+        if(custompopup.content && custompopup.content[lang])
+            html = custompopup.content[lang];
+
+        var values = this._parseHTML(html);
+        if ( values.id.length > 0 || values.joinid.length > 0) {
+            var h = $('<div></div>').append(response);
+            var responsetable = h.find('table');
+            if ( responsetable) {
+                return FM.SpatialQuery._customizePopUp(html, values, responsetable, joindata, layer );
+            }
+        }
+
+    },
 
     // TODO: use an isOnHover flag?
     getFeatureInfoJoinRequest: function(url, requestType, latlon, map, l) {
-        var lang = ( l.layer.lang )? l.layer.lang.toLocaleLowerCase(): null;
+        var lang = l.layer.lang != null? l.layer.lang : map.options.lang;
         var _map = map;
         var _l = l;
-        /** TODO: use JQuery? **/
         $.ajax({
             type: "GET",
             url: url,
-            //dataType: 'application/x-www-form-urlencoded',
             success: function(response) {
                 // do something to response
                 if ( response != null ) {
@@ -103,7 +113,8 @@ FM.SpatialQuery = {
                     /** TODO: do it MUCH nicer **/
                     var r = response;
                     if (_l.layer.customgfi) {
-                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
+                        var joindata = _l.layer.joindata != null? _l.layer.joindata : _l.layer.data;
+                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, lang, joindata, l.layer);
                         // TODO: handle multiple outputs
                         r = (result != null) ? result[0] : response;
                     }
@@ -142,26 +153,13 @@ FM.SpatialQuery = {
         });
     },
 
-    customPopup: function(response, custompopup, lang, joindata) {
-        var values = this._parseHTML(custompopup.content[lang]);
-        if ( values.id.length > 0 || values.joinid.length > 0) {
-            var h = $('<div></div>').append(response);
-            var responsetable = h.find('table');
-            if ( responsetable) {
-                return FM.SpatialQuery._customizePopUp(custompopup.content[lang], values, responsetable, joindata );
-            }
-        }
-
-    },
-
     /** TODO: how to check it?  **/
     _checkGeoserverDefaultEmptyOutput: function(response) {
         return response;
     },
 
-    _customizePopUp:function(content, values, responsetable, joindata) {
-//        console.log('SpatialQuery._customizePopUp()')
-//        joindata = $.parseJSON(joindata)
+    _customizePopUp:function(content, values, responsetable, joindata, layer) {
+
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
         var rowsData = [];
@@ -169,12 +167,10 @@ FM.SpatialQuery = {
         // get only useful headers
         var headersHTMLIndexs = [];
         for ( var i=0;  i < headersHTML.length; i ++) {
-//            console.log("-----")
-//            console.log(headersHTML[i])
             for (var j=0; j< values.id.length; j++) {
-//                console.log(values.id)
-                if ( values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
-                    headersHTMLIndexs.push(i); break;
+                if (values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
+                    headersHTMLIndexs.push(i);
+                    break;
                 }
             }
         }
@@ -182,8 +178,6 @@ FM.SpatialQuery = {
         // this is in case the joinid is not empty TODO: split the code
         if ( joindata ) {
             var headersHTMLJOINIndexs = [];
-            //console.log( 'values.joinid');
-            //console.log( values.joinid);
             for ( var i=0;  i < headersHTML.length; i ++) {
                 for (var j=0; j< values.joinid.length; j++) {
                     if ( values.joinid[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
@@ -192,8 +186,6 @@ FM.SpatialQuery = {
                 }
             }
         }
-//        console.log("headersHTMLJOINIndexs");
-//        console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
@@ -202,8 +194,6 @@ FM.SpatialQuery = {
 
         // create the response results
         var htmlresult = [];
-//        console.log("rowsData");
-//        console.log(rowsData);
         for( var j=0; j < rowsData.length; j++) {
 
             // this is done for each row of result (They could be many rows)
@@ -211,51 +201,47 @@ FM.SpatialQuery = {
 
             // Replace IDs
             for(var i=0; i<headersHTMLIndexs.length; i ++) {
-                var header = '{{' + headersHTML[headersHTMLIndexs[i]].innerHTML + '}}'
+                var header = '{{' + headersHTML[headersHTMLIndexs[i]].innerHTML + '}}';
                 var d = rowsData[j][headersHTMLIndexs[i]].innerHTML;
-                //console.log(d);
                 c = FM.Util.replaceAll(c, header, d);
             }
 
             // Replace joindata (if needed)
+            // used to add dynamically the measurementunit
+            var checkJoinData = false;
             if ( joindata ) {
-//                console.log("headersHTMLJOINIndexs");
-//                console.log(headersHTMLJOINIndexs);
-
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
-//                    console.log(headersHTML[headersHTMLJOINIndexs[i]].innerHTML);
-                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
-//                    console.log("header");
-//                    console.log(header);
-
+                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}';
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
                     var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
-//                    console.log(v);
+                    v = (v !== 'NA' && layer.decimalvalues)? v.toFixed(layer.decimalvalues): v;
                     c = FM.Util.replaceAll(c, header, v);
-//                    console.log(c);
+                    if (v !== 'NA') {
+                        checkJoinData = true;
+                    }
                 }
             }
 
             // adding the row result to the outputcontent
             htmlresult.push(c)
         }
-        //console.log(htmlresult)
+
+        // "dynamic" measurementunit change
+        htmlresult[0] = FM.Util.replaceAll(htmlresult[0], "{{measurementunit}}", (checkJoinData)? layer.measurementunit: '');
+
         return htmlresult;
     },
 
 
     _getJoinValueFromCode: function(code, joindata) {
-        //console.log(code);
-        //console.log(joindata);
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
         var integerCode = ( parseInt(code) )? parseInt(code): null
         //console.log(integerCode);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
-        //console.log(json);
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
                 if ( json[i][code] ) {
-                    console.log( json[i][code]);
+                    //console.log( json[i][code]);
                     return json[i][code];
                 }
                 else {
@@ -264,7 +250,7 @@ FM.SpatialQuery = {
                 }
             }
         }
-        return '';
+        return 'NA';
         //return 'No data available for this point';
     },
 
@@ -303,8 +289,7 @@ FM.SpatialQuery = {
         var table = h.find('table');
         var result = [];
         if ( table ) {
-            var r = FM.SpatialQuery.transposeHTML(table, layertitle)
-//            console.log(r);
+            var r = FM.SpatialQuery.transposeHTML(table, layertitle);
             if ( r != null ) return r;
         }
         return null;
@@ -314,7 +299,6 @@ FM.SpatialQuery = {
         var div = $('<div class="fm-transpose-popup"></div>');
         var titleHTML = table.find('caption');
         try {
-//            div.append(titleHTML[0].innerHTML)
             div.append(layertitle)
 
             var tableHTML = table.find('tr');
@@ -341,202 +325,6 @@ FM.SpatialQuery = {
         } catch (e) {
             return null;
         }
-    },
-
-
-    /**
-     * @param l
-     * @param fenixMap
-     * @param series
-     * @param xmin
-     * @param xmax
-     * @param ymin
-     * @param ymax
-     * @param zoomToFeatures
-     * @param layer used to highlight/filter the features
-     */
-    scatterLayerFilter:function(l, fenixMap, series, xmin, xmax, ymin, ymax, zoomToFeatures, layerHighlight, reclassify ) {
-
-        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-        if ( !l.leafletLayer || reclassify ) l.layer.joindata = [];
-
-        var spCodes = '';
-        for(var i=0; i < series.length; i++) {
-            if ( series[i].data[0][0] >= xmin && series[i].data[0][0] <= xmax && series[i].data[0][1] >= ymin && series[i].data[0][1] <= ymax )  {
-                var geocode =  series[i].geocode;
-                if ( spCodes != '') spCodes += ','
-                if ( geocode) spCodes += "'"+ geocode +"'"
-                var s = {};
-                var value = series[i].data[0][0] / series[i].data[0][1];
-                s[series[i].geocode] = value;
-
-                // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-                // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-                if ( !l.leafletLayer || reclassify ) l.layer.joindata.push(s);
-            }
-        }
-
-        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-        if ( !l.leafletLayer || reclassify )  l.layer.joindata = JSON.stringify(l.layer.joindata);
-
-        if (l.leafletLayer ) {
-            // Highlight the layer (if exist)
-            if ( layerHighlight ) FM.SpatialQuery.highlightFeaturesOfLayer(layerHighlight, spCodes);
-
-            // reclassify the layer
-            if ( reclassify ) fenixMap.createShadeLayerRequest(l, true);
-
-            // SPATIAL QUERY
-            if ( zoomToFeatures ) {
-                FM.SpatialQuery._sampleSpatialQueryBoundingBox(fenixMap.map, spCodes, l.layer);
-                //FM.SpatialQuery._sampleSpatialQueryCentroid(fenixMap.map, spCodes)
-            }
-
-        }
-        else {
-            fenixMap.addShadedLayer(l);
-            //fenixMap.addLayer(l);
-        }
-    },
-
-    scatterLayerFilterFaster:function(l, fenixMap, series, xmin, xmax, ymin, ymax, layerHighlight, reclassify, formula) {
-        console.log('----------scatterLayerFilterFaster');
-        console.log(formula);
-        console.log(series);
-        console.log(l);
-        console.log(layerHighlight);
-        var zoomToFeatures = ( l.layer.zoomToFeatures )?  l.layer.zoomToFeatures : false;
-        if ( !l.leafletLayer || reclassify ) l.layer.joindata = [];
-
-        var spCodes = '';
-        for(var i=0; i < series.length; i++) {
-            //console.log('-->' + series[i]);
-            for ( var j = 0; j < series[i].data.length; j++) {
-                //console.log('---->' + series[i].data[j]);
-                if ( series[i].data[j].x >= xmin && series[i].data[j].x <= xmax && series[i].data[j].y >= ymin && series[i].data[j].y <= ymax )  {
-                    var code =  series[i].data[j].code;
-                    if ( spCodes != '') spCodes += ','
-                    if ( code) spCodes += "'"+ code +"'"
-                    var s = {};
-
-                    // console.log('-->data: ' + series[i].data[j]);
-                    //console.log('-->code: ' + code);
-
-                    /* TODO: remove eval **/
-                    if ( series[i].data[j].x != 0 && series[i].data[j].y != 0) {
-                        var value = ( formula )? eval(formula) : series[i].data[j].x / series[i].data[j].y;
-
-                        s[series[i].data[j].code] = value;
-
-                        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-                        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-                        if ( !l.leafletLayer || reclassify ) l.layer.joindata.push(s);
-
-                    }
-                }
-            }
-        }
-
-        //console.log('END---');
-
-        // this is to filter the result output without getting all the polygons, just the ones needed
-        // TODO add a parameter to enable or disable this feature on the layer
-        // if ( spCodes ) l.layer.cql_filter= l.layer.joincolumn +" IN (" + spCodes + ")";
-
-        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-        if ( !l.leafletLayer || reclassify )  l.layer.joindata = JSON.stringify(l.layer.joindata);
-
-        if (l.leafletLayer ) {
-            // Highlight the layer (if exist)
-            if ( layerHighlight ) FM.SpatialQuery.highlightFeaturesOfLayer(layerHighlight, spCodes);
-
-            // reclassify the layer
-            if ( reclassify ) fenixMap.createShadeLayerRequest(l, true);
-
-            // SPATIAL QUERY
-            if ( zoomToFeatures ) {
-                FM.SpatialQuery._sampleSpatialQueryBoundingBox(fenixMap.map, spCodes, l.layer);
-                //FM.SpatialQuery._sampleSpatialQueryCentroid(fenixMap.map, spCodes)
-            }
-
-        }
-        else {
-            fenixMap.addShadedLayer(l);
-            //fenixMap.addLayer(l);
-        }
-    },
-
-    // Highlight the features (it's passed not '10','15' that has to be converted)
-    highlightFeaturesOfLayer:  function(l, codes) {
-        console.log('highlightFeaturesOfLayer')
-        console.log(l)
-        console.log(codes)
-        var codes = FM.Util.replaceAll(codes, "'", "");
-
-
-        l.layer.cql_filter = l.layer.joincolumn + " IN (" + codes + ")";
-//        console.log(l.layerAdded)
-        if ( l.layerAdded )
-            l.redraw();
-        else
-            l.addLayerWMS();
-    },
-
-    _sampleSpatialQueryBoundingBox: function(map, spCodes, layer) {
-        //console.log(map);
-        var data = {};
-        data.datasource = 'FENIX';
-        // default geometry column if it doesnt exist TODO: launch an alert in case
-        var geom = (layer.geometrycolumn) ? layer.geometrycolumn : 'geom'
-        data.select = 'ST_AsText(ST_Transform(ST_Envelope(ST_Collect(' + layer.geometrycolumn + ')), 4326)) ';
-        /* data.from = 'gaul0_faostat_3857';
-         data.where = "faost_code IN (" + spCodes + ") "*/
-        data.from = ( layer.layername)? layer.layername : layer.layers;
-        data.where = layer.joincolumn + " IN (" + spCodes + ") " ;
-        $.ajax({
-            type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
-            data : data,
-            success : function(response) {
-                //console.log(response);
-                var wkt = new Wkt.Wkt();
-                wkt.read(response)
-                //console.log(wkt)
-                var BBOX = {
-                    "xmin" : wkt.components[0][0].x,
-                    "xmax" : wkt.components[0][2].x,
-                    "ymax" : wkt.components[0][1].y,
-                    "ymin" : wkt.components[0][0].y
-                }
-                FM.LayerUtils.zoomTOBBOX(map, BBOX);
-            },
-            error : function(err, b, c) { }
-        });
-    },
-
-    _sampleSpatialQueryCentroid: function(map, spCodes) {
-        var data = {};
-        data.datasource = 'FENIX',
-            data.select = 'ST_AsText(ST_Transform(ST_Centroid(ST_Collect(geom)), 4326)) ';
-        data.from = 'gaul0_faostat_3857';
-        data.where = "faost_code IN (" + spCodes + ") "
-        $.ajax({
-            type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
-            data : data,
-            success : function(response) {
-                //console.log(response);
-                var wkt = new Wkt.Wkt();
-                wkt.read(response)
-//                console.log("WKT:");
-//                console.log(wkt)
-                map.panTo([wkt.components[0].y,wkt.components[0].x]);
-            },
-            error : function(err, b, c) { }
-        });
     },
 
     filterLayerMinEqualThan: function(l, value) {

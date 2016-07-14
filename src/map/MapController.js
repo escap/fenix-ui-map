@@ -1,3 +1,4 @@
+
 FM.MAPController = FM.Class.extend({
 
     id: '',
@@ -9,8 +10,10 @@ FM.MAPController = FM.Class.extend({
     _fenixMap: '',
 
     _guiController:  {
+        container: null,
         overlay : true,
-        baselayer: true
+        baselayer: true,
+        layersthumbs: true
     },
 
     /** Used by the controller **/
@@ -31,18 +34,19 @@ FM.MAPController = FM.Class.extend({
     // GUI
     // left controller
     $boxIcons: '',
-    $menuBox: '',
-    $menuBoxContainer: '',
-    $selectedMenuBox: '', // i.e. SelectedLayers, BaseLayers WMS Layers
+    $boxMenu: '',
+    $boxMenuContainer: '',
+    $boxMenuSelected: '', // i.e. SelectedLayers, BaseLayers WMS Layers
 
-    getFeautureInfoLayer: [], // TODO: this is the list of the layers selected for the GFI
+    getFeautureInfoLayer: [],
+    // TODO: this is the list of the layers selected for the GFI
 
-    initialize: function(suffix, fenixMap, map, guiController) { // (HTMLElement or String, Object)
+    initialize: function(suffix, fenixMap, map, guiOpts) { // (HTMLElement or String, Object)
         this._map = map;
         this._fenixMap = fenixMap;
         this.suffix = suffix;
         this.id = suffix + '-controller';
-        this._guiController = $.extend({}, this._guiController, guiController);
+        this._guiController = $.extend({}, this._guiController, guiOpts);
 
         // initialize HashMaps
         this.baseLayersMap = new HashMap();
@@ -56,33 +60,75 @@ FM.MAPController = FM.Class.extend({
      *
      */
     initializeGUI:function() {
-        if ( this._guiController ) {
-            // adding the box gui
-            $('#' + this.id).append(FM.replaceAll(FM.guiController.box, 'REPLACE', this.suffix));
 
-            // adding the box icons container
-            $('#' + this.id).append(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', this.suffix));
-            this.$menuBox = $('#' + this.suffix + '-controller-box');
-            this.$menuBoxContainer = $('#' + this.suffix + '-controller-box-content');
-            this.$boxIcons = $('#' + this.suffix + '-controller-box-icons-container');
+        var self = this;
 
-            this.$boxIcons
+        if ( self._guiController &&
+                (self._guiController.overlay ||
+                 self._guiController.baselayer ||
+                 self._guiController.wmsLoader)
+            ) {
+
+            var mapDiv$ = $('#' + self.id);
+
+            self.$boxMenu = $(FM.Util.replaceAll(FM.guiController.boxMenu, 'REPLACE', self.suffix));
+
+            self.$boxMenuContainer = self.$boxMenu.find('#' + self.suffix + '-controller-box-content');
+            
+            self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
+
+            self.visibleBoxMenu;
+
+            if( self._guiController.container ) {
+
+                var $div = $('<div class="fm-controller-external">')
+                    .append(self.$boxIcons, self.$boxMenu);
+
+                $div.prependTo(self._guiController.container);
+
+                self.visibleBoxMenu = true;
+            }
+            else
+            {
+                self.visibleBoxMenu = false;
+
+                var guiControl = (function() {
+                    var control = new L.Control({position: 'bottomleft'});
+
+                    control.onAdd = function(map) {
+
+                        var $div = $('<div class="leaflet-control-controller">')
+                            .append(self.$boxIcons, self.$boxMenu);
+
+                        if (!L.Browser.touch) {
+                            L.DomEvent.disableClickPropagation($div[0]);
+                            L.DomEvent.on($div[0], 'mousewheel', L.DomEvent.stopPropagation);
+                        }
+                        else
+                            L.DomEvent.on($div[0], 'click', L.DomEvent.stopPropagation);
+
+                        return $div[0];
+                    };
+                    return control;
+                }()).addTo(self._map);
+            }
 
             /** TODO: make it nicer and more dynamic, with a more consistent name **/
-            if ( this._guiController.overlay) {
-                this.loadIcon('overlay');
-                this.initializeOverlayDragging();
+            if ( self._guiController.overlay) {
+                self.loadIcon('overlay', self.visibleBoxMenu);
+                self.initializeOverlayDragging();
             }
-            if ( this._guiController.baselayer) {
-                this.loadIcon('baselayer');
+            if ( self._guiController.baselayer) {
+                self.loadIcon('baselayer', self.visibleBoxMenu);
             }
 
-            if ( this._guiController.wmsLoader) {
-                this.loadIcon('wmsLoader');
-                var wmsUtils = new FM.WMSUtils();
-                var idDD =      this.suffix + '-controller-wmsLoader-dropdown';
-                var idContent = this.suffix + '-controller-wmsLoader-content';
-                var wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+            if ( self._guiController.wmsLoader) {
+                self.loadIcon('wmsLoader', self.visibleBoxMenu);
+                var wmsUtils = new FM.WMSUtils(),
+                    idDD = this.suffix + '-controller-wmsLoader-dropdown',
+                    idContent = this.suffix + '-controller-wmsLoader-content',
+                    wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+                    
                 wmsUtils.WMSCapabilities(idDD, idContent, this._fenixMap, wmsServers);
             }
         }
@@ -94,54 +140,75 @@ FM.MAPController = FM.Class.extend({
      *
      * @param toLoad
      */
-    loadIcon: function(toLoad) {
-        var guiController = FM.guiController;
+    loadIcon: function(toLoad, visibleBox) {
         var guiBox = toLoad + 'Box';
         var guiIcon = toLoad + 'Icon';
 
-        this.$boxIcons.show();
-        this.$boxIcons.append(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
-        this.$menuBoxContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
+        visibleBox = typeof visibleBox !== 'undefined' ? visibleBox : false;
 
-        var boxIcon = $('#' + this.suffix + '-controller-' + toLoad + 'Icon');
-        boxIcon.attr( "title", $.i18n.prop('_' + toLoad));
-        try {boxIcon.powerTip({placement: 'ne'}); } catch (e) {}
+        this.$boxMenuContainer.append(
+            FM.Util.replaceAll(FM.guiController[guiBox], 'REPLACE', this.suffix)
+        );
 
-        var _this = this;
-        var $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
-        $('#' + this.suffix + '-controller-' + toLoad + 'Icon').click({$id: $id, suffix: this.suffix}, function(event) {
-                var $id = event.data.$id;
-                var suffix =  event.data.suffix;
-                if (_this.$menuBox.is(':visible')) {
-                    // check if the select icon is the same that is shown
-                    if ( _this.$selectedMenuBox == $id ) {
-                        // close the panel
-                        _this.$menuBox.slideUp("slow")
+        if(visibleBox===false) {
+            this.$boxMenu.hide();
+            //this.$boxMenuContainer.find('.fm-box-zindex').hide();
+        }else {
+            this.$boxMenu.show();
+            this.$boxMenuContainer.find('.fm-box-zindex').show();
+        }
+        
+        var $boxIcon = $(FM.Util.replaceAll(FM.guiController[guiIcon], 'REPLACE', this.suffix));
+        $boxIcon.tooltip({title: $.i18n.prop('_' + toLoad) });
+
+        $boxIcon.appendTo(this.$boxIcons);
+
+        if(visibleBox===true)
+            this.$boxIcons.hide();
+
+        
+
+        var _this = this,
+            $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
+
+        $('#' + this.suffix + '-controller-' + toLoad + 'Icon')
+        .on('click', {
+                $id: $id,
+                suffix: this.suffix
+            }, function(e) {
+                
+                var $id = e.data.$id;
+
+                if (_this.$boxMenu.is(':visible'))
+                {
+                    if ( _this.$boxMenuSelected == $id ) {
+                        _this.$boxMenu.slideUp()
                         $id.hide();
-                        _this.$selectedMenuBox = '';
+                        _this.$boxMenuSelected = '';
                     }
                     else {
-                        _this.$selectedMenuBox.hide();
-                         $id.slideDown("slow");
-                        _this.$selectedMenuBox = $id;
+                        $id.slideDown();
+                        _this.$boxMenuSelected = $id;
                     }
                 }
                 else {
-                    // if the menu box is invisible
-                    _this.$selectedMenuBox = $id;
-                    _this.$selectedMenuBox.show();
-                    _this.$menuBox.slideDown("slow", function() {
-                    });
+                    _this.$boxMenuSelected = $id;
+                    _this.$boxMenu.slideDown();
                 }
         });
 
-        // close icon
-        $('#' + this.suffix + '-controller-' + toLoad + '-remove').click({$id: $id, suffix: this.suffix}, function(event) {
-            var $id = event.data.$id;
-            var suffix =  event.data.suffix;
-            $('#' + suffix + '-controller-box').slideUp("slow");
+        // close panel
+        $('#' + this.suffix + '-controller-' + toLoad + '-remove')
+        .on('click', {
+            $id: $id,
+            suffix: this.suffix
+        }, function(e) {
+            var $id = e.data.$id,
+                suffix =  e.data.suffix;
+
+            $('#' + suffix + '-controller-box').slideUp();
             $id.hide();
-        });
+        });//*/
     },
 
     /**
@@ -149,13 +216,12 @@ FM.MAPController = FM.Class.extend({
      */
     initializeOverlayDragging: function() {
         var _this = this;
+
+//TODO replace with https://github.com/RubaXa/Sortable
+
         $('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
-            start: function (event, ui) {
-                //console.log( ui.item.index());
-                //$(ui.item).data("startindex", ui.item.index());
-            },
             stop: function (event, ui) {
                 // getting layers order
                 var children = $(ui.item).parent().children();
@@ -163,7 +229,7 @@ FM.MAPController = FM.Class.extend({
                 var zIndexBase = 0;
                 for(var i=children.length-1; i >= 0; i-- ) {
                     var id = $(children[i]).data("layer").id;
-                    var layertitle = $(children[i]).data( "layer").layer.layertitle;
+                    var layertitle = $(children[i]).data("layer").layer.layertitle;
                     var zIndex =  zIndexBase + 100
                     layerIDs.push($(children[i]).data("layer").id)
                     _this.updateZIndex(id, zIndex);
@@ -182,127 +248,112 @@ FM.MAPController = FM.Class.extend({
      * @param l
      */
     layerAdded: function(l) {
+
+        var self = this;
+
         l.layerAdded = true;
         /** TODO: check if works always this solution **/
         if ( !l.layer.zindex ) {
-            l.layer.zindex = this.zIndex;
+            l.layer.zindex = self.zIndex;
             l.leafletLayer.setZIndex = l.layer.zindex;
         }
-        this.zIndex = this.zIndex + 2;
+        self.zIndex = self.zIndex + 2;
 
-        if ( l.layer.hideLayerInControllerList ) {
-            // do nothing
-        }
-        else {
+        if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var legendStructure = FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id);
-            var idMap =  '#'+ this.suffix + '-container-map';
-            $(idMap).append(legendStructure);
+            var $legend = $(FM.Util.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
+                div = $legend[0];
+           
+            if (!L.Browser.touch) {
+                L.DomEvent.disableClickPropagation(div);
+                L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+            }
+            else
+                L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+
+            self._fenixMap.$map.find('.leaflet-control-legend').append($legend);
+            
 
             // creating the HTML controller-overlay-item structure
-            var idStructure =  '#'+ this.suffix + '-controller-overlay-content';
+            var idStructure =  '#'+ self.suffix + '-controller-overlay-content';
             var idItem = '#'+ l.id + '-controller-item';
             var idControllerItem = l.id + '-controller-item';
-            var overlayStructure = FM.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
+            var overlayStructure = FM.Util.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
 
             // TODO: a way to get the layer back by the ID
 
-            // $(idStructure).append(overlayStructure);
             $(idStructure).prepend(overlayStructure);
 
             // saving the layer information (it's too many information TODO: please set only ID and needed infos
             $( '#'+ l.id  + '-controller-item-box' ).data( "layer", l );
 
-            var index = $('#'+ l.id  + '-controller-item-box').index() + 1;
+            var index = $('#'+l.id+'-controller-item-box').index() + 1;
 
             // setting up the layer GUI options
-            this._layerGUIOptions(l);
+            self._layerGUIOptions(l);
 
             // setting the layer to the HashMap to handle the ID and ZIndex
-            this.layersMap.set(l.id, l);
-            this.layersMapZIndexes.set(l.layer.zindex, l.id)
+            self.layersMap.set(l.id, l);
+            self.layersMapZIndexes.set(l.layer.zindex, l.id)
 
-            // drag and drop layer
-            $(idItem).attr( "title", $.i18n.prop('_dragdroplayer'));
-            try { $(idItem).powerTip({placement: 'e'}); } catch (e) {}
-
-            var _this = this;
-            // listeners
-            $(idItem + '-title').append(l.layer.layertitle);
-            $(idItem + '-title').attr( "title", l.layer.layertitle);
-            try { $(idItem + '-title').powerTip({placement: 'se'}); } catch (e) {}
-
-            // Remove Layer
-            var $removeLayer = $(idItem+ '-remove');
-            $removeLayer.click({l:l}, function(event){
-                event.stopPropagation();
-                if(confirm( $.i18n.prop('_confirmremovelayer'))) {
-                    _this.removeLayer(event.data.l);
-                }
-                event.preventDefault();
-
-            });
-            $removeLayer.attr( "title", $.i18n.prop('_removelayer'));
-            try { removeLayer.powerTip({placement: 'n'}); } catch (e) {}
+            $(idItem+'-title').append(l.layer.layertitle);
 
             // Enable/Disable layer
-            var $enabledisablelayer = $(idItem+ '-enabledisable');
-            $enabledisablelayer.click({id:l.id}, function(event) {
-                _this.showHide(event.data.id)
-            });
-            $enabledisablelayer.attr( "title", $.i18n.prop('_enabledisablelayer'));
-            try { $enabledisablelayer.powerTip({placement: 'se'}); } catch (e) {}
+            $(idItem+ '-enabledisable')
+                .tooltip({title: $.i18n.prop('_enabledisablelayer') })
+                .on('click', {id:l.id}, function(event) {
+                    self.showHide(event.data.id)
+                });
 
             // Layer Opacity
             var opacity = 1;
             if ( l.layer.opacity != null )
                 opacity = l.layer.opacity;
-            try {
-                var $layeropacity = $(idItem+ '-opacity');
-                $layeropacity.slider({
+
+            $(idItem+ '-opacity')
+                .tooltip({title: $.i18n.prop('_layeropacity') })
+                .slider({
                     orientation: "horizontal",
                     range: "min",
-                    min: 0,
-                    max: 1,
-                    step: 0.1,
+                    min: 0, max: 1, step: 0.1,
                     value: opacity,
                     slide: function( event, ui ) {
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
                     }
                 });
-                $layeropacity.attr( "title", $.i18n.prop('_layeropacity'));
-                try { $layeropacity.powerTip({placement: 'se'}); } catch (e) {}
-            } catch(e) {
-                // console.log('jquery-ui is not loaded');
-            }
 
             // Layer GetFeatureInfo
             var $layergfi = $(idItem+ '-getfeatureinfo');
-            if ( !l.layer.enablegfi ) $(idItem+ '-getfeatureinfo').css("display","none");
-            else {
-                $layergfi.click({id:l.id}, function(event) {
-                    var l = _this.layersMap.get(event.data.id);
-                    if ( _this.selectedLayer.id == event.data.id) {
+
+            if ( !l.layer.enablegfi ) {
+                $(idItem+ '-getfeatureinfo').css("display","none");
+            }
+            else
+            {
+                $layergfi.on('click', {id:l.id}, function(event) {
+                    var l = self.layersMap.get(event.data.id);
+                    if ( self.selectedLayer.id == event.data.id) {
                         // the layer select is equal to the new one, so deselect it
-                        $('#' + _this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
-                        _this.selectedLayer = '';
+                        $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                        self.selectedLayer = '';
                         l.layer.defaultgfi = false;
                     }
                     else {
                         // unselect old layer icon
-                        $('#' + _this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                        $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
                         // select new layer icon
                         $('#' + event.data.id + '-controller-item-getfeatureinfo').addClass('fm-icon-getfeatureinfo-selected');
-                        _this.selectedLayer = l;
+                        self.selectedLayer = l;
                         l.layer.defaultgfi = true;
                     }
                 });
-                $layergfi.attr( "title", $.i18n.prop('_getfeatureinfo'));
-                try { $layergfi.powerTip({placement: 'se'});} catch (e) {}
+                
+                $layergfi.tooltip({title: $.i18n.prop('_getfeatureinfo') });
+
                 if ( l.layer.defaultgfi ) {
                     // TODO: set default gfi style on the layer
-                    this.selectedLayer = l;
-                    $('#' + this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                    self.selectedLayer = l;
+                    $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
                     // select new layer icon
                     $('#' + l.id + '-controller-item-getfeatureinfo').addClass('fm-icon-getfeatureinfo-selected');
                 }
@@ -313,46 +364,40 @@ FM.MAPController = FM.Class.extend({
             // Show/Hide Legend
             var $getlegend = $(idItem+ '-getlegend');
             if (l.layer.showlegend == null || l.layer.showlegend != false) {
-                $getlegend.click({id:l.id, idToRender: idControllerItem + '-getlegend'}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerLegend.getLegend(l, event.data.idToRender)
+                $getlegend.on('click', {id:l.id, idToRender: idControllerItem + '-getlegend'}, function(event) {
+                    var l = self.layersMap.get( event.data.id);
+                    FM.Legend.getLegend(l, event.data.idToRender)
                 });
             }
-            $getlegend.attr( "title", $.i18n.prop('_showhidelegend'));
-            try { $getlegend.powerTip({placement: 'se'}); } catch (e) {}
-            $getlegend.css("display","inline-block");
+            
+            $getlegend.tooltip({title: $.i18n.prop('_showhidelegend') })
+                .css("display","inline-block");
 
             // Switch JoinType (From shaded to Point Layer)
             if (l.layer.layertype ) {
                 if (l.layer.layertype == 'JOIN' ) {
                     if (l.layer.switchjointype == null || l.layer.switchjointype ) {
-                        $(idItem+ '-switchjointype').css("display","inline-block");
-                        $(idItem+ '-switchjointype').click({id:l.id}, function(event) {
-                            _this.switchJoinType(event.data.id);
-                        });
-
-                        if (  l.layer.jointype.toLowerCase() == 'point') {
-                            $(idItem+ '-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'))
-                        }
-                        else if ( l.layer.jointype.toLowerCase() == 'shaded')  {
-                            $(idItem+ '-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'))
-                        }
-                        try { $(idItem+ "-switchjointype").powerTip({placement: 'se'}); } catch (e) {}
+                        $(idItem+ '-switchjointype')
+                        .tooltip({title: $.i18n.prop('_switchto'+ l.layer.jointype.toLowerCase()) })
+                        .css("display","inline-block")
+                        .on('click', {id:l.id}, function(event) {
+                            self.switchJoinType(event.data.id);
+                        })
                     }
                 }
             }
 
             // Enable/Disable Swipe
             var $swipelayer = $(idItem+ '-swipe');
-            $swipelayer.click({id:l.id}, function(event) {
-                var l = _this.layersMap.get( event.data.id);
+            $swipelayer.on('click', {id:l.id}, function(event) {
+                var l = self.layersMap.get( event.data.id);
                 if (l.layer.swipeActive == null || !l.layer.swipeActive) {
-                    FM.LayerSwipe.swipeActivate(l, _this._fenixMap.suffix + '-handle', _this._fenixMap.suffix + '-map', _this._map);
+                    FM.LayerSwipe.swipeActivate(l, self._fenixMap.suffix + '-handle', self._fenixMap.suffix + '-map', self._map);
                     // select icon
                     $swipelayer.addClass('fm-icon-swipe-selected')
                 }
                 else {
-                    FM.LayerSwipe.swipeDeactivate(l, _this._map);
+                    FM.LayerSwipe.swipeDeactivate(l, self._map);
                     // deselect icon
                     $swipelayer.removeClass('fm-icon-swipe-selected')
                 }
@@ -363,73 +408,38 @@ FM.MAPController = FM.Class.extend({
             if ( l.layer.zoomToBBOX ) {
                 $zoomtolayer.css("display","inline-block");
                 $zoomtolayer.attr( "title", $.i18n.prop('_zoomtolayer'));
-                $zoomtolayer.click({id:l.id}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerUtils.zoomToLayer(_this._map, l.layer)
+                $zoomtolayer.on('click', {id:l.id}, function(event) {
+                    var l = self.layersMap.get( event.data.id);
+                    FM.LayerUtils.zoomToLayer(self._map, l.layer)
                 });
             }
             if (l.layer.zoomTo ) {
                 $zoomtolayer.css("display","inline-block");
                 $zoomtolayer.attr( "title", $.i18n.prop('_zoomtolayer'));
-                $zoomtolayer.click({id:l.id}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerUtils.zoomToLayer(_this._map, l.layer)
+                $zoomtolayer.on('click', {id:l.id}, function(event) {
+                    var l = self.layersMap.get( event.data.id);
+                    FM.LayerUtils.zoomToLayer(self._map, l.layer)
                 });
             }
 
             // Show/Hide SubIcons
             var $subiconsshowhide  = $(idItem+ '-showhide-subicons');
             var $subiconscontainer = $(idItem+ '-subicons');
-            $subiconsshowhide.click(function(event) {
-                $subiconscontainer.slideToggle();
-                if ( $subiconsshowhide.hasClass("fm-icon-up")) {
-                    $subiconsshowhide.removeClass("fm-icon-up")
-                    $subiconsshowhide.addClass("fm-icon-down")
-                }
-                else {
-                    $subiconsshowhide.removeClass("fm-icon-down")
-                    $subiconsshowhide.addClass("fm-icon-up")
-                }
-            });
-            $subiconsshowhide.attr( "title", $.i18n.prop('_layersubicons'))
-            try { $subiconsshowhide.powerTip({placement: 'n'}); } catch (e) { }
+            
+            $subiconsshowhide
+                .on('click', function(event) {
 
+                    $subiconscontainer.slideToggle('fast');
 
-
-
-        // TODO: it should not be here it should be a check on add layer listener (and check wheater is hidden or not
-            /*            console.log(l.layer.enabled);
-             // set the layer to disable if enable == false
-             if ( !l.layer.enabled ) {
-             l.layer.visibility = true;
-             this.showHide(l.id);
-             }*/
-
-
-
-            // enable disable layer
-            /*        $(idItem+ '-joinsettings').click({id:l.id}, function(event) {
-             var l = _this.layersMap.get( event.data.id);
-             l.layer.intervals = 2;
-             //_this._fenixMap.createShadeLayerRequest(l, true)
-             _this._fenixMap.createPointLayerRequest(l)
-             });*/
-            /*
-             if ( l.layer.jointype ) {
-             $(idItem+ '-joinsettings').show();
-             $(idItem+ '-joinsettings').attr( "title", $.i18n.prop('_joinsettings'));
-             $(idItem+ '-joinsettings').click({id:l.id}, function(event) {
-             var l = _this.layersMap.get( event.data.id);
-             //FM.LayerUtils.getValuesOuterEqualThan(l, 5, 10000);
-             FM.LayerUtils.getValuesInBetweenEqualThan(l, 1500, 100000);
-
-             switch (l.layer.jointype) {
-             case 'point' :  _this._fenixMap.createPointLayerRequest(l); break;
-             case 'shaded' :  _this._fenixMap.createShadeLayerRequest(l, true); break;
-             }
-             });
-             }*/
-
+                    if ( $subiconsshowhide.hasClass("fm-icon-up")) {
+                        $subiconsshowhide.removeClass("fm-icon-up")
+                        $subiconsshowhide.addClass("fm-icon-down")
+                    }
+                    else {
+                        $subiconsshowhide.removeClass("fm-icon-down")
+                        $subiconsshowhide.addClass("fm-icon-up")
+                    }
+                });
         }
     },
 
@@ -454,6 +464,8 @@ FM.MAPController = FM.Class.extend({
      */
     addBaseLayer: function(l) {
 
+        var self = this;
+
         // setting the zIndex and updating it
         //console.log(this.zIndexBaseLayer);
         l.layer.zindex = this.zIndexBaseLayer;
@@ -464,28 +476,30 @@ FM.MAPController = FM.Class.extend({
         this.layersMapZIndexes.set(l.layer.zindex, l.id);
 
         // creating the HTML controller-overlay-item structure
-        var idStructure =  '#'+ this.suffix + '-controller-baselayer-content';
-        var idItem = '#'+ l.id + '-controller-item';
-        var overlayStructure = FM.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
-        overlayStructure = FM.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
+        var idStructure =  '#'+ this.suffix + '-controller-baselayer-content',
+            idItem = '#'+ l.id + '-controller-item',
+            overlayStructure = FM.Util.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
+
+        overlayStructure = FM.Util.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
 
         $(idStructure).append(overlayStructure);
 
-        var _this = this;
         // listeners
         $(idItem + '-title').append(l.layer.layertitle);
 
-        // add baselayer icon
-        $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
+        if(self._guiController.layersthumbs)
+            $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
+        else
+            $('#' + l.id + '-controller-item-baselayer-image').remove();
 
-        $(idItem+ '-enabledisable').click({id:l.id}, function(event) {
-            _this.showHide(event.data.id)
+        $(idItem+ '-enabledisable').on('click', {id:l.id}, function(e) {
+            self.showHide(e.data.id)
         });
 
         var opacity = 1;
         if ( l.layer.opacity != null )
             opacity = l.layer.opacity;
-        try {
+        /*try {
             $(idItem+ '-opacity').slider({
                 orientation: "horizontal",
                 range: "min",
@@ -493,30 +507,31 @@ FM.MAPController = FM.Class.extend({
                 max: 1,
                 step: 0.1,
                 value: opacity,
-                slide: function( event, ui ) {
+                slide: function(e, ui) {
                     FM.LayerUtils.setLayerOpacity(l, ui.value);
                 }
             });
-        }catch(e) {
-            //console.log('jquery-ui is not loaded');
-        }
+        }catch(e) { }//*/
 
-        $('#' + l.id + '-controller-box-item').click({id:l.id}, function(event) {
-            var id = event.data.id;
-            var l = _this.baseLayersMap.get(id);
+        $('#' + l.id + '-controller-box-item')
+        .on('click', {
+            id:l.id
+        }, function(e) {
+            var id = e.data.id;
+            var l = self.baseLayersMap.get(id);
 
             // removing the old baselayer
-            _this.removeBaseLayerByID(_this.currentBaseLayer.id);
-            var oldBaseLayer = _this.baseLayersMap.get(_this.currentBaseLayer.id);
+            self.removeBaseLayerByID(self.currentBaseLayer.id);
+            var oldBaseLayer = self.baseLayersMap.get(self.currentBaseLayer.id);
             $('#' + oldBaseLayer.id + "-controller-box-item").removeClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + oldBaseLayer.id + "-controller-item-opacity").hide();
 
             // add the new baselayer to the map and setting as default one
             $('#' + l.id + "-controller-box-item").addClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + l.id + "-controller-item-opacity").show();
-            _this._map.addLayer(l.leafletLayer);
-            _this.currentBaseLayer = l;
-            _this.setZIndex(l)
+            self._map.addLayer(l.leafletLayer);
+            self.currentBaseLayer = l;
+            self.setZIndex(l)
 
         });
 
@@ -528,7 +543,7 @@ FM.MAPController = FM.Class.extend({
             this.currentBaseLayer = l;
             $('#' + l.id + "-controller-box-item").addClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + l.id + "-controller-item-opacity").show();
-            _this.setZIndex(l)
+            self.setZIndex(l)
         }
 
     },
@@ -588,7 +603,7 @@ FM.MAPController = FM.Class.extend({
      */
     switchJoinType: function(id) {
         var l = this.layersMap.get(id);
-        try { $.powerTip.destroy($("#" + l.id +  "-controller-item-switchjointype")); } catch (e) {}
+
         if (  l.layer.jointype.toLowerCase() == 'point') {
             // alert('point')
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'));
@@ -599,7 +614,7 @@ FM.MAPController = FM.Class.extend({
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'));
             this.switchToPoint(id);
         }
-        try { $("#" + l.id +  "-controller-item-switchjointype").powerTip({placement: 'se'}); } catch (e) {}
+        $("#" + l.id +  "-controller-item-switchjointype").tooltip({title: $.i18n.prop('_switchtoshaded') });
     },
 
     /*
@@ -654,7 +669,7 @@ FM.MAPController = FM.Class.extend({
                     this.showHideLayer(id, isReload);
             }
         }catch (e) {
-            console.warn("showHide warn:" + e);
+           // console.warn("showHide warn:" + e);
         }
     },
 
@@ -721,7 +736,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         }catch (e) {
-            console.warn("showHideLayer error:"  + e);
+           // console.warn("showHideLayer error:"  + e);
         }
     },
 
@@ -762,7 +777,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         } catch (e) {
-            console.warn("setZIndex error:"  + e);
+           // console.warn("setZIndex error:"  + e);
         }
     },
 
@@ -813,16 +828,7 @@ FM.MAPController = FM.Class.extend({
         * **/
 
         return null;
-    },
-
-    /**
-     *
-     * TODO: update the zindex counter to the latest zindex currently used each time is added a layer
-     */
-    updateZindexCounter: function() {
-
     }
-
 
 });
 

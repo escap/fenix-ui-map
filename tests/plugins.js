@@ -13,7 +13,7 @@ requirejs(['../src/paths'], function (paths) {
 		'domready!'
 	], function($,jQuery,_,bts,Handlebars,
 		FenixMap, FenixMapConf) {
-		
+
 		_.extend(FenixMapConf, {
 			BASEURL: '../dist',
 			BASEURL_LANG: '../dist/i18n/'
@@ -21,11 +21,13 @@ requirejs(['../src/paths'], function (paths) {
 
 		var m = new FM.Map('#map', {
 			plugins: {
+				zoomcontrol: 'bottomright',			
 				disclaimerfao: true,
+				fullscreen: true,
 				geosearch: true,
 				mouseposition: false,
 				controlloading : true,
-				zoomcontrol: 'bottomright'
+				zoomResetControl: true
 			},
 			guiController: {
 				overlay: true,
@@ -39,7 +41,7 @@ requirejs(['../src/paths'], function (paths) {
 				MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/'
 			}
 		});
-		
+
 		m.createMap();
 
 		var joincolumnlabel = 'areanamee';
@@ -67,7 +69,6 @@ requirejs(['../src/paths'], function (paths) {
 				showpopup: true
 			}
 		});
-
 		m.addLayer(l);
 
 		m.addLayer( new FM.layer({
@@ -78,10 +79,17 @@ requirejs(['../src/paths'], function (paths) {
 			lang: 'EN'
 		}) );
 
-		//m.zoomTo("country", "iso3", ["THA"]);
-		//m.zoomTo("country", "iso2", "GE");
+	   // //m.zoomTo("country", "iso3", ["THA"]);
+	   // //m.zoomTo("country", "iso2", "GE");
 	});
+
 });
+
+
+
+
+
+
 
 
 

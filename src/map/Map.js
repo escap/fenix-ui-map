@@ -5,32 +5,63 @@ FM.Map = FM.Class.extend({
     mapContainerID: '',
     tilePaneID: '',
 
-    map: '', // this is the map obj of Leaflet/Openlayers
-    controller : '', // controller of the map
+    map: '',        //this is the map obj of Leaflet/Openlayers
+    controller: '', //controller of the map
+    plugins: {},    //indexed plugins istances
 
+    options: {
+        url: {},    	
+        lang: 'EN',
+        guiController : {
+            container: null,
+            overlay: true,
+            baselayer: true,
+            wmsLoader: true,
+            enablegfi: true, //this is used to switch off events like on drawing (when is need to stop the events on GFI)
+            layersthumbs: false
+        },
+        plugins: {
+			fullscreen: true,  //true or {id: 'divID'} or false
+        	zoomcontrol: true,
+            scalecontrol: true,
+            legendcontrol: true,
+        	disclaimerfao: true
+        },
+        baselayers: null,
+        boundaries: null,
+        labels: null,
+        //http://goo.gl/MUIt8Z
+        legendOptions: null,
+        zoomToCountry: null,
+        highlightCountry: null,
+        style: {
+            color: '#337ab7',
+            opacity: 0.8,
+            weight: 2,
+            fillColor: '#337ab7',
+            fillOpacity: 0.1
+        }
+    },
     mapOptions: {
+		zoomControl: false,
+		attributionControl: false,
         center: [0, 0],
         lat: 0,
         lng: 0,
         zoom: 1
     },
-    options: {
-        guiController : {
-            enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
-        },
-        gui : {
-            fullscreen: true,
-            fullscreenID: '' //TODO: pass it or
-            // TODO: pass fullscreen content ID on a fullscreen object instead of like that
-        },
-        usedefaultbaselayers: true,
-        lang: 'EN'
-    },
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
+
+        var self = this;
+
         // merging object with a deep copy
         this.options =  $.extend(true, {}, this.options, options);
         this.mapOptions = $.extend(true, {}, this.mapOptions, mapOptions);
+
+        // extent if exist FM.CONFIG
+        if (FMCONFIG)
+            this.options.url = $.extend(true, {}, FMCONFIG, options && options.url );
 
         // setting up the lang properties
         FM.initializeLangProperties(this.options.lang);
@@ -39,72 +70,165 @@ FM.Map = FM.Class.extend({
         var mapContainerID =  suffix + '-container-map';
         var mapID =  suffix + '-map';
 
-        $("#" + id).append("<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>");
-        $("#" + mapContainerID).append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
+        var mapDIV = "<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>";
+        
+        $(id).length > 0? $(id).append(mapDIV): $("#" + id).append(mapDIV);
 
         this.id = mapID;
+
+        this.$map = $("#" + mapContainerID);
+
+        this.$map.append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
+
+        this.map = new L.Map(this.id, this.mapOptions);
+
         this.mapContainerID = mapContainerID;
         this.suffix = suffix;
 
-        // fullscreen
-        this.options.gui.fullscreenID = ( this.options.gui.fullscreenID != '')? this.options.gui.fullscreenID: this.mapContainerID;
-        this.map = new L.Map(this.id, this.mapOptions);
-
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
         this.setTilePaneID();
-
-        // TODO: put in options the fact to add a controller or not
-        $("#" + mapContainerID).append("<div style='width:350px;' id='"+ suffix +"-controller'><div>");
-
+   
         this.controller = new FM.mapController(suffix, this, this.map,  this.options.guiController);
+
         this.controller.initializeGUI();
 
-        var _this = this;
         this.map._fenixMap = this;
-        // TODO: boolean to see if GFI is allowed
-        this.map.on('click', function (e) {
-            if ( _this.options.guiController.enablegfi ) _this.getFeatureInfo(e);
-        });
 
-        // popup hovervalue
-        $("#" + mapContainerID).append("<div id='"+ suffix +"-popup'><div>");
+        if(this.options.guiController.enablegfi)
+            this.map.on('click', this.getFeatureInfo, this);
 
-        // swipe id (TODO: replace with the new swipe)
-        $("#" + mapContainerID).append("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>");
+        var swipeControl = (function() {
+            var control = new L.Control();
+            control.onAdd = function(map) {
+                return $("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>")[0];
+            };
+            return control;
+        }()).addTo(this.map);
 
         // join popup holder
-        $("#" + mapContainerID).append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
-
-        /**  listener test
-        this.map.on('data:loaded', function (e) {
-            // Fit bounds after loading
-        }, this);
-
-        this.map.fire('data:loaded', {layer: 'test'});
-        **/
-
+        this.$map.append(FM.Util.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
+     
     },
 
-    createMap: function(lat, lng, zoom){
-        if ( lat )  this.mapOptions.lat = lat;
-        if ( lng )   this.mapOptions.lng = lng;
-        if ( zoom ) this.mapOptions.zoom = zoom;
+//TODO
+    initStyles: function() {
+
+        $('<h1>PALETTE<h1>').addClass('color-main-light-10').prependTo(this.$map);
+
+        function getStyle(className) {
+            var ret = {},
+                len = document.styleSheets.length-1,
+                classes = document.styleSheets[len].rules || document.styleSheets[len].cssRules;
+            
+            for (var x = 0; x < classes.length; x++) {
+                
+                console.log(classes[x].selectorText)
+
+                if (classes[x].selectorText.indexOf(className)>-1 ) {
+
+                    console.log(classes[x].selectorText)
+
+                    if(!ret[className])
+                        ret[className]=[];
+                    
+                    ret[className].push(classes[x].cssText ? classes[x].cssText : classes[x].style.cssText);
+                }
+            }
+            return ret;
+        }
+
+        this.fenixStyles = getStyle('.color-main');
+
+        console.log('FMMAP fenixStyles',fenixStyles);//*/
+    },
+    
+    createMap: function(lat, lng, zoom) {
+        this.mapOptions.lat = lat || this.mapOptions.lat;
+        this.mapOptions.lng = lng || this.mapOptions.lng;
+        this.mapOptions.zoom = zoom || this.mapOptions.zoom;
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
-        L.control.scale('bottomright').addTo(this.map);
+        
         this.initializePlugins();
-        this.initializeMapGUI();
-        if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
 
-        $("#" + this.id + " .leaflet-control-zoom-in").html("")
-        $("#" + this.id + " .leaflet-control-zoom-out").html("")
+        if(this.options.baselayers === null) {
+            this.options.baselayers = {
+                'OSM': FM.TILELAYER['OSM'],
+                'OSM_GRAYSCALE': FM.TILELAYER['OSM_GRAYSCALE'],
+                'ESRI_WORLDSTREETMAP': FM.TILELAYER['ESRI_WORLDSTREETMAP'],
+                'ESRI_WORLDTERRAINBASE': FM.TILELAYER['ESRI_WORLDTERRAINBASE']
+            }
+        }
+
+        for(var i in this.options.baselayers) {
+            //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
+            var layeropts = this.options.baselayers[i];
+            // this is replicated because in wms it's used "layers" instead of layername
+            
+            var l = new FM.layer({
+                layername: i,
+                layertype: 'TILE',
+                layertitle: layeropts['title_'+ this.options.lang.toLowerCase()],
+                lang: this.options.lang.toUpperCase()
+            });
+            var lurl = layeropts.url;
+            delete layeropts.url;
+            l.leafletLayer = new L.TileLayer(lurl, layeropts);
+
+            this.addTileLayer(l, true);
+        }
+
+        if(this.options.url.LAYER_BOUNDARIES) {
+            this.layerBoundaries = new FM.layer({
+                layers: this.options.url.LAYER_BOUNDARIES,
+                layertitle: 'Country Boundaries',
+                urlWMS: this.options.url.DEFAULT_WMS_SERVER,
+                opacity: '0.9',
+                lang: 'en',
+                hideLayerInControllerList: true
+            });
+            //this.addLayer(this.layerBoundaries)
+        }
+
+        if(this.options.url.LAYER_LABELS) {        
+            this.layerLabels = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+                subdomains: 'abcd',
+                maxZoom: 19,
+                opacity: 0.8
+            });
+        }
+
+        this.highlightLayer = L.geoJson(null, {
+            style: function(feature) {
+                return self.options.style;
+            }
+        }).addTo(this.map);
+
+        if(this.options.zoomToCountry && this.options.zoomToCountry.length > 0) {
+            if(typeof this.options.zoomToCountry[0] === 'string')
+                this.zoomToCountry('iso3', this.options.zoomToCountry);
+
+            else if(typeof this.options.zoomToCountry[0] === 'number')
+                this.zoomToCountry('adm0_code', this.options.zoomToCountry);
+        }
+
+        if(this.options.highlightCountry)
+            this.highlightCountry('iso3_code', this.options.highlightCountry);
+
+
+        if(this.options.boundaries)
+            this.boundariesShow();
+        
+        if(this.options.labels)
+            this.labelsShow();  
+
+        return this;
     },
 
-    /** Default Baselayers loaded at startup if they are not override **/
-    _addDefaultBaseLayers: function() {
-        this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('OSM_GRAYSCALE', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDSTREETMAP', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDTERRAINBASE', 'EN'), true);
+    destroyMap: function() {
+        //TODO unbind events
+        this.map.remove();
+        this.$map.empty();
     },
 
     /** TODO: make it nicer **/
@@ -116,35 +240,43 @@ FM.Map = FM.Class.extend({
     },
 
     addTileLayer: function(l, isBaseLayer) {
-        if ( isBaseLayer ) this.controller.addBaseLayer(l);
+        if ( isBaseLayer )
+            this.controller.addBaseLayer(l);
         else  {
            this.controller.layerAdded(l);
            this.map.addLayer(l.leafletLayer);
         }
         this.controller.setZIndex(l);
+        return this;
     },
 
     /** TODO: make it nicer **/
     addLayer:function (l) {
         l._fenixmap = this;
+
+        if(this.options.legendOptions)
+            l.layer.legendOptions = $.extend(l.layer.legendOptions, this.options.legendOptions);
+        
         if (l.layer.layertype ) {
-           switch(l.layer.layertype ) {
-               case 'JOIN':
-                   if (l.layer.jointype.toLocaleUpperCase() == 'SHADED') this.addShadedLayer(l);
-                   else if (l.layer.jointype.toLocaleUpperCase() == 'POINT') this.addPointLayer(l);
-               break;
-               case 'WMS': this.addLayerWMS(l); break;
-               default: this.addLayerWMS(l); break;
-           }
+            switch(l.layer.layertype ) {
+                case 'JOIN':
+                    if (l.layer.jointype.toLocaleUpperCase() == 'SHADED')
+                        this.addShadedLayer(l);
+                    else if (l.layer.jointype.toLocaleUpperCase() == 'POINT')
+                        this.addPointLayer(l);
+                break;
+                case 'WMS': this.addLayerWMS(l); break;
+                default: this.addLayerWMS(l); break;
+            }
         }
-        else {
-           /* DEFAULT request**/
+        else
            this.addLayerWMS(l);
-        }
+        return this;
     },
 
     removeLayer:function(l) {
         this.controller.removeLayer(l);
+        return this;
     },
 
     addLayerWMS: function(l) {
@@ -155,7 +287,8 @@ FM.Map = FM.Class.extend({
         this._openlegend(l, false);
 
         // check layer visibility
-        this.controller.showHide(l.id, false)
+        this.controller.showHide(l.id, false);
+        return this;
     },
 
     addShadedLayer: function(l) {
@@ -171,11 +304,14 @@ FM.Map = FM.Class.extend({
             $('#'+ l.id + '-controller-item-opacity').css('display', 'block');
         }
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        //var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         $.ajax({
             type: "POST",
             url: url,
-            data: FM.Util.parseLayerRequest(l.layer),
+            data: JSON.stringify(l.layer),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
             success: function(response) {
                 _this._createShadeLayer(l, response, isReload);
             }
@@ -185,21 +321,19 @@ FM.Map = FM.Class.extend({
     _createShadeLayer: function(l, response, isReload){
         if (typeof response == 'string')
             response = $.parseJSON(response);
-        l.layer.sldurl = response.sldurl;
-        l.layer.urlWMS = response.geoserverwms;
+        //l.layer.sldurl = response.sldurl;
+        //l.layer.urlWMS = response.geoserverwms;
+        l.layer.sldurl = response.url;
+        // TODO: check urlWMS how to set it
+        l.layer.urlWMS = this.options.url.DEFAULT_WMS_SERVER;
+        if (response.geoserverwms)
+            l.layer.urlWMS = response.geoserverwms
+
+        //l.layer.urlWMS = "http://localhost:9090/geoserver/wms/";
         l.layer.legendHTML = response.legendHTML;
         l.createLayerWMSSLD();
 
         this._loadLayer(l, isReload)
-    },
-
-    /** TODO: mix with the other request to do one that works for both situation */
-    createShadedLayerRequestCached: function(l, isReload) {
-        if ( l.layer.sldurl )
-            this._loadLayer(l, isReload)
-        else {
-            this.createShadeLayerRequest(l, isReload)
-        }
     },
 
     _loadLayer:function(l, isReload) {
@@ -223,7 +357,6 @@ FM.Map = FM.Class.extend({
     reAddLayer:function(l) {
         this.map.addLayer(l.leafletLayer);
         this.controller.setZIndex(l);
-
         // check layer visibility
         //this.controller.showHide(l.id)
     },
@@ -231,7 +364,7 @@ FM.Map = FM.Class.extend({
     _openlegend: function(l, isReload) {
         try {
             if (l.layer.openlegend) {
-                FM.LayerLegend.getLegend(l, l.id + '-controller-item-getlegend', isReload)
+                FM.Legend.getLegend(l, l.id + '-controller-item-getlegend', isReload);
             }
         }catch (e) {
             console.war("_openlegend error:" + e);
@@ -250,7 +383,7 @@ FM.Map = FM.Class.extend({
         $('#'+ l.id + '-controller-item-getlegend-holder').slideUp("slow");
         $('#'+ l.id + '-controller-item-opacity').css('display', 'none');
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         var r = new RequestHandler();
         r.open('POST', url);
         r.setContentType('application/x-www-form-urlencoded');
@@ -325,10 +458,6 @@ FM.Map = FM.Class.extend({
         }
     },
 
-    addGeoJSON: function(l) {
-        FMGeoJSON.createGeoJSONLayer(l);
-    },
-
     // syncronize the maps on movement
     syncOnMove: function (mapToSync) {
         FM.MapUtils.syncMapsOnMove(this.map, mapToSync);
@@ -336,81 +465,35 @@ FM.Map = FM.Class.extend({
 
     // TODO: add other parameters in the request: I.E.
     getFeatureInfo: function(e, l) {
+
         // var fenixMap = e.target._fenixMap;
         var fenixMap = this;
-//        this.addClickEffect(e.latlng, fenixMap.map);
         // get the layer that is been passed or the one that is selected in the Controller
         var l = (l) ? l: fenixMap.controller.selectedLayer;
         if ( l ) {
             if (l.layer.layertype != null && l.layer.layertype == 'JOIN') {
-                FM.SpatialQuery.getFeatureInfoJoin(l, e.layerPoint, e.latlng, fenixMap.map);
+                FM.SpatialQuery.getFeatureInfoJoin(l, e.layerPoint, e.latlng, fenixMap);
             }
             else {
-               FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap.map);
+               FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap);
             }
         }
-    },
-
-    addClickEffect: function(latlng, map) {
-        var html = '<div id="reveal-cards">' +
-            '<div class="cards-card">' +
-            '<div style="clear:both"></div></div>';
-        L.marker([
-            latlng.lat,
-            latlng.lng
-        ], {
-            icon: L.divIcon({
-                // Specify a class name we can refer to in CSS.
-                //className: html,
-                // Define what HTML goes in each marker.
-                html: html,
-                // Set a markers width and height.
-                iconSize: [40, 40]
-            })
-        }).addTo(map);
-    },
-
-    /** TODO: codetype, code **/
-    zoomTo: function(boundary, code, srs) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
-    },
-
-    zoomTo: function(boundary, code) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
     },
 
     invalidateSize: function() {
       this.map.invalidateSize();
     },
 
-    // interface GUI
-    initializeMapGUI:function() {
-        if ( this.options.gui != null ) {
-            var _this = this;
-            $.each(this.options.gui,
-                function(key, value) {
-                  var invoke = '_add' + key.toLowerCase();
-                 try {
-                     if ( FM.Plugins[invoke]) FM.Plugins[invoke](_this, value);
-                 }catch (e){
-                     throw new Error("Plugin: " + invoke + " doesn't exist")
-                 }
-            });
-        }
-    },
-
-
     // interface plugins
-    initializePlugins:function() {
+    initializePlugins: function() {
         if ( this.options.plugins != null ) {
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
-                 var invoke = '_add' + key.toLowerCase();
+                var pname = key.toLowerCase(),
+                	invoke = '_add' + pname;
 
-                /*FM.loadModuleLibs(key.toLowerCase(), function() {
-                    FM.Plugins[invoke](_this, value)
-                });*/
-                FM.Plugins[invoke](_this, value)
+                if (FM.Plugins[invoke])
+                	_this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
         }
     },
@@ -453,37 +536,22 @@ FM.Map = FM.Class.extend({
     },
 
     _getMapOptions:function() {
-        var o = {
-            options: {},
-            mapOptions: {}
+        return {
+            options: $.extend(true, {}, this.options),
+            plugins: $.extend(true, {}, this.plugins),
+            mapOptions: $.extend(true, _getCurrentMapOptions, this.mapOptions)            
         };
-        o.options    =  $.extend(true, {}, this.options);
-        o.mapOptions =  $.extend(true, {}, this.mapOptions);
-        // get current lan, lon, zoom
-        this._getCurrentMapOptions(o.mapOptions)
-        return o;
-    },
-
-    _getCurrentMapOptions: function(mapOptions) {
-        // lat
-        mapOptions.lat = this.map.getCenter().lat;
-        // lng
-        mapOptions.lng = this.map.getCenter().lng;
-        // zoom
-        mapOptions.zoom = this.map.getZoom();
     },
 
     _getMapLayers:function() {
-        var o = {}
-        o.overlays = this.controller.exportOverlays();
-        return o
+        return {
+            overlays: this.controller.exportOverlays()
+        };
     },
 
     loadOverlays: function(overlays) {
         for(var i =0; i < overlays.length; i++) {
-            // TODO: add a switch based on the layertype? i.e. what for markers
-            var l = new FM.layer(overlays[i]);
-            this.addLayer(l);
+            this.addLayer( new FM.layer(overlays[i]) );
         }
     },
 
@@ -493,6 +561,67 @@ FM.Map = FM.Class.extend({
 
     zoomToCountry: function(column, codes) {
         FM.MapUtils.zoomToCountry(this, column, codes)
+    },
+
+    getSLDfromCSS: function(layername, css) {
+        FM.MapUtils.getSLDfromCSS(layername, css, this.options.url.CSS_TO_SLD);
+    },
+
+    labelsShow: function() {
+        this.layerLabels.addTo(this.map).bringToFront();
+    },
+
+    labelsHide: function() {
+        this.map.removeLayer(this.layerLabels);
+    },
+
+    boundariesShow: function() {
+        this.addLayer( this.layerBoundaries );
+        //TODO .bringToFront()
+    },
+
+    boundariesHide: function() {
+        this.removeLayer( this.layerBoundaries );
+    },
+
+    highlightCountry: function(codif, codes) {
+
+        codif = codif || 'iso3_code';
+        //codif = codif || 'adm0_code';
+
+        var self = this;
+
+        var rootUrl = this.options.url.DEFAULT_WMS_SERVER+"/ows";
+
+        self.highlightLayer.clearLayers();
+
+        for(var c in codes) {
+
+            var defaultParameters = {
+                service: 'WFS',
+                version: '1.0.0',
+                request: 'GetFeature',
+                typeName: 'fenix:gaul0_bounds',
+                maxFeatures: 50,
+                outputFormat: 'text/javascript',
+                format_options: 'callback: getJson',
+                viewparams: codif+':'+codes[c]
+            };
+
+            var parameters = L.Util.extend(defaultParameters),
+                url = rootUrl + L.Util.getParamString(parameters);
+
+            $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                jsonpCallback: 'getJson',
+                success: function(json) {
+                    //console.log('JSONP',url, json)
+                    self.highlightLayer.addData(json);
+                    self.highlightLayer.bringToFront();
+                }
+            });
+        }
     }
 });
 

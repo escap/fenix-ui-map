@@ -1,16 +1,23 @@
 /* 
- * fenix-ui-map v0.0.1 - 2015-03-10 
- * Copyright 2015  
- * FENIX Development Team 
+ * fenix-ui-map v0.2.1 
+ * Copyright 2016  
+ * FENIX team (http://fenix.fao.org/) 
  * 
- * Licensed under the GPL3 license. 
+ * Licensed under the GPL-2.0 license. 
  * 
  * Source: 
  * https://github.com/FENIX-Platform/fenix-ui-map.git 
  */
 var FM, originalFM;
-if (!window.console) {var console = {};}
-if (!console.log) {console.log = function() {};}
+
+if(!window.console) {
+    window.console = {
+        log: function(){},
+        warn: function(){},
+        info: function(){},
+        error: function(){}        
+    };
+}
 
 if (typeof exports !== undefined + '') {
     FM = exports;
@@ -25,9 +32,10 @@ if (typeof exports !== undefined + '') {
     window.FM = FM;
 }
 
-FM.version = '0.0.1';
-FM.author = 'Simone Murzilli - simone.murzilli@gmail.com; simone.murzilli@fao.org';
-;
+FM.authors = [
+	{name: 'Stefano Cudini', email: 'stefano.cudini@fao.org'},
+	{name: 'Simone Murzilli', email: 'simone.murzilli@gmail.com; simone.murzilli@fao.org'}
+];;
 FM.Class = function () {};
 
 FM.Class.extend = function (props) {
@@ -252,8 +260,6 @@ FM.Util = {
 
 (function () {
 
-    // inspired by http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-
     function getPrefixed(name) {
         var i, fn,
             prefixes = ['webkit', 'moz', 'o', 'ms'];
@@ -300,16 +306,6 @@ FM.Util = {
         }
     };
 
-    /*FM.Util.replaceAll = function(text, stringToFind, stringToReplace) {
-        var temp = text;
-        var index = temp.indexOf(stringToFind);
-        while(index != -1){
-            temp = temp.replace(stringToFind,stringToReplace);
-            index = temp.indexOf(stringToFind);
-        }
-        return temp;
-    };   */
-
     FM.Util.replaceAll = function(text, stringToFind, stringToReplace) {
         return text.replace(new RegExp(stringToFind, 'g'), stringToReplace);
     },
@@ -345,7 +341,6 @@ FM.extend = FM.Util.extend;
 FM.bind = FM.Util.bind;
 FM.stamp = FM.Util.stamp;
 FM.setOptions = FM.Util.setOptions;
-FM.replaceAll = FM.Util.replaceAll;
 FM.loadModuleLibs = FM.Util.loadModuleLibs;
 FM.initializeLangProperties = FM.Util.initializeLangProperties;;
 ;(function(exports){
@@ -452,20 +447,8 @@ FM.initializeLangProperties = FM.Util.initializeLangProperties;;
 	exports.HashMap = HashMap;
 
 })(this.exports || this);;
+
 FM.UIUtils = {
-
-    fullscreen: function (idButton, idFullscreen) {
-
-        var fsElement = document.getElementById(idFullscreen);
-
-        if (window.fullScreenApi.supportsFullScreen) {
-            $('#' + idButton).on('click', function () {
-                window.fullScreenApi.requestFullScreen(fsElement);
-            });
-        } else {
-            //alert('is not supported the full screen on your browser')
-        }
-    },
 
     loadingPanel: function (id, height) {
         var h = '25px';
@@ -474,18 +457,7 @@ FM.UIUtils = {
 //        document.getElementById(id).innerHTML = "<div class='fm-loadingPanel' style='height:"+ h +"'><img src='"+ FMCONFIG.BASEURL +'/images/loading.gif' +"'></div>";
     }
 
-
 };
-
-$.fn.swapWith = function(to) {
-    return this.each(function() {
-        var copy_to = $(to).clone();
-        var copy_from = $(this).clone();
-        $(to).replaceWith(copy_from);
-        $(this).replaceWith(copy_to);
-    });
-};
-
 
 ;
 FM.WMSUtils = FM.Class.extend({
@@ -590,24 +562,32 @@ FM.WMSUtils = FM.Class.extend({
 
 
                 var rand = FM.Util.randomID();
-                var layerPanel = FM.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
+                var layerPanel = FM.Util.replaceAll(FM.guiController.wmsLoaderLayer, 'REPLACE', rand);
 
                 $("#" + id).append(layerPanel);
-                $('#' + rand + '-WMSLayer-title').append(layer.layertitle);
-                $('#' + rand + '-WMSLayer-title').attr( "title",layer.layertitle);
-                try { $('#' + rand + '-WMSLayer-title').powerTip({placement: 'n'}); } catch (e) {}
+                $('#' + rand + '-WMSLayer-title')
+                    .tooltip({title: layer.layertitle})
+                    .append(layer.layertitle);
 
 
                 // TODO: get bounding box with the current CRS
-                $("#" + rand + "-WMSLayer-box").click({fenixmap:fenixmap, layer: layer}, function(event) {
-                    event.data.layer.openlegend = false; // if on add we want to close the legend
-                    var layer = new FM.layer(event.data.layer);
-                    event.data.fenixmap.addLayer(layer);
+                $("#" + rand + "-WMSLayer-box").on('click',
+                    {
+                        fenixmap: fenixmap,
+                        layer: layer
+                    }, function(e) {
 
-                    // TODO: multilanguage PopUp onAdd
-                    var content = 'The Layer <b>' + event.data.layer.layertitle + '</b><br> has been added to the map';
+                    e.data.layer.openlegend = false; // if on add we want to close the legend
+                    
+                    var layer = new FM.layer(e.data.layer);
+
+                    e.data.fenixmap.addLayer(layer);
+
                     try {
-                        FMPopUp.init({parentID: event.data.fenixmap.id, content: content})
+                        FMPopUp.init({
+                            parentID: e.data.fenixmap.id,
+                            content: 'The Layer <b>' + e.data.layer.layertitle + '</b><br> has been added to the map'
+                        })
                     }catch(e) {}
 
                 });
@@ -732,6 +712,7 @@ FM.WMSUtils = FM.Class.extend({
         });
     }
 });;
+
 (function() {
     var
         fullScreenApi = {
@@ -812,13 +793,6 @@ FM.DEPENDENCIES = {
 
     fenixmap: {
         js: [
-            "http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js",
-            "http://fenixapps.fao.org/repository/js/jquery/1.9.1/jquery.min.js",
-            "http://fenixapps.fao.org/repository/js/jquery/1.0.9/jquery.i18n.properties-min.js",
-            "http://code.jquery.com/ui/1.10.3/jquery-ui.js",
-            "http://fenixapps.fao.org/repository/js/jquery.power.tip/1.2.0/jquery.powertip.min.js",
-            "http://fenixapps.fao.org/repository/js/FENIX/utils/import-dependencies-1.0.js",
-            "http://hqlprfenixapp2.hq.un.fao.org:13000/repository/js/jquery.pageslide/2.0/jquery.pageslide.min.js",
             // change with library
             "js/FENIXMap.js",
             "js/core/Class.js",
@@ -912,10 +886,8 @@ FMDEFAULTLAYER = {
             case "GAUL0_ISO3"           : return FMDEFAULTLAYER._getGAUL('gaul0_faostat_3857_2', 'iso3_code', 'the_geom', isjoin, 'faost_n', measurementunit, 'ISO3'); break;
             case "GAUL0_BOUNDARIES"     : return FMDEFAULTLAYER._getWMSLayer('gaul0_line_3857'); break;
             case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
-
 //            case "GAUL1"                : return FMDEFAULTLAYER._getGAUL('gaul1_3857', 'adm1_code', 'the_geom', isjoin, 'adm1_name', measurementunit, null); break;
 //            case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
-
             // TODO: change to a standard GAUL2 layer. 'gaul2_3857_2'is another GAUL2 used with the new popup (the old gaul2 as content.ftl used by countrystat)
             case "GAUL2"                : return FMDEFAULTLAYER._getGAUL('gaul2_3857', 'adm2_code', 'the_geom', isjoin, 'adm2_name', measurementunit, null); break;
         }
@@ -930,7 +902,7 @@ FMDEFAULTLAYER = {
         layer.measurementunit=(measurementunit )? measurementunit: null;
         layer.srs = 'EPSG:3857';
         layer.geometrycolumn =(geometrycolumn )? geometrycolumn: '';
-        if ( isjoin ) {
+        if (isjoin) {
             FMDEFAULTLAYER.joinDefaultPopUp(layer);
             layer.joinboundary = joinboundary;
         }
@@ -938,19 +910,20 @@ FMDEFAULTLAYER = {
     },
 
     _getWMSLayer:function(layername, urlWMS, styles, srs) {
+        // TODO: remove FMCONFIG from here!
         var layer = {};
         layer.layers = layername;
         layer.styles = (styles)?styles:'';
         layer.srs = (srs)?srs:'EPSG:3857';
-        layer.urlWMS = (urlWMS)?urlWMS:FMCONFIG.DEFAULT_WMS_SERVER;
+        layer.urlWMS = (urlWMS)?urlWMS: FMCONFIG.DEFAULT_WMS_SERVER;
         return layer;
     },
 
     /** TODO: handle multilanguage **/
     joinDefaultPopUp: function( layer ) {
         //console.log(layer);
-        var measurementunit  = ( layer.measurementunit )? " " + layer.measurementunit +"": "";
-        var joinlabel  = ( layer.joincolumnlabel )? "<div class='fm-popup-join-title'>{{" + layer.joincolumnlabel +"}}</div>": "";
+        var measurementunit  = (layer.measurementunit)? " " + layer.measurementunit +"": "";
+        var joinlabel  = (layer.joincolumnlabel)? "<div class='fm-popup-join-title'>{{" + layer.joincolumnlabel +"}}</div>": "";
         layer.customgfi = {
             content : {
                 en: "<div class='fm-popup'>" + joinlabel + "<div class='fm-popup-join-content'>{{{" + layer.joincolumn +"}}} <i>" + measurementunit +"</i></div></div>",
@@ -975,57 +948,53 @@ FM.TILELAYER = {
 
     // OpenStreetMap
     OSM: {
-        URL: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        TITLE_EN: 'OSM - OpenStreetMap',
-        TITLE_FR: 'OSM - OpenStreetMap'
+        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        title_en: 'OSM - OpenStreetMap'
     },
 
     OSM_GRAYSCALE: {
-        URL : 'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
-        TITLE_EN: 'OSM - OpenStreetMap grayscale',
-        TITLE_FR: 'OSM - OpenStreetMap grayscale'
+        url : 'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
+        title_en: 'OSM - OpenStreetMap grayscale'
     },
 
     MAPQUEST: {
-        URL : 'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
-        TITLE_EN: 'MapQuest'
+        url : 'http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
+        title_en: 'MapQuest'
     },
 
     MAPQUEST_NASA_AERIAL : {
-        URL: 'http://tile21.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
-        TITLE_EN: 'MapQuest Aerial'
+        url: 'http://tile21.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
+        title_en: 'MapQuest Aerial'
     },
 
     ESRI_WORLDSTREETMAP : {
-        URL: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png',
-        TITLE_EN: 'ESRI - World Street Map',
-        TITLE_FR:  'ESRI - World Street Map'
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png',
+        title_en: 'ESRI - World Street Map'
     },
 
     ESRI_WORLDTERRAINBASE : {
-        URL: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
-        TITLE_EN: 'ESRI - World Terrain Base',
-        TITLE_FR: 'ESRI - World Terrain Base'
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
+        title_en: 'ESRI - World Terrain Base'
     },
 
     ACETATE_LABELS : {
-        URL : 'http://a{s}.acetate.geoiq.com/tiles/acetate-labels/{z}/{x}/{y}.png',
-        TITLE_EN : 'Acetate Labels'
+        url : 'http://a{s}.acetate.geoiq.com/tiles/acetate-labels/{z}/{x}/{y}.png',
+        title_en : 'Acetate Labels'
     },
 
     ACETATE_TERRAIN : {
-        URL : 'http://a{s}.acetate.geoiq.com/tiles/terrain/{z}/{x}/{y}.png',
-        TITLE_EN: 'Acetate Terrain'
+        url : 'http://a{s}.acetate.geoiq.com/tiles/terrain/{z}/{x}/{y}.png',
+        title_en: 'Acetate Terrain'
     },
 
     STAMEN_TONER_BACKGROUND : {
-        URL : 'http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png',
-        TITLE_EN: 'Stamen'
+        url : 'http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png',
+        title_en: 'Stamen'
     },
 
     ESRI_HISTORICAL_MERCATOR: {
-        URL : 'http://tiles2.arcgis.com/tiles/IEuSomXfi6iB7a25/arcgis/rest/services/World_Globe_1812/MapServer/{z}/{x}/{y}.png',
-        TITLE_EN: 'ESRI_HISTORICAL_MERCATOR'
+        url : 'http://tiles2.arcgis.com/tiles/IEuSomXfi6iB7a25/arcgis/rest/services/World_Globe_1812/MapServer/{z}/{x}/{y}.png',
+        title_en: 'ESRI_HISTORICAL_MERCATOR'
     }
 };
 ;
@@ -1037,15 +1006,14 @@ FM.WMSSERVERS = {
             label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
             url: 'http://fenix.fao.org/demo/fenix/geoserver/earthstat/wms'
         },
-//        {
-//            label: 'FENIX WMS Server',
-//            label_EN: 'FENIX', // not currently used for the multilingual, it is needed?
-//            url: 'http://fenixapps.fao.org/geoserver'
-//        },
+        {
+            label: 'Greenhouse gases Data',
+            label_EN: 'FENIX',
+            url: 'http://fenix.fao.org/demo/ghg/geoserver/wms'
+        },
         {
             label: 'DATA.FAO.ORG',
             label_EN: 'data.fao.org WMS Server',
-            //url: 'http://data.fao.org/maps/wms?AUTHKEY=d30aebf0-ab2a-11e1-afa6-0800200c9a66'
             url: 'http://data.fao.org/maps/wms'
         },
         {
@@ -1073,11 +1041,6 @@ FM.WMSSERVERS = {
             label_EN:  'German OpenData',
             url: 'http://geo.sv.rostock.de/geodienste/verwaltung/wms'
         },
-//        {
-//            label: 'De Agostini of',
-//            label_EN:  'De Agostini',
-//            url: 'http://wms.pcn.minambiente.it/ogc?map=/ms_ogc/WMS_v1.3/raster/de_agostini.map'
-//        },
         {
             label: 'ENVIRONMENT OpenData',
             label_EN:  'Scotland OpenData',
@@ -1088,40 +1051,10 @@ FM.WMSSERVERS = {
             label_EN: 'OpenGeo Demo Server',
             url: 'http://demo.opengeo.org/geoserver/ows'
         },
-        //{
-        //    label: 'HarvestChoice 1',
-        //    label_EN: 'HarvestChoice 1',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_1/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 2',
-        //    label_EN: 'HarvestChoice 2',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_2/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 3',
-        //    label_EN: 'HarvestChoice 3',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_3/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 4',
-        //    label_EN: 'HarvestChoice 4',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_4/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 5',
-        //    label_EN: 'HarvestChoice 5',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_5/MapServer/WMSServer'
-        //},
-        //{
-        //    label: 'HarvestChoice 6',
-        //    label_EN: 'HarvestChoice 6',
-        //    url: 'http://apps.harvestchoice.org/arcgis/services/MapServices/cell_values_6/MapServer/WMSServer'
-        //},
         {
             label: 'Alberts Map Service',
             url: 'http://maps.gov.bc.ca/arcserver/services/Province/albers_cache/MapServer/WMSServer',
-            urlParameters: 'service=WMS'  // used as additional parameters
+            urlParameters: 'service=WMS'
         },
         {
             label: 'Cubert Map Service',
@@ -1137,22 +1070,12 @@ FM.WMSSERVERS = {
             label: 'Vienna OpenData',
             label_EN:  'Vienna OpenData',
             url: 'http://data.wien.gv.at/daten/wms'
-        }
-        /*,
+        },
         {
-            label: 'toscana',
-            label_EN: 'Cubewerx Map Service',
-            url: 'http://eusoils.jrc.ec.europa.eu/wrb/wms_Threats.asp'
-        }*/
-
-
-/*        ,{
-            label: 'OCHA Map Service',
-            label_EN: 'OCHA Map Service',
-            url: 'http://carto.iict.ch/geoserver/wms',
-            urlParameters: 'service=WMS'  // used as additional parameters
-        }*/
-
+            label: 'Vienna OpenData',
+            label_EN:  'Vienna OpenData',
+            url: 'http://data.wien.gv.at/daten/wms'
+        }
     ]
 }
 
@@ -1164,32 +1087,63 @@ FM.Map = FM.Class.extend({
     mapContainerID: '',
     tilePaneID: '',
 
-    map: '', // this is the map obj of Leaflet/Openlayers
-    controller : '', // controller of the map
+    map: '',        //this is the map obj of Leaflet/Openlayers
+    controller: '', //controller of the map
+    plugins: {},    //indexed plugins istances
 
+    options: {
+        url: {},    	
+        lang: 'EN',
+        guiController : {
+            container: null,
+            overlay: true,
+            baselayer: true,
+            wmsLoader: true,
+            enablegfi: true, //this is used to switch off events like on drawing (when is need to stop the events on GFI)
+            layersthumbs: false
+        },
+        plugins: {
+			fullscreen: true,  //true or {id: 'divID'} or false
+        	zoomcontrol: true,
+            scalecontrol: true,
+            legendcontrol: true,
+        	disclaimerfao: true
+        },
+        baselayers: null,
+        boundaries: null,
+        labels: null,
+        //http://goo.gl/MUIt8Z
+        legendOptions: null,
+        zoomToCountry: null,
+        highlightCountry: null,
+        style: {
+            color: '#337ab7',
+            opacity: 0.8,
+            weight: 2,
+            fillColor: '#337ab7',
+            fillOpacity: 0.1
+        }
+    },
     mapOptions: {
+		zoomControl: false,
+		attributionControl: false,
         center: [0, 0],
         lat: 0,
         lng: 0,
         zoom: 1
     },
-    options: {
-        guiController : {
-            enablegfi: true // this is used to switch off events like on drawing (when is need to stop the events on GFI)
-        },
-        gui : {
-            fullscreen: true,
-            fullscreenID: '' //TODO: pass it or
-            // TODO: pass fullscreen content ID on a fullscreen object instead of like that
-        },
-        usedefaultbaselayers: true,
-        lang: 'EN'
-    },
 
     initialize: function(id, options, mapOptions) { // (HTMLElement or String, Object)
+
+        var self = this;
+
         // merging object with a deep copy
         this.options =  $.extend(true, {}, this.options, options);
         this.mapOptions = $.extend(true, {}, this.mapOptions, mapOptions);
+
+        // extent if exist FM.CONFIG
+        if (FMCONFIG)
+            this.options.url = $.extend(true, {}, FMCONFIG, options && options.url );
 
         // setting up the lang properties
         FM.initializeLangProperties(this.options.lang);
@@ -1198,72 +1152,165 @@ FM.Map = FM.Class.extend({
         var mapContainerID =  suffix + '-container-map';
         var mapID =  suffix + '-map';
 
-        $("#" + id).append("<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>");
-        $("#" + mapContainerID).append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
+        var mapDIV = "<div class='fm-map-box fm-box' id='"+ mapContainerID +"'><div>";
+        
+        $(id).length > 0? $(id).append(mapDIV): $("#" + id).append(mapDIV);
 
         this.id = mapID;
+
+        this.$map = $("#" + mapContainerID);
+
+        this.$map.append("<div style='width:100%; height: 100%;' id='"+ mapID +"'><div>");
+
+        this.map = new L.Map(this.id, this.mapOptions);
+
         this.mapContainerID = mapContainerID;
         this.suffix = suffix;
 
-        // fullscreen
-        this.options.gui.fullscreenID = ( this.options.gui.fullscreenID != '')? this.options.gui.fullscreenID: this.mapContainerID;
-        this.map = new L.Map(this.id, this.mapOptions);
-
         // setting the TilePaneID   TODO: set IDs to all the DIVs?
         this.setTilePaneID();
-
-        // TODO: put in options the fact to add a controller or not
-        $("#" + mapContainerID).append("<div style='width:350px;' id='"+ suffix +"-controller'><div>");
-
+   
         this.controller = new FM.mapController(suffix, this, this.map,  this.options.guiController);
+
         this.controller.initializeGUI();
 
-        var _this = this;
         this.map._fenixMap = this;
-        // TODO: boolean to see if GFI is allowed
-        this.map.on('click', function (e) {
-            if ( _this.options.guiController.enablegfi ) _this.getFeatureInfo(e);
-        });
 
-        // popup hovervalue
-        $("#" + mapContainerID).append("<div id='"+ suffix +"-popup'><div>");
+        if(this.options.guiController.enablegfi)
+            this.map.on('click', this.getFeatureInfo, this);
 
-        // swipe id (TODO: replace with the new swipe)
-        $("#" + mapContainerID).append("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>");
+        var swipeControl = (function() {
+            var control = new L.Control();
+            control.onAdd = function(map) {
+                return $("<div  class='fm-swipe' id='"+ suffix +"-swipe'><div style='display:none' class='fm-swipe-handle'id='"+ suffix +"-handle'>&nbsp</div></div>")[0];
+            };
+            return control;
+        }()).addTo(this.map);
 
         // join popup holder
-        $("#" + mapContainerID).append(FM.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
-
-        /**  listener test
-        this.map.on('data:loaded', function (e) {
-            // Fit bounds after loading
-        }, this);
-
-        this.map.fire('data:loaded', {layer: 'test'});
-        **/
-
+        this.$map.append(FM.Util.replaceAll(FM.guiController.popUpJoinPoint, 'REPLACE', suffix));
+     
     },
 
-    createMap: function(lat, lng, zoom){
-        if ( lat )  this.mapOptions.lat = lat;
-        if ( lng )   this.mapOptions.lng = lng;
-        if ( zoom ) this.mapOptions.zoom = zoom;
+//TODO
+    initStyles: function() {
+
+        $('<h1>PALETTE<h1>').addClass('color-main-light-10').prependTo(this.$map);
+
+        function getStyle(className) {
+            var ret = {},
+                len = document.styleSheets.length-1,
+                classes = document.styleSheets[len].rules || document.styleSheets[len].cssRules;
+            
+            for (var x = 0; x < classes.length; x++) {
+                
+                console.log(classes[x].selectorText)
+
+                if (classes[x].selectorText.indexOf(className)>-1 ) {
+
+                    console.log(classes[x].selectorText)
+
+                    if(!ret[className])
+                        ret[className]=[];
+                    
+                    ret[className].push(classes[x].cssText ? classes[x].cssText : classes[x].style.cssText);
+                }
+            }
+            return ret;
+        }
+
+        this.fenixStyles = getStyle('.color-main');
+
+        console.log('FMMAP fenixStyles',fenixStyles);//*/
+    },
+    
+    createMap: function(lat, lng, zoom) {
+        this.mapOptions.lat = lat || this.mapOptions.lat;
+        this.mapOptions.lng = lng || this.mapOptions.lng;
+        this.mapOptions.zoom = zoom || this.mapOptions.zoom;
         this.map.setView(new L.LatLng(this.mapOptions.lat, this.mapOptions.lng), this.mapOptions.zoom);
-        L.control.scale('bottomright').addTo(this.map);
+        
         this.initializePlugins();
-        this.initializeMapGUI();
-        if ( this.options.usedefaultbaselayers ) this._addDefaultBaseLayers();
 
-        $("#" + this.id + " .leaflet-control-zoom-in").html("")
-        $("#" + this.id + " .leaflet-control-zoom-out").html("")
+        if(this.options.baselayers === null) {
+            this.options.baselayers = {
+                'OSM': FM.TILELAYER['OSM'],
+                'OSM_GRAYSCALE': FM.TILELAYER['OSM_GRAYSCALE'],
+                'ESRI_WORLDSTREETMAP': FM.TILELAYER['ESRI_WORLDSTREETMAP'],
+                'ESRI_WORLDTERRAINBASE': FM.TILELAYER['ESRI_WORLDTERRAINBASE']
+            }
+        }
+
+        for(var i in this.options.baselayers) {
+            //this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
+            var layeropts = this.options.baselayers[i];
+            // this is replicated because in wms it's used "layers" instead of layername
+            
+            var l = new FM.layer({
+                layername: i,
+                layertype: 'TILE',
+                layertitle: layeropts['title_'+ this.options.lang.toLowerCase()],
+                lang: this.options.lang.toUpperCase()
+            });
+            var lurl = layeropts.url;
+            delete layeropts.url;
+            l.leafletLayer = new L.TileLayer(lurl, layeropts);
+
+            this.addTileLayer(l, true);
+        }
+
+        if(this.options.url.LAYER_BOUNDARIES) {
+            this.layerBoundaries = new FM.layer({
+                layers: this.options.url.LAYER_BOUNDARIES,
+                layertitle: 'Country Boundaries',
+                urlWMS: this.options.url.DEFAULT_WMS_SERVER,
+                opacity: '0.9',
+                lang: 'en',
+                hideLayerInControllerList: true
+            });
+            //this.addLayer(this.layerBoundaries)
+        }
+
+        if(this.options.url.LAYER_LABELS) {        
+            this.layerLabels = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+                subdomains: 'abcd',
+                maxZoom: 19,
+                opacity: 0.8
+            });
+        }
+
+        this.highlightLayer = L.geoJson(null, {
+            style: function(feature) {
+                return self.options.style;
+            }
+        }).addTo(this.map);
+
+        if(this.options.zoomToCountry && this.options.zoomToCountry.length > 0) {
+            if(typeof this.options.zoomToCountry[0] === 'string')
+                this.zoomToCountry('iso3', this.options.zoomToCountry);
+
+            else if(typeof this.options.zoomToCountry[0] === 'number')
+                this.zoomToCountry('adm0_code', this.options.zoomToCountry);
+        }
+
+        if(this.options.highlightCountry)
+            this.highlightCountry('iso3_code', this.options.highlightCountry);
+
+
+        if(this.options.boundaries)
+            this.boundariesShow();
+        
+        if(this.options.labels)
+            this.labelsShow();  
+
+        return this;
     },
 
-    /** Default Baselayers loaded at startup if they are not override **/
-    _addDefaultBaseLayers: function() {
-        this.addTileLayer(FM.TileLayer.createBaseLayer('OSM', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('OSM_GRAYSCALE', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDSTREETMAP', 'EN'), true);
-        this.addTileLayer(FM.TileLayer.createBaseLayer('ESRI_WORLDTERRAINBASE', 'EN'), true);
+    destroyMap: function() {
+        //TODO unbind events
+        this.map.remove();
+        this.$map.empty();
     },
 
     /** TODO: make it nicer **/
@@ -1275,35 +1322,43 @@ FM.Map = FM.Class.extend({
     },
 
     addTileLayer: function(l, isBaseLayer) {
-        if ( isBaseLayer ) this.controller.addBaseLayer(l);
+        if ( isBaseLayer )
+            this.controller.addBaseLayer(l);
         else  {
            this.controller.layerAdded(l);
            this.map.addLayer(l.leafletLayer);
         }
         this.controller.setZIndex(l);
+        return this;
     },
 
     /** TODO: make it nicer **/
     addLayer:function (l) {
         l._fenixmap = this;
+
+        if(this.options.legendOptions)
+            l.layer.legendOptions = $.extend(l.layer.legendOptions, this.options.legendOptions);
+        
         if (l.layer.layertype ) {
-           switch(l.layer.layertype ) {
-               case 'JOIN':
-                   if (l.layer.jointype.toLocaleUpperCase() == 'SHADED') this.addShadedLayer(l);
-                   else if (l.layer.jointype.toLocaleUpperCase() == 'POINT') this.addPointLayer(l);
-               break;
-               case 'WMS': this.addLayerWMS(l); break;
-               default: this.addLayerWMS(l); break;
-           }
+            switch(l.layer.layertype ) {
+                case 'JOIN':
+                    if (l.layer.jointype.toLocaleUpperCase() == 'SHADED')
+                        this.addShadedLayer(l);
+                    else if (l.layer.jointype.toLocaleUpperCase() == 'POINT')
+                        this.addPointLayer(l);
+                break;
+                case 'WMS': this.addLayerWMS(l); break;
+                default: this.addLayerWMS(l); break;
+            }
         }
-        else {
-           /* DEFAULT request**/
+        else
            this.addLayerWMS(l);
-        }
+        return this;
     },
 
     removeLayer:function(l) {
         this.controller.removeLayer(l);
+        return this;
     },
 
     addLayerWMS: function(l) {
@@ -1314,7 +1369,8 @@ FM.Map = FM.Class.extend({
         this._openlegend(l, false);
 
         // check layer visibility
-        this.controller.showHide(l.id, false)
+        this.controller.showHide(l.id, false);
+        return this;
     },
 
     addShadedLayer: function(l) {
@@ -1330,11 +1386,14 @@ FM.Map = FM.Class.extend({
             $('#'+ l.id + '-controller-item-opacity').css('display', 'block');
         }
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        //var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         $.ajax({
             type: "POST",
             url: url,
-            data: FM.Util.parseLayerRequest(l.layer),
+            data: JSON.stringify(l.layer),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
             success: function(response) {
                 _this._createShadeLayer(l, response, isReload);
             }
@@ -1344,21 +1403,19 @@ FM.Map = FM.Class.extend({
     _createShadeLayer: function(l, response, isReload){
         if (typeof response == 'string')
             response = $.parseJSON(response);
-        l.layer.sldurl = response.sldurl;
-        l.layer.urlWMS = response.geoserverwms;
+        //l.layer.sldurl = response.sldurl;
+        //l.layer.urlWMS = response.geoserverwms;
+        l.layer.sldurl = response.url;
+        // TODO: check urlWMS how to set it
+        l.layer.urlWMS = this.options.url.DEFAULT_WMS_SERVER;
+        if (response.geoserverwms)
+            l.layer.urlWMS = response.geoserverwms
+
+        //l.layer.urlWMS = "http://localhost:9090/geoserver/wms/";
         l.layer.legendHTML = response.legendHTML;
         l.createLayerWMSSLD();
 
         this._loadLayer(l, isReload)
-    },
-
-    /** TODO: mix with the other request to do one that works for both situation */
-    createShadedLayerRequestCached: function(l, isReload) {
-        if ( l.layer.sldurl )
-            this._loadLayer(l, isReload)
-        else {
-            this.createShadeLayerRequest(l, isReload)
-        }
     },
 
     _loadLayer:function(l, isReload) {
@@ -1382,7 +1439,6 @@ FM.Map = FM.Class.extend({
     reAddLayer:function(l) {
         this.map.addLayer(l.leafletLayer);
         this.controller.setZIndex(l);
-
         // check layer visibility
         //this.controller.showHide(l.id)
     },
@@ -1390,7 +1446,7 @@ FM.Map = FM.Class.extend({
     _openlegend: function(l, isReload) {
         try {
             if (l.layer.openlegend) {
-                FM.LayerLegend.getLegend(l, l.id + '-controller-item-getlegend', isReload)
+                FM.Legend.getLegend(l, l.id + '-controller-item-getlegend', isReload);
             }
         }catch (e) {
             console.war("_openlegend error:" + e);
@@ -1409,7 +1465,7 @@ FM.Map = FM.Class.extend({
         $('#'+ l.id + '-controller-item-getlegend-holder').slideUp("slow");
         $('#'+ l.id + '-controller-item-opacity').css('display', 'none');
         var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_SHADED;
+        var url = this.options.url.MAP_SERVICE_SHADED;
         var r = new RequestHandler();
         r.open('POST', url);
         r.setContentType('application/x-www-form-urlencoded');
@@ -1484,10 +1540,6 @@ FM.Map = FM.Class.extend({
         }
     },
 
-    addGeoJSON: function(l) {
-        FMGeoJSON.createGeoJSONLayer(l);
-    },
-
     // syncronize the maps on movement
     syncOnMove: function (mapToSync) {
         FM.MapUtils.syncMapsOnMove(this.map, mapToSync);
@@ -1495,81 +1547,35 @@ FM.Map = FM.Class.extend({
 
     // TODO: add other parameters in the request: I.E.
     getFeatureInfo: function(e, l) {
+
         // var fenixMap = e.target._fenixMap;
         var fenixMap = this;
-//        this.addClickEffect(e.latlng, fenixMap.map);
         // get the layer that is been passed or the one that is selected in the Controller
         var l = (l) ? l: fenixMap.controller.selectedLayer;
         if ( l ) {
             if (l.layer.layertype != null && l.layer.layertype == 'JOIN') {
-                FM.SpatialQuery.getFeatureInfoJoin(l, e.layerPoint, e.latlng, fenixMap.map);
+                FM.SpatialQuery.getFeatureInfoJoin(l, e.layerPoint, e.latlng, fenixMap);
             }
             else {
-               FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap.map);
+               FM.SpatialQuery.getFeatureInfoStandard(l, e.layerPoint, e.latlng, fenixMap);
             }
         }
-    },
-
-    addClickEffect: function(latlng, map) {
-        var html = '<div id="reveal-cards">' +
-            '<div class="cards-card">' +
-            '<div style="clear:both"></div></div>';
-        L.marker([
-            latlng.lat,
-            latlng.lng
-        ], {
-            icon: L.divIcon({
-                // Specify a class name we can refer to in CSS.
-                //className: html,
-                // Define what HTML goes in each marker.
-                html: html,
-                // Set a markers width and height.
-                iconSize: [40, 40]
-            })
-        }).addTo(map);
-    },
-
-    /** TODO: codetype, code **/
-    zoomTo: function(boundary, code, srs) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, srs);
-    },
-
-    zoomTo: function(boundary, code) {
-        FM.LayerUtils.zoomToBoundary(this.map, boundary, code, 'EPSG:3827');
     },
 
     invalidateSize: function() {
       this.map.invalidateSize();
     },
 
-    // interface GUI
-    initializeMapGUI:function() {
-        if ( this.options.gui != null ) {
-            var _this = this;
-            $.each(this.options.gui,
-                function(key, value) {
-                  var invoke = '_add' + key.toLowerCase();
-                 try {
-                     if ( FM.Plugins[invoke]) FM.Plugins[invoke](_this, value);
-                 }catch (e){
-                     throw new Error("Plugin: " + invoke + " doesn't exist")
-                 }
-            });
-        }
-    },
-
-
     // interface plugins
-    initializePlugins:function() {
+    initializePlugins: function() {
         if ( this.options.plugins != null ) {
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
-                 var invoke = '_add' + key.toLowerCase();
+                var pname = key.toLowerCase(),
+                	invoke = '_add' + pname;
 
-                /*FM.loadModuleLibs(key.toLowerCase(), function() {
-                    FM.Plugins[invoke](_this, value)
-                });*/
-                FM.Plugins[invoke](_this, value)
+                if (FM.Plugins[invoke])
+                	_this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
         }
     },
@@ -1612,37 +1618,22 @@ FM.Map = FM.Class.extend({
     },
 
     _getMapOptions:function() {
-        var o = {
-            options: {},
-            mapOptions: {}
+        return {
+            options: $.extend(true, {}, this.options),
+            plugins: $.extend(true, {}, this.plugins),
+            mapOptions: $.extend(true, _getCurrentMapOptions, this.mapOptions)            
         };
-        o.options    =  $.extend(true, {}, this.options);
-        o.mapOptions =  $.extend(true, {}, this.mapOptions);
-        // get current lan, lon, zoom
-        this._getCurrentMapOptions(o.mapOptions)
-        return o;
-    },
-
-    _getCurrentMapOptions: function(mapOptions) {
-        // lat
-        mapOptions.lat = this.map.getCenter().lat;
-        // lng
-        mapOptions.lng = this.map.getCenter().lng;
-        // zoom
-        mapOptions.zoom = this.map.getZoom();
     },
 
     _getMapLayers:function() {
-        var o = {}
-        o.overlays = this.controller.exportOverlays();
-        return o
+        return {
+            overlays: this.controller.exportOverlays()
+        };
     },
 
     loadOverlays: function(overlays) {
         for(var i =0; i < overlays.length; i++) {
-            // TODO: add a switch based on the layertype? i.e. what for markers
-            var l = new FM.layer(overlays[i]);
-            this.addLayer(l);
+            this.addLayer( new FM.layer(overlays[i]) );
         }
     },
 
@@ -1652,6 +1643,67 @@ FM.Map = FM.Class.extend({
 
     zoomToCountry: function(column, codes) {
         FM.MapUtils.zoomToCountry(this, column, codes)
+    },
+
+    getSLDfromCSS: function(layername, css) {
+        FM.MapUtils.getSLDfromCSS(layername, css, this.options.url.CSS_TO_SLD);
+    },
+
+    labelsShow: function() {
+        this.layerLabels.addTo(this.map).bringToFront();
+    },
+
+    labelsHide: function() {
+        this.map.removeLayer(this.layerLabels);
+    },
+
+    boundariesShow: function() {
+        this.addLayer( this.layerBoundaries );
+        //TODO .bringToFront()
+    },
+
+    boundariesHide: function() {
+        this.removeLayer( this.layerBoundaries );
+    },
+
+    highlightCountry: function(codif, codes) {
+
+        codif = codif || 'iso3_code';
+        //codif = codif || 'adm0_code';
+
+        var self = this;
+
+        var rootUrl = this.options.url.DEFAULT_WMS_SERVER+"/ows";
+
+        self.highlightLayer.clearLayers();
+
+        for(var c in codes) {
+
+            var defaultParameters = {
+                service: 'WFS',
+                version: '1.0.0',
+                request: 'GetFeature',
+                typeName: 'fenix:gaul0_bounds',
+                maxFeatures: 50,
+                outputFormat: 'text/javascript',
+                format_options: 'callback: getJson',
+                viewparams: codif+':'+codes[c]
+            };
+
+            var parameters = L.Util.extend(defaultParameters),
+                url = rootUrl + L.Util.getParamString(parameters);
+
+            $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                jsonpCallback: 'getJson',
+                success: function(json) {
+                    //console.log('JSONP',url, json)
+                    self.highlightLayer.addData(json);
+                    self.highlightLayer.bringToFront();
+                }
+            });
+        }
     }
 });
 
@@ -1659,107 +1711,7 @@ FM.map = function (id, options, mapOptions) {
     return new FM.Map(id, options, mapOptions);
 };
 ;
-FM.LayerLegend = {
 
-    getLegend: function(l, toRendedID, isReload) {
-        // based on the layer type get the legendURL or Request
-        $('#' + toRendedID + '-legend-layertitle').empty();
-        $('#' + toRendedID + '-legendtitle').empty();
-        $('#' + toRendedID + '-legendsubtitle').empty();
-        $('#' + toRendedID + '-content').empty();
-
-        if (l.layer.layertitle) {
-            $('#' + toRendedID + '-legend-layertitle').append(l.layer.layertitle);
-        }
-        if (l.layer.legendtitle) {
-            $('#' + toRendedID + '-legendtitle').append(l.layer.legendtitle);
-        }
-        if (l.layer.legendsubtitle) {
-            $('#' + toRendedID + '-legendsubtitle').append(l.layer.legendsubtitle);
-        }
-
-
-        /* TODO: handle better, especially the l.layer.openlegend value*/
-        var html = '';
-        if (l.layer.legendHTML) {
-            html = l.layer.legendHTML;
-            $('#' + toRendedID + '-content').append(html);
-        }
-        else {
-            var url = l.layer.urlWMS  + '?';
-            url += '&service=WMS' +
-                '&version=1.1.0' +
-                '&REQUEST=GetLegendGraphic' +
-                '&layer=' + l.layer.layers +
-                '&Format=image/png';
-                //'&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3';
-            if (l.layer.style != null && l.layer.style != '' )
-                url +=  '&style=' + l.layer.style;
-            if (l.layer.sldurl )
-                 url +=  '&sld=' + l.layer.sldurl;
-
-            var alternativeUrl = url;
-            url += '&LEGEND_OPTIONS=forceLabels:on;forceRule:True;dx:0;dy:0;mx:0;my:0;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3';
-
-            FM.LayerLegend._loadLegend(url, alternativeUrl, toRendedID)
-        }
-
-        if ( isReload ) {
-            if(($('#' + toRendedID + '-holder').is(":visible"))) {
-                $('#' + toRendedID + '-holder').hide();
-                $('#' + toRendedID + '-holder').slideDown();
-                l.layer.openlegend = true;
-            }
-            else {
-            }
-        }
-        else{
-            if(!($('#' + toRendedID + '-holder').is(":visible"))) {
-                $('#' + toRendedID + '-holder').slideDown();
-                l.layer.openlegend = true;
-            } else {
-                $('#' + toRendedID + '-holder').slideUp();
-                l.layer.openlegend = false;
-            }
-        }
-
-        //$('#' + toRendedID + '-holder').draggable();
-        $('#' + toRendedID+ '-remove').click({id:toRendedID + '-holder'}, function(event) {
-            $('#' + event.data.id).slideUp();
-            l.layer.openlegend = false;
-        });
-    },
-
-    _loadLegend: function(url, alternativeUrl, toRendedID) {
-        var img = new Image();
-        img.name = url;
-        img.src = url;
-
-        var html = '<img id="'+toRendedID + '-img" src="'+ img.src +'" class="decoded">';
-        img.onload = function() {
-            $('#' + toRendedID + '-content').append(html);
-            $('#' + toRendedID + '-img').css('width', this.width);
-            $('#' + toRendedID + '-img').css('height', this.height);
-        }
-        img.onerror  = function() {
-            if ( alternativeUrl )
-                FM.LayerLegend._loadLegend(alternativeUrl, null, toRendedID)
-            else
-                FM.LayerLegend._nolegend(toRendedID);
-            // reload the image with different parameters (without legend_options)
-            // if returns again error, then le legend is not available
-            // '&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3'+
-        }
-    },
-
-    _nolegend: function(toRendedID) {
-        /** TODO: getLegendURl http://gis.stackexchange.com/questions/21912/how-to-get-wms-legendgraphics-using-geoserver-and-geowebcache **/
-        var html = '<div class="fm-legend-layertitle">'+ $.i18n.prop('_nolegendavailable')+ '</div>';
-        $('#' + toRendedID + '-content').append(html);
-    }
-    
-}
-;
 FM.MAPController = FM.Class.extend({
 
     id: '',
@@ -1771,8 +1723,10 @@ FM.MAPController = FM.Class.extend({
     _fenixMap: '',
 
     _guiController:  {
+        container: null,
         overlay : true,
-        baselayer: true
+        baselayer: true,
+        layersthumbs: true
     },
 
     /** Used by the controller **/
@@ -1793,18 +1747,19 @@ FM.MAPController = FM.Class.extend({
     // GUI
     // left controller
     $boxIcons: '',
-    $menuBox: '',
-    $menuBoxContainer: '',
-    $selectedMenuBox: '', // i.e. SelectedLayers, BaseLayers WMS Layers
+    $boxMenu: '',
+    $boxMenuContainer: '',
+    $boxMenuSelected: '', // i.e. SelectedLayers, BaseLayers WMS Layers
 
-    getFeautureInfoLayer: [], // TODO: this is the list of the layers selected for the GFI
+    getFeautureInfoLayer: [],
+    // TODO: this is the list of the layers selected for the GFI
 
-    initialize: function(suffix, fenixMap, map, guiController) { // (HTMLElement or String, Object)
+    initialize: function(suffix, fenixMap, map, guiOpts) { // (HTMLElement or String, Object)
         this._map = map;
         this._fenixMap = fenixMap;
         this.suffix = suffix;
         this.id = suffix + '-controller';
-        this._guiController = $.extend({}, this._guiController, guiController);
+        this._guiController = $.extend({}, this._guiController, guiOpts);
 
         // initialize HashMaps
         this.baseLayersMap = new HashMap();
@@ -1818,33 +1773,75 @@ FM.MAPController = FM.Class.extend({
      *
      */
     initializeGUI:function() {
-        if ( this._guiController ) {
-            // adding the box gui
-            $('#' + this.id).append(FM.replaceAll(FM.guiController.box, 'REPLACE', this.suffix));
 
-            // adding the box icons container
-            $('#' + this.id).append(FM.replaceAll(FM.guiController.boxIcons, 'REPLACE', this.suffix));
-            this.$menuBox = $('#' + this.suffix + '-controller-box');
-            this.$menuBoxContainer = $('#' + this.suffix + '-controller-box-content');
-            this.$boxIcons = $('#' + this.suffix + '-controller-box-icons-container');
+        var self = this;
 
-            this.$boxIcons
+        if ( self._guiController &&
+                (self._guiController.overlay ||
+                 self._guiController.baselayer ||
+                 self._guiController.wmsLoader)
+            ) {
+
+            var mapDiv$ = $('#' + self.id);
+
+            self.$boxMenu = $(FM.Util.replaceAll(FM.guiController.boxMenu, 'REPLACE', self.suffix));
+
+            self.$boxMenuContainer = self.$boxMenu.find('#' + self.suffix + '-controller-box-content');
+            
+            self.$boxIcons = $(FM.Util.replaceAll(FM.guiController.boxIcons, 'REPLACE', self.suffix));
+
+            self.visibleBoxMenu;
+
+            if( self._guiController.container ) {
+
+                var $div = $('<div class="fm-controller-external">')
+                    .append(self.$boxIcons, self.$boxMenu);
+
+                $div.prependTo(self._guiController.container);
+
+                self.visibleBoxMenu = true;
+            }
+            else
+            {
+                self.visibleBoxMenu = false;
+
+                var guiControl = (function() {
+                    var control = new L.Control({position: 'bottomleft'});
+
+                    control.onAdd = function(map) {
+
+                        var $div = $('<div class="leaflet-control-controller">')
+                            .append(self.$boxIcons, self.$boxMenu);
+
+                        if (!L.Browser.touch) {
+                            L.DomEvent.disableClickPropagation($div[0]);
+                            L.DomEvent.on($div[0], 'mousewheel', L.DomEvent.stopPropagation);
+                        }
+                        else
+                            L.DomEvent.on($div[0], 'click', L.DomEvent.stopPropagation);
+
+                        return $div[0];
+                    };
+                    return control;
+                }()).addTo(self._map);
+            }
 
             /** TODO: make it nicer and more dynamic, with a more consistent name **/
-            if ( this._guiController.overlay) {
-                this.loadIcon('overlay');
-                this.initializeOverlayDragging();
+            if ( self._guiController.overlay) {
+                self.loadIcon('overlay', self.visibleBoxMenu);
+                self.initializeOverlayDragging();
             }
-            if ( this._guiController.baselayer) {
-                this.loadIcon('baselayer');
+            if ( self._guiController.baselayer) {
+                self.loadIcon('baselayer', self.visibleBoxMenu);
             }
 
-            if ( this._guiController.wmsLoader) {
-                this.loadIcon('wmsLoader');
-                var wmsUtils = new FM.WMSUtils();
-                var idDD =      this.suffix + '-controller-wmsLoader-dropdown';
-                var idContent = this.suffix + '-controller-wmsLoader-content';
-                var wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+            if ( self._guiController.wmsLoader) {
+                self.loadIcon('wmsLoader', self.visibleBoxMenu);
+                var wmsUtils = new FM.WMSUtils(),
+                    idDD = this.suffix + '-controller-wmsLoader-dropdown',
+                    idContent = this.suffix + '-controller-wmsLoader-content',
+                    wmsServers = FM.WMSSERVERS.DEFAULT_EXTERNAL_WMS_SERVERS;
+                    
                 wmsUtils.WMSCapabilities(idDD, idContent, this._fenixMap, wmsServers);
             }
         }
@@ -1856,54 +1853,75 @@ FM.MAPController = FM.Class.extend({
      *
      * @param toLoad
      */
-    loadIcon: function(toLoad) {
-        var guiController = FM.guiController;
+    loadIcon: function(toLoad, visibleBox) {
         var guiBox = toLoad + 'Box';
         var guiIcon = toLoad + 'Icon';
 
-        this.$boxIcons.show();
-        this.$boxIcons.append(FM.replaceAll(guiController[guiIcon], 'REPLACE', this.suffix));
-        this.$menuBoxContainer.append(FM.replaceAll(guiController[guiBox], 'REPLACE', this.suffix));
+        visibleBox = typeof visibleBox !== 'undefined' ? visibleBox : false;
 
-        var boxIcon = $('#' + this.suffix + '-controller-' + toLoad + 'Icon');
-        boxIcon.attr( "title", $.i18n.prop('_' + toLoad));
-        try {boxIcon.powerTip({placement: 'ne'}); } catch (e) {}
+        this.$boxMenuContainer.append(
+            FM.Util.replaceAll(FM.guiController[guiBox], 'REPLACE', this.suffix)
+        );
 
-        var _this = this;
-        var $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
-        $('#' + this.suffix + '-controller-' + toLoad + 'Icon').click({$id: $id, suffix: this.suffix}, function(event) {
-                var $id = event.data.$id;
-                var suffix =  event.data.suffix;
-                if (_this.$menuBox.is(':visible')) {
-                    // check if the select icon is the same that is shown
-                    if ( _this.$selectedMenuBox == $id ) {
-                        // close the panel
-                        _this.$menuBox.slideUp("slow")
+        if(visibleBox===false) {
+            this.$boxMenu.hide();
+            //this.$boxMenuContainer.find('.fm-box-zindex').hide();
+        }else {
+            this.$boxMenu.show();
+            this.$boxMenuContainer.find('.fm-box-zindex').show();
+        }
+        
+        var $boxIcon = $(FM.Util.replaceAll(FM.guiController[guiIcon], 'REPLACE', this.suffix));
+        $boxIcon.tooltip({title: $.i18n.prop('_' + toLoad) });
+
+        $boxIcon.appendTo(this.$boxIcons);
+
+        if(visibleBox===true)
+            this.$boxIcons.hide();
+
+        
+
+        var _this = this,
+            $id =  $('#' + _this.suffix + '-controller-' + toLoad + '-box');
+
+        $('#' + this.suffix + '-controller-' + toLoad + 'Icon')
+        .on('click', {
+                $id: $id,
+                suffix: this.suffix
+            }, function(e) {
+                
+                var $id = e.data.$id;
+
+                if (_this.$boxMenu.is(':visible'))
+                {
+                    if ( _this.$boxMenuSelected == $id ) {
+                        _this.$boxMenu.slideUp()
                         $id.hide();
-                        _this.$selectedMenuBox = '';
+                        _this.$boxMenuSelected = '';
                     }
                     else {
-                        _this.$selectedMenuBox.hide();
-                         $id.slideDown("slow");
-                        _this.$selectedMenuBox = $id;
+                        $id.slideDown();
+                        _this.$boxMenuSelected = $id;
                     }
                 }
                 else {
-                    // if the menu box is invisible
-                    _this.$selectedMenuBox = $id;
-                    _this.$selectedMenuBox.show();
-                    _this.$menuBox.slideDown("slow", function() {
-                    });
+                    _this.$boxMenuSelected = $id;
+                    _this.$boxMenu.slideDown();
                 }
         });
 
-        // close icon
-        $('#' + this.suffix + '-controller-' + toLoad + '-remove').click({$id: $id, suffix: this.suffix}, function(event) {
-            var $id = event.data.$id;
-            var suffix =  event.data.suffix;
-            $('#' + suffix + '-controller-box').slideUp("slow");
+        // close panel
+        $('#' + this.suffix + '-controller-' + toLoad + '-remove')
+        .on('click', {
+            $id: $id,
+            suffix: this.suffix
+        }, function(e) {
+            var $id = e.data.$id,
+                suffix =  e.data.suffix;
+
+            $('#' + suffix + '-controller-box').slideUp();
             $id.hide();
-        });
+        });//*/
     },
 
     /**
@@ -1911,13 +1929,12 @@ FM.MAPController = FM.Class.extend({
      */
     initializeOverlayDragging: function() {
         var _this = this;
+
+//TODO replace with https://github.com/RubaXa/Sortable
+
         $('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
-            start: function (event, ui) {
-                //console.log( ui.item.index());
-                //$(ui.item).data("startindex", ui.item.index());
-            },
             stop: function (event, ui) {
                 // getting layers order
                 var children = $(ui.item).parent().children();
@@ -1925,7 +1942,7 @@ FM.MAPController = FM.Class.extend({
                 var zIndexBase = 0;
                 for(var i=children.length-1; i >= 0; i-- ) {
                     var id = $(children[i]).data("layer").id;
-                    var layertitle = $(children[i]).data( "layer").layer.layertitle;
+                    var layertitle = $(children[i]).data("layer").layer.layertitle;
                     var zIndex =  zIndexBase + 100
                     layerIDs.push($(children[i]).data("layer").id)
                     _this.updateZIndex(id, zIndex);
@@ -1944,127 +1961,112 @@ FM.MAPController = FM.Class.extend({
      * @param l
      */
     layerAdded: function(l) {
+
+        var self = this;
+
         l.layerAdded = true;
         /** TODO: check if works always this solution **/
         if ( !l.layer.zindex ) {
-            l.layer.zindex = this.zIndex;
+            l.layer.zindex = self.zIndex;
             l.leafletLayer.setZIndex = l.layer.zindex;
         }
-        this.zIndex = this.zIndex + 2;
+        self.zIndex = self.zIndex + 2;
 
-        if ( l.layer.hideLayerInControllerList ) {
-            // do nothing
-        }
-        else {
+        if ( !l.layer.hideLayerInControllerList ) {
             // add legend to the mapDIV
-            var legendStructure = FM.replaceAll(FM.guiController.legend, 'REPLACE', l.id);
-            var idMap =  '#'+ this.suffix + '-container-map';
-            $(idMap).append(legendStructure);
+            var $legend = $(FM.Util.replaceAll(FM.guiController.legend, 'REPLACE', l.id)),
+                div = $legend[0];
+           
+            if (!L.Browser.touch) {
+                L.DomEvent.disableClickPropagation(div);
+                L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+            }
+            else
+                L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+
+            self._fenixMap.$map.find('.leaflet-control-legend').append($legend);
+            
 
             // creating the HTML controller-overlay-item structure
-            var idStructure =  '#'+ this.suffix + '-controller-overlay-content';
+            var idStructure =  '#'+ self.suffix + '-controller-overlay-content';
             var idItem = '#'+ l.id + '-controller-item';
             var idControllerItem = l.id + '-controller-item';
-            var overlayStructure = FM.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
+            var overlayStructure = FM.Util.replaceAll(FM.guiController.overlay, 'REPLACE', l.id);
 
             // TODO: a way to get the layer back by the ID
 
-            // $(idStructure).append(overlayStructure);
             $(idStructure).prepend(overlayStructure);
 
             // saving the layer information (it's too many information TODO: please set only ID and needed infos
             $( '#'+ l.id  + '-controller-item-box' ).data( "layer", l );
 
-            var index = $('#'+ l.id  + '-controller-item-box').index() + 1;
+            var index = $('#'+l.id+'-controller-item-box').index() + 1;
 
             // setting up the layer GUI options
-            this._layerGUIOptions(l);
+            self._layerGUIOptions(l);
 
             // setting the layer to the HashMap to handle the ID and ZIndex
-            this.layersMap.set(l.id, l);
-            this.layersMapZIndexes.set(l.layer.zindex, l.id)
+            self.layersMap.set(l.id, l);
+            self.layersMapZIndexes.set(l.layer.zindex, l.id)
 
-            // drag and drop layer
-            $(idItem).attr( "title", $.i18n.prop('_dragdroplayer'));
-            try { $(idItem).powerTip({placement: 'e'}); } catch (e) {}
-
-            var _this = this;
-            // listeners
-            $(idItem + '-title').append(l.layer.layertitle);
-            $(idItem + '-title').attr( "title", l.layer.layertitle);
-            try { $(idItem + '-title').powerTip({placement: 'se'}); } catch (e) {}
-
-            // Remove Layer
-            var $removeLayer = $(idItem+ '-remove');
-            $removeLayer.click({l:l}, function(event){
-                event.stopPropagation();
-                if(confirm( $.i18n.prop('_confirmremovelayer'))) {
-                    _this.removeLayer(event.data.l);
-                }
-                event.preventDefault();
-
-            });
-            $removeLayer.attr( "title", $.i18n.prop('_removelayer'));
-            try { removeLayer.powerTip({placement: 'n'}); } catch (e) {}
+            $(idItem+'-title').append(l.layer.layertitle);
 
             // Enable/Disable layer
-            var $enabledisablelayer = $(idItem+ '-enabledisable');
-            $enabledisablelayer.click({id:l.id}, function(event) {
-                _this.showHide(event.data.id)
-            });
-            $enabledisablelayer.attr( "title", $.i18n.prop('_enabledisablelayer'));
-            try { $enabledisablelayer.powerTip({placement: 'se'}); } catch (e) {}
+            $(idItem+ '-enabledisable')
+                .tooltip({title: $.i18n.prop('_enabledisablelayer') })
+                .on('click', {id:l.id}, function(event) {
+                    self.showHide(event.data.id)
+                });
 
             // Layer Opacity
             var opacity = 1;
             if ( l.layer.opacity != null )
                 opacity = l.layer.opacity;
-            try {
-                var $layeropacity = $(idItem+ '-opacity');
-                $layeropacity.slider({
+
+            $(idItem+ '-opacity')
+                .tooltip({title: $.i18n.prop('_layeropacity') })
+                .slider({
                     orientation: "horizontal",
                     range: "min",
-                    min: 0,
-                    max: 1,
-                    step: 0.1,
+                    min: 0, max: 1, step: 0.1,
                     value: opacity,
                     slide: function( event, ui ) {
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
                     }
                 });
-                $layeropacity.attr( "title", $.i18n.prop('_layeropacity'));
-                try { $layeropacity.powerTip({placement: 'se'}); } catch (e) {}
-            } catch(e) {
-                // console.log('jquery-ui is not loaded');
-            }
 
             // Layer GetFeatureInfo
             var $layergfi = $(idItem+ '-getfeatureinfo');
-            if ( !l.layer.enablegfi ) $(idItem+ '-getfeatureinfo').css("display","none");
-            else {
-                $layergfi.click({id:l.id}, function(event) {
-                    var l = _this.layersMap.get(event.data.id);
-                    if ( _this.selectedLayer.id == event.data.id) {
+
+            if ( !l.layer.enablegfi ) {
+                $(idItem+ '-getfeatureinfo').css("display","none");
+            }
+            else
+            {
+                $layergfi.on('click', {id:l.id}, function(event) {
+                    var l = self.layersMap.get(event.data.id);
+                    if ( self.selectedLayer.id == event.data.id) {
                         // the layer select is equal to the new one, so deselect it
-                        $('#' + _this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
-                        _this.selectedLayer = '';
+                        $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                        self.selectedLayer = '';
                         l.layer.defaultgfi = false;
                     }
                     else {
                         // unselect old layer icon
-                        $('#' + _this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                        $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
                         // select new layer icon
                         $('#' + event.data.id + '-controller-item-getfeatureinfo').addClass('fm-icon-getfeatureinfo-selected');
-                        _this.selectedLayer = l;
+                        self.selectedLayer = l;
                         l.layer.defaultgfi = true;
                     }
                 });
-                $layergfi.attr( "title", $.i18n.prop('_getfeatureinfo'));
-                try { $layergfi.powerTip({placement: 'se'});} catch (e) {}
+                
+                $layergfi.tooltip({title: $.i18n.prop('_getfeatureinfo') });
+
                 if ( l.layer.defaultgfi ) {
                     // TODO: set default gfi style on the layer
-                    this.selectedLayer = l;
-                    $('#' + this.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
+                    self.selectedLayer = l;
+                    $('#' + self.selectedLayer.id + '-controller-item-getfeatureinfo').removeClass('fm-icon-getfeatureinfo-selected');
                     // select new layer icon
                     $('#' + l.id + '-controller-item-getfeatureinfo').addClass('fm-icon-getfeatureinfo-selected');
                 }
@@ -2075,46 +2077,40 @@ FM.MAPController = FM.Class.extend({
             // Show/Hide Legend
             var $getlegend = $(idItem+ '-getlegend');
             if (l.layer.showlegend == null || l.layer.showlegend != false) {
-                $getlegend.click({id:l.id, idToRender: idControllerItem + '-getlegend'}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerLegend.getLegend(l, event.data.idToRender)
+                $getlegend.on('click', {id:l.id, idToRender: idControllerItem + '-getlegend'}, function(event) {
+                    var l = self.layersMap.get( event.data.id);
+                    FM.Legend.getLegend(l, event.data.idToRender)
                 });
             }
-            $getlegend.attr( "title", $.i18n.prop('_showhidelegend'));
-            try { $getlegend.powerTip({placement: 'se'}); } catch (e) {}
-            $getlegend.css("display","inline-block");
+            
+            $getlegend.tooltip({title: $.i18n.prop('_showhidelegend') })
+                .css("display","inline-block");
 
             // Switch JoinType (From shaded to Point Layer)
             if (l.layer.layertype ) {
                 if (l.layer.layertype == 'JOIN' ) {
                     if (l.layer.switchjointype == null || l.layer.switchjointype ) {
-                        $(idItem+ '-switchjointype').css("display","inline-block");
-                        $(idItem+ '-switchjointype').click({id:l.id}, function(event) {
-                            _this.switchJoinType(event.data.id);
-                        });
-
-                        if (  l.layer.jointype.toLowerCase() == 'point') {
-                            $(idItem+ '-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'))
-                        }
-                        else if ( l.layer.jointype.toLowerCase() == 'shaded')  {
-                            $(idItem+ '-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'))
-                        }
-                        try { $(idItem+ "-switchjointype").powerTip({placement: 'se'}); } catch (e) {}
+                        $(idItem+ '-switchjointype')
+                        .tooltip({title: $.i18n.prop('_switchto'+ l.layer.jointype.toLowerCase()) })
+                        .css("display","inline-block")
+                        .on('click', {id:l.id}, function(event) {
+                            self.switchJoinType(event.data.id);
+                        })
                     }
                 }
             }
 
             // Enable/Disable Swipe
             var $swipelayer = $(idItem+ '-swipe');
-            $swipelayer.click({id:l.id}, function(event) {
-                var l = _this.layersMap.get( event.data.id);
+            $swipelayer.on('click', {id:l.id}, function(event) {
+                var l = self.layersMap.get( event.data.id);
                 if (l.layer.swipeActive == null || !l.layer.swipeActive) {
-                    FM.LayerSwipe.swipeActivate(l, _this._fenixMap.suffix + '-handle', _this._fenixMap.suffix + '-map', _this._map);
+                    FM.LayerSwipe.swipeActivate(l, self._fenixMap.suffix + '-handle', self._fenixMap.suffix + '-map', self._map);
                     // select icon
                     $swipelayer.addClass('fm-icon-swipe-selected')
                 }
                 else {
-                    FM.LayerSwipe.swipeDeactivate(l, _this._map);
+                    FM.LayerSwipe.swipeDeactivate(l, self._map);
                     // deselect icon
                     $swipelayer.removeClass('fm-icon-swipe-selected')
                 }
@@ -2125,73 +2121,38 @@ FM.MAPController = FM.Class.extend({
             if ( l.layer.zoomToBBOX ) {
                 $zoomtolayer.css("display","inline-block");
                 $zoomtolayer.attr( "title", $.i18n.prop('_zoomtolayer'));
-                $zoomtolayer.click({id:l.id}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerUtils.zoomToLayer(_this._map, l.layer)
+                $zoomtolayer.on('click', {id:l.id}, function(event) {
+                    var l = self.layersMap.get( event.data.id);
+                    FM.LayerUtils.zoomToLayer(self._map, l.layer)
                 });
             }
             if (l.layer.zoomTo ) {
                 $zoomtolayer.css("display","inline-block");
                 $zoomtolayer.attr( "title", $.i18n.prop('_zoomtolayer'));
-                $zoomtolayer.click({id:l.id}, function(event) {
-                    var l = _this.layersMap.get( event.data.id);
-                    FM.LayerUtils.zoomToLayer(_this._map, l.layer)
+                $zoomtolayer.on('click', {id:l.id}, function(event) {
+                    var l = self.layersMap.get( event.data.id);
+                    FM.LayerUtils.zoomToLayer(self._map, l.layer)
                 });
             }
 
             // Show/Hide SubIcons
             var $subiconsshowhide  = $(idItem+ '-showhide-subicons');
             var $subiconscontainer = $(idItem+ '-subicons');
-            $subiconsshowhide.click(function(event) {
-                $subiconscontainer.slideToggle();
-                if ( $subiconsshowhide.hasClass("fm-icon-up")) {
-                    $subiconsshowhide.removeClass("fm-icon-up")
-                    $subiconsshowhide.addClass("fm-icon-down")
-                }
-                else {
-                    $subiconsshowhide.removeClass("fm-icon-down")
-                    $subiconsshowhide.addClass("fm-icon-up")
-                }
-            });
-            $subiconsshowhide.attr( "title", $.i18n.prop('_layersubicons'))
-            try { $subiconsshowhide.powerTip({placement: 'n'}); } catch (e) { }
+            
+            $subiconsshowhide
+                .on('click', function(event) {
 
+                    $subiconscontainer.slideToggle('fast');
 
-
-
-        // TODO: it should not be here it should be a check on add layer listener (and check wheater is hidden or not
-            /*            console.log(l.layer.enabled);
-             // set the layer to disable if enable == false
-             if ( !l.layer.enabled ) {
-             l.layer.visibility = true;
-             this.showHide(l.id);
-             }*/
-
-
-
-            // enable disable layer
-            /*        $(idItem+ '-joinsettings').click({id:l.id}, function(event) {
-             var l = _this.layersMap.get( event.data.id);
-             l.layer.intervals = 2;
-             //_this._fenixMap.createShadeLayerRequest(l, true)
-             _this._fenixMap.createPointLayerRequest(l)
-             });*/
-            /*
-             if ( l.layer.jointype ) {
-             $(idItem+ '-joinsettings').show();
-             $(idItem+ '-joinsettings').attr( "title", $.i18n.prop('_joinsettings'));
-             $(idItem+ '-joinsettings').click({id:l.id}, function(event) {
-             var l = _this.layersMap.get( event.data.id);
-             //FM.LayerUtils.getValuesOuterEqualThan(l, 5, 10000);
-             FM.LayerUtils.getValuesInBetweenEqualThan(l, 1500, 100000);
-
-             switch (l.layer.jointype) {
-             case 'point' :  _this._fenixMap.createPointLayerRequest(l); break;
-             case 'shaded' :  _this._fenixMap.createShadeLayerRequest(l, true); break;
-             }
-             });
-             }*/
-
+                    if ( $subiconsshowhide.hasClass("fm-icon-up")) {
+                        $subiconsshowhide.removeClass("fm-icon-up")
+                        $subiconsshowhide.addClass("fm-icon-down")
+                    }
+                    else {
+                        $subiconsshowhide.removeClass("fm-icon-down")
+                        $subiconsshowhide.addClass("fm-icon-up")
+                    }
+                });
         }
     },
 
@@ -2216,6 +2177,8 @@ FM.MAPController = FM.Class.extend({
      */
     addBaseLayer: function(l) {
 
+        var self = this;
+
         // setting the zIndex and updating it
         //console.log(this.zIndexBaseLayer);
         l.layer.zindex = this.zIndexBaseLayer;
@@ -2226,28 +2189,30 @@ FM.MAPController = FM.Class.extend({
         this.layersMapZIndexes.set(l.layer.zindex, l.id);
 
         // creating the HTML controller-overlay-item structure
-        var idStructure =  '#'+ this.suffix + '-controller-baselayer-content';
-        var idItem = '#'+ l.id + '-controller-item';
-        var overlayStructure = FM.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
-        overlayStructure = FM.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
+        var idStructure =  '#'+ this.suffix + '-controller-baselayer-content',
+            idItem = '#'+ l.id + '-controller-item',
+            overlayStructure = FM.Util.replaceAll(FM.guiController.baselayer, 'REPLACE', l.id);
+
+        overlayStructure = FM.Util.replaceAll(overlayStructure, 'MAPID', this._fenixMap.id);
 
         $(idStructure).append(overlayStructure);
 
-        var _this = this;
         // listeners
         $(idItem + '-title').append(l.layer.layertitle);
 
-        // add baselayer icon
-        $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
+        if(self._guiController.layersthumbs)
+            $('#' + l.id + '-controller-item-baselayer-image').addClass("fm-icon-baselayer-" + l.layer.layername);
+        else
+            $('#' + l.id + '-controller-item-baselayer-image').remove();
 
-        $(idItem+ '-enabledisable').click({id:l.id}, function(event) {
-            _this.showHide(event.data.id)
+        $(idItem+ '-enabledisable').on('click', {id:l.id}, function(e) {
+            self.showHide(e.data.id)
         });
 
         var opacity = 1;
         if ( l.layer.opacity != null )
             opacity = l.layer.opacity;
-        try {
+        /*try {
             $(idItem+ '-opacity').slider({
                 orientation: "horizontal",
                 range: "min",
@@ -2255,30 +2220,31 @@ FM.MAPController = FM.Class.extend({
                 max: 1,
                 step: 0.1,
                 value: opacity,
-                slide: function( event, ui ) {
+                slide: function(e, ui) {
                     FM.LayerUtils.setLayerOpacity(l, ui.value);
                 }
             });
-        }catch(e) {
-            //console.log('jquery-ui is not loaded');
-        }
+        }catch(e) { }//*/
 
-        $('#' + l.id + '-controller-box-item').click({id:l.id}, function(event) {
-            var id = event.data.id;
-            var l = _this.baseLayersMap.get(id);
+        $('#' + l.id + '-controller-box-item')
+        .on('click', {
+            id:l.id
+        }, function(e) {
+            var id = e.data.id;
+            var l = self.baseLayersMap.get(id);
 
             // removing the old baselayer
-            _this.removeBaseLayerByID(_this.currentBaseLayer.id);
-            var oldBaseLayer = _this.baseLayersMap.get(_this.currentBaseLayer.id);
+            self.removeBaseLayerByID(self.currentBaseLayer.id);
+            var oldBaseLayer = self.baseLayersMap.get(self.currentBaseLayer.id);
             $('#' + oldBaseLayer.id + "-controller-box-item").removeClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + oldBaseLayer.id + "-controller-item-opacity").hide();
 
             // add the new baselayer to the map and setting as default one
             $('#' + l.id + "-controller-box-item").addClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + l.id + "-controller-item-opacity").show();
-            _this._map.addLayer(l.leafletLayer);
-            _this.currentBaseLayer = l;
-            _this.setZIndex(l)
+            self._map.addLayer(l.leafletLayer);
+            self.currentBaseLayer = l;
+            self.setZIndex(l)
 
         });
 
@@ -2290,7 +2256,7 @@ FM.MAPController = FM.Class.extend({
             this.currentBaseLayer = l;
             $('#' + l.id + "-controller-box-item").addClass('fm-controller-box-item-baselayer-content-selected')
             $('#' + l.id + "-controller-item-opacity").show();
-            _this.setZIndex(l)
+            self.setZIndex(l)
         }
 
     },
@@ -2350,7 +2316,7 @@ FM.MAPController = FM.Class.extend({
      */
     switchJoinType: function(id) {
         var l = this.layersMap.get(id);
-        try { $.powerTip.destroy($("#" + l.id +  "-controller-item-switchjointype")); } catch (e) {}
+
         if (  l.layer.jointype.toLowerCase() == 'point') {
             // alert('point')
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtopoint'));
@@ -2361,7 +2327,7 @@ FM.MAPController = FM.Class.extend({
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'));
             this.switchToPoint(id);
         }
-        try { $("#" + l.id +  "-controller-item-switchjointype").powerTip({placement: 'se'}); } catch (e) {}
+        $("#" + l.id +  "-controller-item-switchjointype").tooltip({title: $.i18n.prop('_switchtoshaded') });
     },
 
     /*
@@ -2416,7 +2382,7 @@ FM.MAPController = FM.Class.extend({
                     this.showHideLayer(id, isReload);
             }
         }catch (e) {
-            console.warn("showHide warn:" + e);
+           // console.warn("showHide warn:" + e);
         }
     },
 
@@ -2483,7 +2449,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         }catch (e) {
-            console.warn("showHideLayer error:"  + e);
+           // console.warn("showHideLayer error:"  + e);
         }
     },
 
@@ -2524,7 +2490,7 @@ FM.MAPController = FM.Class.extend({
                 }
             }
         } catch (e) {
-            console.warn("setZIndex error:"  + e);
+           // console.warn("setZIndex error:"  + e);
         }
     },
 
@@ -2575,16 +2541,7 @@ FM.MAPController = FM.Class.extend({
         * **/
 
         return null;
-    },
-
-    /**
-     *
-     * TODO: update the zindex counter to the latest zindex currently used each time is added a layer
-     */
-    updateZindexCounter: function() {
-
     }
-
 
 });
 
@@ -2595,85 +2552,95 @@ FM.guiController = {
 
     boxIcons: '<div id="REPLACE-controller-box-icons-container" class="fm-icon-box-background fm-controller-box-icons-container"></div>',
 
-    box:
-        '' +
-            '<div class="fm-box-zindex fm-icon-box-background fm-controller-box-icons-container fm-controller-box" style="display:none" id="REPLACE-controller-box">' +
-                '<div id="REPLACE-controller-box-content"></div>' +
-            '</div>' +
-        '',
+    boxMenu: '<div class="fm-box-zindex fm-icon-box-background fm-controller-box-icons-container fm-controller-box" id="REPLACE-controller-box">' +
+                '<div id="REPLACE-controller-box-content" class="clearfix"></div>' +
+            '</div>',
 
-    baselayerIcon: "<div class='fm-box-zindex'><div class='fm-icon-sprite fm-baselayers' id='REPLACE-controller-baselayerIcon'><div></div>",
-    baselayerBox: '<div class="fm-box-zindex" id="REPLACE-controller-baselayer-box" style="display:none">' +
-                        '<div id="REPLACE-controller-baselayer-title" class="fm-controller-box-title">Baselayers</div>' +
-                        '<div id="REPLACE-controller-baselayer-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
-                        '<div class="fm-standard-hr"></div>' +
-                        '<div id="REPLACE-controller-baselayer-content" class="fm-controller-box-content"></div>' +
-                    '</div>',
-    baselayer :
-        '<div id="REPLACE-controller-box-item" class="fm-box-zindex fm-controller-box-item-baselayer-content">' + // class="fm-controller-box-item">' +
-            '<div id="REPLACE-controller-item">' +
-                '<div class="fm-controller-box-item-baselayer-image" id="REPLACE-controller-item-baselayer-image"></div>' +
-                '<div class="fm-controller-box-item-baselayer-text">' +
-                    '<div>' +
-                        '<label class="fm-controller-box-item-baselayer-text fm-controller-item-title" id="REPLACE-controller-item-title"><input id="REPLACE-controller-item-radio"  class="fm-checkbox-hide" type="radio" name="MAPID" value="REPLACE"><label>' +
-                    '</div>' +
-                    '<div style="clear:both"></div>' +
-                    '<div class="fm-opacity-slider-baselayers" id="REPLACE-controller-item-opacity" style="display:none"></div>' +
-                '</div>' +
-            '</div>' +
-        '</div>',
+    baselayerIcon:
+    '<div class="fm-box-zindex fx-toolbar-map-holder ">'+
+        '<div class="fm-icon-sprite fm-baselayers" id="REPLACE-controller-baselayerIcon"><div>'+
+    '</div>',
 
-    overlayIcon:  "<div class='fm-box-zindex'><div class='fm-icon-sprite fm-overlays' id='REPLACE-controller-overlayIcon'></div></div>",
-    overlayBox:   '<div class="fm-box-zindex" id="REPLACE-controller-overlay-box" style="display:none;">' +
-                    '<div id="REPLACE-controller-overlay-title" class="fm-controller-box-title">Selected Layers</div>' +
-                    '<div id="REPLACE-controller-overlay-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
-                    '<div class="fm-standard-hr"></div>' +
-                    '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>' +
-                  '</div>',
-    overlay :'<div id="REPLACE-controller-item-box" class="fm-box-zindex fm-controller-box-item">' +
-                    '<div id="REPLACE-controller-item" class="fm-controller-box-header">' +
-                        '<div class="fm-controller-box-header-text">' +
-                            '<div class="fm-controller-item-title" id="REPLACE-controller-item-title" ></div>' +
-                            '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-down" id="REPLACE-controller-item-showhide-subicons"></div>' +
-                            '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-panel-remove" id="REPLACE-controller-item-remove"></div>' +
-                            '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-panel-info" id="REPLACE-controller-item-icon" ></div>' +
-                        '</div>' +
-                        '<div style="clear:both"></div>' +
-                        '<div class="fm-controller-box-icons">' +
-                             '<div class="fm-icon-enable" id="REPLACE-controller-item-enabledisable"></div>' +
-                            '<div  class="fm-opacity-slider" style="margin-right:10px;" id="REPLACE-controller-item-opacity"></div>' +
-                         '</div>' +
-                        '<div style="clear:both"></div>' +
-                        '<div class="fm-controller-box-subicons" id="REPLACE-controller-item-subicons" style="display:none;">' +
-                            '<div class="fm-icon-layer-subicons-sprite fm-icon-getlegend" id="REPLACE-controller-item-getlegend"></div>' +
-                            '<div class="fm-icon-layer-subicons-sprite fm-icon-getfeatureinfo" id="REPLACE-controller-item-getfeatureinfo"></div>' +
-                            '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-switchjointype" style="display:none"></div>' +
-                            '<div class="fm-icon-layer-subicons-sprite fm-icon-zoomto" id="REPLACE-controller-item-zoomtolayer" style="display:none"></div>' +
-                            '<div class="fm-icon-layer-subicons-sprite fm-icon-swipe" id="REPLACE-controller-item-swipe"></div>' +
-                            '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-joinsettings" style="display:none"></div>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
+    baselayerBox:
+    '<div class="fm-box-zindex fx-toolbar-map-holder " id="REPLACE-controller-baselayer-box">' +
+        '<div id="REPLACE-controller-baselayer-title" class="fm-controller-box-title">Baselayers</div>' +
+        '<div id="REPLACE-controller-baselayer-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
+        '<div class="fm-standard-hr"></div>' +
+        '<div id="REPLACE-controller-baselayer-content" class="fm-controller-box-content"></div>' +
+    '</div>',
+
+    baselayer:
+    '<div id="REPLACE-controller-box-item" class="fm-box-zindex fx-toolbar-map-holder  fm-controller-box-item-baselayer-content">' +
+    '<div id="REPLACE-controller-item">' +
+        '<div class="fm-controller-box-item-baselayer-image" id="REPLACE-controller-item-baselayer-image"></div>' +
+        '<div class="fm-controller-box-item-baselayer-text">' +
+            '<div>' +
+                '<label class="fm-controller-box-item-baselayer-text fm-controller-item-title" id="REPLACE-controller-item-title">'+
+                    '<input id="REPLACE-controller-item-radio"  class="fm-checkbox-hide" type="radio" name="MAPID" value="REPLACE">'+
+                '<label>' +
             '</div>' +
-        '</div>',
-    wmsLoaderIcon: "<div class='fm-box-zindex'><div class='fm-icon-sprite fm-wmsloader' id='REPLACE-controller-wmsLoaderIcon'></div></div>",
-    wmsLoaderBox: '<div class="fm-box-zindex" id="REPLACE-controller-wmsLoader-box" style="display:none; min-height:300px;">' +
-                    '<div id="REPLACE-controller-wmsLoader-title" class="fm-controller-box-title">WMS Loader</div>' +
-                    '<div id="REPLACE-controller-wmsLoader-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
-                    '<div class="fm-standard-hr"></div>' +
-                    '<div class="clear:both"></div>' +
-                    '<div class="fm-WMSLoaderDropDown" id="REPLACE-controller-wmsLoader-dropdown"></div>' +
-                    '<div id="REPLACE-controller-wmsLoader-content" class="fm-controller-wmsLoader-content"></div>' +
-                 '</div>',
+            '<div style="clear:both"></div>' +
+            '<div class="fm-opacity-slider-baselayers" id="REPLACE-controller-item-opacity" style="display:none"></div>' +
+        '</div>' +
+    '</div>' +
+    '</div>',
+
+    overlayIcon:
+    "<div class='fm-box-zindex fx-toolbar-map-holder '><div class='fm-icon-sprite fm-overlays' id='REPLACE-controller-overlayIcon'></div></div>",
+
+    overlayBox:
+    '<div class="fm-box-zindex fx-toolbar-map-holder " id="REPLACE-controller-overlay-box">' +
+        '<div id="REPLACE-controller-overlay-title" class="fm-controller-box-title">Selected Layers</div>' +
+        '<div id="REPLACE-controller-overlay-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
+        '<div class="fm-standard-hr"></div>' +
+        '<div id="REPLACE-controller-overlay-content" class="fm-controller-box-content"></div>'+
+    '</div>',
+
+    overlay:
+    '<div id="REPLACE-controller-item-box" class="fm-box-zindex fx-toolbar-map-holder  fm-controller-box-item">' +
+        '<div id="REPLACE-controller-item" class="fm-controller-box-header">' +
+            '<div class="fm-controller-box-header-text">' +
+                '<div class="fm-controller-item-title" id="REPLACE-controller-item-title" ></div>' +
+                '<div class="fm-icon-right fm-icon-layer-panel-sprite fm-icon-down" id="REPLACE-controller-item-showhide-subicons"></div>' +
+            '</div>' +
+            '<div style="clear:both"></div>' +
+            '<div class="fm-controller-box-icons">' +
+                '<div class="fm-icon-enable" id="REPLACE-controller-item-enabledisable"></div>' +
+                '<div class="fm-opacity-slider" style="margin-right:10px;" id="REPLACE-controller-item-opacity"></div>' +
+            '</div>' +
+            '<div style="clear:both"></div>' +
+            '<div class="fm-controller-box-subicons" id="REPLACE-controller-item-subicons" style="display:none;">' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-getlegend" id="REPLACE-controller-item-getlegend"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-getfeatureinfo" id="REPLACE-controller-item-getfeatureinfo"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-switchjointype" style="display:none"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-zoomto" id="REPLACE-controller-item-zoomtolayer" style="display:none"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-swipe" id="REPLACE-controller-item-swipe"></div>' +
+                '<div class="fm-icon-layer-subicons-sprite fm-icon-switchJoinType" id="REPLACE-controller-item-joinsettings" style="display:none"></div>' +
+            '</div>' +
+            /*    '</div>' +
+            '</div>' +*/
+        '</div>' +
+    '</div>',
+
+    wmsLoaderIcon:
+    "<div class='fm-box-zindex fx-toolbar-map-holder '><div class='fm-icon-sprite fm-wmsloader' id='REPLACE-controller-wmsLoaderIcon'></div></div>",
+    
+    wmsLoaderBox:
+    '<div class="fm-box-zindex fx-toolbar-map-holder " id="REPLACE-controller-wmsLoader-box" style="display:none; min-height:300px;">' +
+        '<div id="REPLACE-controller-wmsLoader-title" class="fm-controller-box-title">WMS Loader</div>' +
+        '<div id="REPLACE-controller-wmsLoader-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
+        '<div class="fm-standard-hr"></div>' +
+        '<div class="clear:both"></div>' +
+        '<div class="fm-WMSLoaderDropDown" id="REPLACE-controller-wmsLoader-dropdown"></div>' +
+        '<div id="REPLACE-controller-wmsLoader-content" class="fm-controller-wmsLoader-content"></div>' +
+     '</div>',
+
     wmsLoaderLayer: '<div id="REPLACE-WMSLayer-box" class="fm-WMSLayer-box">' +
                         '<div id="REPLACE-WMSLayer-icon" class="fm-controller-box-icon fm-icon-info"></div>' +
                         '<div id="REPLACE-WMSLayer-title" class="fm-WMSLayer-title"></div>' +
                     '</div>',
 
-
     legend: '<div class="fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
-            //'<div class="fm-box-zindex fm-icon-box-background fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
-//            '<div class="fm-box-zindex fm-box fm-box-legend" id="REPLACE-controller-item-getlegend-holder">' +
             '<div class="fm-legend-title-content">' +
                 '<div id="REPLACE-controller-item-getlegend-legend-layertitle" class="fm-legend-layertitle"></div>' +
                 '<div id="REPLACE-controller-item-getlegend-remove" class="fm-icon-close-panel-sprite fm-icon-close fm-icon-right"></div>' +
@@ -2691,36 +2658,31 @@ FM.guiController = {
                     '</div>'
 };;
 FM.guiMap = {
-
-    disclaimerfao:   '<div class="fm-icon-box-background fm-disclaimerfao fm-btn-icon"><div class="fm-icon-sprite fm-icon-info" id="REPLACE-disclaimerfao"></div></div>',
-    disclaimerfao_E: '<div class="fm-disclaimerfao-text">' +
-        'The designations employed and the presentation of material in the maps  <br>' +
-        'do not imply the expression of any opinion whatsoever on the part of <br>' +
-        'FAO concerning the legal or constitutional status of any country,<br>' +
-        'territory or sea area, or concerning the delimitation of frontiers.<br>' +
-        'South Sudan declared its independence on July 9, 2011. <br>' +
-        'Due to data availability, the assessment presented in the map for Sudan<br>' +
-        'and South Sudan reflects thesituation up to 2011 for the former Sudan.' +
-        '</div> ',
-    disclaimerfao_E:
+    disclaimerfao_en:
+    		'<div class="fm-disclaimerfao">'+
             'The designations employed and the presentation of material in the maps  <br>' +
             'do not imply the expression of any opinion whatsoever on the part of  <br>' +
             'FAO concerning the legal or constitutional status of any country, <br>' +
             'territory or sea area, or concerning the delimitation of frontiers.  <br>' +
             'South Sudan declared its independence on July 9, 2011. <br>' +
             'Due to data availability, the assessment presented in the map for Sudan  <br>' +
-            'and South Sudan reflects thesituation up to 2011 for the former Sudan.',
-    disclaimerfao_S: '',
-    disclaimerfao_S_styled: '<div class="fm-disclaimerfao-text"></div> ',
-    disclaimerfao_F: '',
-    disclaimerfao_F_styled: '<div class="fm-disclaimerfao-text">' +
-        '</div> '
+            'and South Sudan reflects thesituation up to 2011 for the former Sudan.'+
+            '</div>',
+    disclaimerfao_es: '',
+    disclaimerfao_es_styled: '<div class="fm-disclaimerfao-text"></div>',
+    disclaimerfao_fr: '',
+    disclaimerfao_fr_styled: '<div class="fm-disclaimerfao-text"></div>'
 };
 ;
 FM.WCS = function() {
 
+    // TODO: config are the map.config (to be passed)
+    var config = {
+        url: {}
+    }
+
     // PROXY used to load the requests
-    var PROXY = (FMCONFIG.BASEURL_MAPS)? FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
+    var PROXY = (config.url.MAP_SERVICE_PROXY)? config.url.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
 
     // current version
     var VERSION = '1.1.1';
@@ -2764,10 +2726,15 @@ FM.WCS = function() {
 }();
 
 ;
-FM.WFS = function() {
+FM.WFS = function(config) {
+
+    // TODO: config are the map.config (to be passed)
+    var config = {
+        url: {}
+    }
 
     // PROXY used to load the requests
-    var PROXY = (FMCONFIG.BASEURL_MAPS)? FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
+    var PROXY = (config.url.BASEURL_MAPS)? config.url.MAP_SERVICE_PROXY: 'http://fenixapps2.fao.org/maps/rest/service/request'
 
     // current WFS version
     var VERSION = '1.1.0';
@@ -2846,151 +2813,31 @@ FM.WFS = function() {
 }();
 
 ;
-FM.LayerSwipe = {
-
-    swipeActivate: function(l, handleID, containerID, map) {
-        l.layer.swipeActive = true;
-        var l_parent = l.leafletLayer._container,
-           // handle = document.getElementById(fenixMap.suffix +  '-handle'),
-            handle = document.getElementById(handleID),
-            dragging = false;
-/*        console.log('L_parent');
-        console.log(l_parent);*/
-        handle.onmousedown = function() { dragging = true; return false;}
-        document.onmouseup = function() { dragging = false; }
-        document.onmousemove = function(e) {
-            if (!dragging) return;
-            setDivide(e.x);
-        }
-
-        var _this = this;
-
-        l.redraw = function( e ) {
-            l_parent = l.leafletLayer._container;
-            setDivide(parseInt(handle.style.left));
-        };
-
-        l.mousemoveSwipe = function( e ) {
-            l_parent = l.leafletLayer._container;
-            setDivide(e.containerPoint.x);
-        };
-
-        map.on( "zoomend", l.redraw);
-        map.on( "moveend", l.redraw);
-        map.on( "drag", l.redraw);
-        map.on( "mousemove", l.mousemoveSwipe );
-
-        function setDivide(x) {
-            x = Math.max(0, Math.min(x, map.getSize()['x']));
-            handle.style.left = (x) + 'px';
-            var layerX = map.containerPointToLayerPoint(x,0).x
-            l_parent.style.clip = 'rect(-99999px ' + layerX + 'px 999999px -99999px)';
-        }
-
-        // set 50% of the width, maybe start with 0?
-       // var mydiv =  $('#' + fenixMap.suffix + '-map').width();
-        var mydiv =  $('#' + containerID).width();
-       // console.log(mydiv);
-        setDivide(mydiv / 2);
-    },
-
-    swipeDeactivate: function(l, map) {
-        map.off( "zoomend", l.redraw);
-        map.off( "moveend", l.redraw);
-        map.off( "drag", l.redraw);
-        map.off( "mousemove", l.mousemoveSwipe );
-        l.layer.swipeActive = false;
-
-        var l_parent = l.leafletLayer._container;
-        l_parent.style.clip = 'auto';
-    }
-
-}
-;
 FM.LayerUtils = {
-
-    zoomToLayer: function(map, layer) {
-       if ( layer.bbox)  FM.LayerUtils.zoomTOBBOX(map, layer.bbox)
-       else if ( layer.zoomTo ) FM.LayerUtils.zoomToBoundary(map, layer.zoomTo.boundary, layer.zoomTo.code, layer.zoomTo.srs)
-    },
-
-    zoomToBoundary: function(map, boundary, code, srs) {
-        FM.LayerUtils._zoomToRequest(map, boundary, code, srs);
-    },
-
-
-    zoomTOBBOX: function(map, bbox) {
-        var bounds;
-        if ( bbox.ymin ) {
-            var southWest = new L.LatLng(bbox.ymin,bbox.xmin);
-            var northEast = new L.LatLng(bbox.ymax, bbox.xmax);
-            bounds = new L.LatLngBounds(southWest, northEast);
-        }
-        else if ( bbox ) {
-            if ( bbox.length > 0) {
-                var southWest = new L.LatLng(bbox[0],bbox[1]);
-                var northEast = new L.LatLng(bbox[2], bbox[3]);
-                bounds = new L.LatLngBounds(southWest, northEast);
-            }
-        }
-        if ( bounds) FM.LayerUtils.zoomToBounds(map, bounds)
-    },
-
-    zoomToBounds: function(map, bounds) {
-        map.fitBounds(bounds);
-    },
-
-    _zoomToRequest: function(map, boundary, code, srs) {
-        var _this = this;
-        var url = FMCONFIG.BASEURL_MAPS + FMCONFIG.MAP_SERVICE_ZOOM_TO_BOUNDARY + '/'+ boundary +'/'+ code+'/'+ srs+'';
-        $.ajax({
-            type: "GET",
-            url: url,
-            data: FM.Util.parseLayerRequest(l.layer),
-            success: function(response) {
-                if (typeof response == 'string')
-                    response = $.parseJSON(response);
-
-                var southWest = new L.LatLng(response.ymin,response.xmin);
-                var northEast = new L.LatLng(response.ymax, response.xmax);
-                var bounds = new L.LatLngBounds(southWest, northEast);
-                map.fitBounds(bounds);
-            }
-        });
-    },
 
     setLayerOpacity: function(l, opacity) {
         if (l.leafletLayer) l.leafletLayer.setOpacity(opacity)
         l.layer.opacity = opacity;
-        l.leafletLayer.options.opacity = opacity;
-        //console.log( l.leafletLayer)
     },
 
     filterLayerMinEqualThan:function(fenixMap, l, value) {
-         l = FM.LayerUtils.getValuesMinEqualThan(l, value);
-        FM.LayerUtils._refreshLayer(fenixMap, l);
+        l = FM.LayerUtils.getValuesMinEqualThan(l, value);
+        l.redraw();
     },
 
     filterLayerGreaterEqualThan:function(fenixMap, l, value) {
         l = FM.LayerUtils.getValuesGreaterEqualThan(l, value);
-        FM.LayerUtils._refreshLayer(fenixMap, l);
+        l.redraw();
     },
 
     filterLayerInBetweenEqualThan:function(fenixMap, l, min, max) {
         l = FM.LayerUtils.getValuesInBetweenEqualThan(l, min, max);
-        FM.LayerUtils._refreshLayer(fenixMap, l);
+        l.redraw();
     },
 
     filterLayerOuterEqualThan:function(fenixMap, l, min, max) {
         l = FM.LayerUtils.getValuesOuterEqualThan(l, min, max);
-        FM.LayerUtils._refreshLayer(fenixMap, l);
-    },
-
-    _refreshLayer: function(fenixMap, l) {
-        switch (l.layer.jointype) {
-            case 'point' :  fenixMap.createPointLayerRequest(l); break;
-            case 'shaded' : fenixMap.createShadeLayerRequest(l, true); break;
-        }
+        l.redraw();
     },
 
     getValuesMinEqualThan:function(l, value) {
@@ -3055,11 +2902,128 @@ FM.LayerUtils = {
         l.layer.joindata = JSON.stringify(l.layer.joindata);
         return l;
     }
+}
+;
 
+FM.Legend = {
 
+    getLegend: function(l, id, isReload) {
 
+        var legendOptions = $.extend({
+            forceLabels: 'on',
+            forceRule: 'true',
+            dx: '0',
+            dy: '0',
+            mx: '0',
+            my: '0',
+            fontAntiAliasing: 'true',
+            fontColor: '0x47576F',
+            bgColor: '0xF9F7F3',
+            border: 'false',
+            fontSize: '10'
+        }, l.layer.legendOptions);
 
+        // based on the layer type get the legendURL or Request
+        $('#'+id+'-legend-layertitle').empty();
+        $('#'+id+'-legendtitle').empty();
+        $('#'+id+'-legendsubtitle').empty();
+        $('#'+id+'-content').empty();
 
+        if (l.layer.layertitle) {
+            $('#'+id+'-legend-layertitle').append(l.layer.layertitle);
+        }
+        if (l.layer.legendtitle) {
+            $('#'+id+'-legendtitle').append(l.layer.legendtitle);
+        }
+        if (l.layer.legendsubtitle) {
+            $('#'+id+'-legendsubtitle').append(l.layer.legendsubtitle);
+        }
+
+        /* TODO: handle better, especially the l.layer.openlegend value*/
+        var html = '';
+        if (l.layer.legendHTML) {
+            html = l.layer.legendHTML;
+            $('#'+id+'-content').append(html);
+        }
+        else {
+            var url = l.layer.urlWMS  + '?';
+            url += '&service=WMS' +
+                '&version=1.1.0' +
+                '&REQUEST=GetLegendGraphic' +
+                '&layer=' + l.layer.layers +
+                '&Format=image/png';
+                //'&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3';
+            if (l.layer.style != null && l.layer.style != '' )
+                url +=  '&style=' + l.layer.style;
+            if (l.layer.sldurl )
+                 url +=  '&sld=' + l.layer.sldurl;
+
+            //LEGEND STYLE DOCS
+            //http://goo.gl/MUIt8Z
+            var alternativeUrl = url;
+
+            url += '&LEGEND_OPTIONS=';
+            for(var k in legendOptions) {
+                url += k+':'+legendOptions[k]+';'
+            }
+
+            FM.Legend._loadLegend(url, alternativeUrl, id)
+        }
+
+        if ( isReload ) {
+            if(($('#'+id+'-holder').is(":visible"))) {
+                $('#'+id+'-holder').hide();
+                $('#'+id+'-holder').slideDown();
+                l.layer.openlegend = true;
+            }
+            else {
+            }
+        }
+        else{
+            if(!($('#'+id+'-holder').is(":visible"))) {
+                $('#'+id+'-holder').slideDown();
+                l.layer.openlegend = true;
+            } else {
+                $('#'+id+'-holder').slideUp();
+                l.layer.openlegend = false;
+            }
+        }
+
+        //$('#'+id+'-holder').draggable();
+        $('#' + id+ '-remove').click({id:id + '-holder'}, function(event) {
+            $('#' + event.data.id).slideUp();
+            l.layer.openlegend = false;
+        });
+    },
+
+    _loadLegend: function(url, alternativeUrl, id) {
+        var img = new Image();
+        img.name = url;
+        img.src = url;
+
+        var html = '<img id="'+id + '-img" src="'+ img.src +'" class="decoded">';
+        img.onload = function() {
+            $('#'+id+'-content').append(html);
+            $('#'+id+'-img').css('width', this.width);
+            $('#'+id+'-img').css('height', this.height);
+        }
+        img.onerror = function() {
+            if ( alternativeUrl )
+                FM.Legend._loadLegend(alternativeUrl, null, id)
+            else
+                FM.Legend._nolegend(id);
+            // reload the image with different parameters (without legend_options)
+            // if returns again error, then le legend is not available
+            // '&LEGEND_OPTIONS=forceRule:True;dx:0.1;dy:0.1;mx:0.1;my:0.1;border:false;fontAntiAliasing:true;fontColor:0x47576F;fontSize:10;bgColor:0xF9F7F3'+
+        }
+    },
+
+    _nolegend: function(id) {
+        /** TODO: getLegendURl http://gis.stackexchange.com/questions/21912/how-to-get-wms-legendgraphics-using-geoserver-and-geowebcache **/
+        var html = '<div class="fm-legend-layertitle">'+ $.i18n.prop('_nolegendavailable')+ '</div>';
+        $('#'+id+'-content').append(html);
+    }
+    
 }
 ;
 FM.MapUtils = function() {
@@ -3080,7 +3044,9 @@ FM.MapUtils = function() {
     };
 
     var zoomTo = function(m, layer, column, codes) {
-        var url = FMCONFIG.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+
+        var url = m.options.url.ZOOM_TO_BBOX + layer +'/'+ column+'/'+ codes.toString();
+
         $.ajax({
             type: "GET",
             url: url,
@@ -3097,10 +3063,11 @@ FM.MapUtils = function() {
         zoomTo(m, "country", column, codes);
     };
 
-    var getSLDfromCSS = function(layername, css) {
+    var getSLDfromCSS = function(layername, css, url) {
         var sld = '';
+        //TODO: change URL
         $.ajax({
-            url: FMCONFIG.CSS_TO_SLD,
+            url: url,
             data: {
                 stylename: layername,
                 style: css
@@ -3158,12 +3125,99 @@ FM.MapUtils = function() {
 }();;
 FM.Plugins = {
 
+    _addzoomcontrol: function(_fenixmap, show) {
+    	if( show ) {
+	    	var pos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+							_fenixmap.options.plugins.zoomcontrol : 'bottomright';
+	        return new L.Control.Zoom({position: pos}).addTo(_fenixmap.map);
+       	}
+    },
+
     _addfullscreen: function(_fenixmap, show) {
-        if ( show ) {
-            //$("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
-           // FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn", _fenixmap.mapContainerID);
-            $("#" + _fenixmap.mapContainerID).append("<div class='fm-icon-box-background fm-btn-icon fm-fullscreen'><div class='fm-icon-sprite fm-icon-fullscreen' id='"+ _fenixmap.suffix +"-fullscreenBtn'><div></div>");
-            FM.UIUtils.fullscreen(_fenixmap.suffix +"-fullscreenBtn", _fenixmap.options.gui.fullscreenID);
+        if ( show && window.fullScreenApi && window.fullScreenApi.supportsFullScreen) {
+			return (function() {
+
+                //TODO second click on button exit from fullscreen
+
+				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
+					pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
+						_fenixmap.options.plugins.fullscreen : zoompos,
+					control = new L.Control({position: pos});
+
+				control.onAdd = function(map) {
+					var div = L.DomUtil.create('div','leaflet-control-fullscreen fm-icon-box-background'),
+						a = L.DomUtil.create('a','fm-icon-sprite fm-btn-icon', div);
+					L.DomEvent
+						.disableClickPropagation(a)
+						.addListener(a, 'click', function() {
+
+							var idDiv = _fenixmap.options.plugins.fullscreen.id || _fenixmap.id,
+                                mapdiv = document.getElementById(idDiv);
+
+                            if( window.fullScreenApi.isFullScreen(mapdiv) )
+                                window.fullScreenApi.cancelFullScreen(mapdiv);
+                            else
+                                window.fullScreenApi.requestFullScreen(mapdiv);
+						}, a);
+					return div;
+				};
+				return control;
+			}())
+			.addTo(_fenixmap.map);
+        }
+    },
+
+    _addzoomresetcontrol: function( _fenixmap, show) {
+    	if( show ) {
+			return (function() {
+				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
+					pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? 
+						_fenixmap.options.plugins.zoomresetcontrol : zoompos,
+					control = new L.Control({position: pos}),
+					container = _fenixmap.plugins.zoomcontrol._container;
+
+				control.onAdd = function(map) {
+						var a = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
+						a.innerHTML = "&nbsp;";
+						a.title = "Zoom Reset";
+						L.DomEvent
+							.disableClickPropagation(a)
+							.addListener(a, 'click', function() {
+								map.setView(map.options.center, map.options.zoom);
+							},a);
+						var d=  L.DomUtil.create('span');
+						d.style.display = 'none';
+						return d;
+					};
+				return control;
+			}())
+			.addTo(_fenixmap.map);
+		}    	
+    },
+
+    _adddisclaimerfao: function(_fenixmap, show) {
+        if ( show && $.powerTip) {
+			return (function() {
+				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? 
+                        _fenixmap.options.plugins.disclaimerfao : 'bottomright',
+					control = new L.Control({position: pos}),
+					lang = _fenixmap.options.lang.toLowerCase();
+
+				control.onAdd = function(map) {
+						var div = L.DomUtil.create('div','leaflet-control-disclaimer fm-icon-box-background'),					
+							a = L.DomUtil.create('a','fm-icon-sprite fm-icon-info', div);
+						
+						a.title = FM.guiMap['disclaimerfao_'+lang];
+						
+						$(a).powerTip({placement: 'nw'});
+
+						return div;
+					};
+				return control;
+			}())
+			.addTo(_fenixmap.map);
         }
     },
 
@@ -3176,7 +3230,7 @@ FM.Plugins = {
 
     _addgeosearch: function(_fenixmap, show) {
         if ( show && L.GeoSearch) {
-            new L.Control.GeoSearch({
+            return new L.Control.GeoSearch({
                 provider: new L.GeoSearch.Provider.OpenStreetMap()
             }).addTo(_fenixmap.map);
         }
@@ -3185,8 +3239,7 @@ FM.Plugins = {
     _addgeocoder: function(_fenixmap, show) {
         // TODO: should be load here dinamically the requires JS
         if ( show && L.Control.OSMGeocoder) {
-            var osmGeocoder = new L.Control.OSMGeocoder();
-            _fenixmap.map.addControl(osmGeocoder);
+            return new L.Conpluginstrol.OSMGeocoder().addTo(_fenixmap.map);
         }
     },
 
@@ -3202,12 +3255,6 @@ FM.Plugins = {
         }
     },
 
-    _addzoomcontrol: function(_fenixmap, position) {
-        var zoomControl = new L.Control.Zoom();
-        zoomControl.setPosition('bottomright');
-        _fenixmap.map.addControl(zoomControl);
-    },
-
     _addprintmodule: function(_fenixmap, show) {
         if ( show && L.print)
             /** TODO: install print module **/
@@ -3220,35 +3267,6 @@ FM.Plugins = {
         var printControl = L.control.print({ provider: printProvider });
         _fenixmap.map.addControl(printControl);
     },
-
-    _adddisclaimerfao: function(_fenixmap, show) {
-        if ( show ) {
-            var structure = FM.replaceAll(FM.guiMap.disclaimerfao, 'REPLACE', _fenixmap.suffix);
-            $("#" + _fenixmap.suffix + '-container-map').append(structure);
-            var text = '';
-            switch(_fenixmap.options.lang.toUpperCase()) {
-                case 'ES':
-                    text = FM.guiMap.disclaimerfao_S;
-                    break;
-                case 'FR':
-                    text = FM.guiMap.disclaimerfao_F;
-                    break;
-                default:
-                    text = FM.guiMap.disclaimerfao_E;
-                    break;
-            }
-            text = FM.replaceAll(text, 'REPLACE', _fenixmap.suffix);
-
-            $("#" + _fenixmap.suffix + '-disclaimerfao').attr( "title", text);
-
-            try {
-                $("#" + _fenixmap.suffix + '-disclaimerfao').powerTip({placement: 'nw'});
-            } catch (e) {
-
-            }
-        }
-    },
-
 
     /**
      *
@@ -3316,7 +3334,6 @@ FM.Plugins = {
                 layers.eachLayer(function(layer) {
                     countOfEditedLayers++;
                 });
-                //console.log("Edited " + countOfEditedLayers + " layers");
             });
         }
     },
@@ -3328,6 +3345,33 @@ FM.Plugins = {
                 position: 'topright'
             });
             _fenixmap.map.addControl(loadingControl)
+        }
+    },
+
+    _addscalecontrol: function( _fenixmap, show) {
+        if( show && L.Control.Scale) {
+            var pos = typeof _fenixmap.options.plugins.scalecontrol === 'string' ? 
+                    _fenixmap.options.plugins.scalecontrol : 'topleft';
+            
+            L.control.scale({position: pos}).addTo(_fenixmap.map);
+        }
+    },
+
+    _addlegendcontrol: function( _fenixmap, show) {
+        if( show ) {
+            return (function() {
+                var pos = typeof _fenixmap.options.plugins.legendcontrol === 'string' ? 
+                        _fenixmap.options.plugins.legendcontrol : 'topright',
+                    control = new L.Control({position: pos});
+
+                control.onAdd = function(map) {
+                    var div = L.DomUtil.create('div','leaflet-control-legend');
+                    //FILLED BY JQUERY
+                    return div;
+                };
+                return control;
+            }())
+            .addTo(_fenixmap.map);
         }
     }
 }
@@ -3343,10 +3387,10 @@ FM.SpatialQuery = {
      * @param latlng
      * @param map
      */
-    getFeatureInfoJoin: function(l, layerPoint, latlng, map) {
+    getFeatureInfoJoin: function(l, layerPoint, latlng, fenixmap) {
         // setting a custom popup if it's not available
-        if (l.layer.custompopup == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
-        FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, map);
+        if (l.layer.customgfi == null ) FMDEFAULTLAYER.joinDefaultPopUp(l.layer)
+        FM.SpatialQuery.getFeatureInfoStandard(l, layerPoint, latlng, fenixmap);
     },
 
 
@@ -3359,23 +3403,16 @@ FM.SpatialQuery = {
      * @param latlng
      * @param map
      */
-    getFeatureInfoStandard: function(l, layerPoint, latlng, map) {
+    getFeatureInfoStandard: function(l, layerPoint, latlng, fenixmap) {
 
-        // var latlngStr = '(' + latlng.lat.toFixed(3) + ', ' + latlng.lng.toFixed(3) + ')';
+        // bind to leaflet map
+        var map = fenixmap.map;
+
+        // query parameters for the GFI
         var bounds = map.getBounds();
         var sw = map.options.crs.project(bounds.getSouthWest());
         var ne = map.options.crs.project(bounds.getNorthEast());
         var BBOX = (sw.x ) + ',' + (sw.y) +',' + (ne.x) + ',' + (ne.y);
-        /*
-         var BBOX2 = (sw.x % -20037787) + ',' + (sw.y % 20037787) +',' + (ne.x % -20037787) + ',' + (ne.y % 20037508);
-         console.log('BBOX: ' + BBOX);
-        console.log('BBOX2: ' + BBOX2);
-        //console.log('sw.x: ' + sw.x); //-20037787.81567391
-        console.log('sw.x: ' + sw.x); //-7954342
-        console.log('sw.y: ' + sw.y);
-        console.log('ne.x: ' + ne.x);
-        console.log('ne.y: ' + ne.y);
-         */
         var WIDTH = map.getSize().x;
         var HEIGHT = map.getSize().y;
         var X = map.layerPointToContainerPoint(layerPoint).x;
@@ -3385,8 +3422,8 @@ FM.SpatialQuery = {
         X = X.toFixed(0) //13.3714
         Y = new Number(Y);
         Y = Y.toFixed(0) //13.3714
-
-        var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
+        var url = fenixmap.options.url.MAP_SERVICE_GFI_STANDARD;
+        //var url = FMCONFIG.BASEURL_MAPS  + FMCONFIG.MAP_SERVICE_GFI_STANDARD;
         url += '?SERVICE=WMS';
         url += '&VERSION=1.1.1';
         url += '&REQUEST=GetFeatureInfo';
@@ -3407,7 +3444,6 @@ FM.SpatialQuery = {
             url += '&SRS=EPSG:3857';
             //l.layer.srs; //EPSG:3857
             url += '&urlWMS=' + l.layer.urlWMS;
-            //  FM.SpatialQuery.getFeatureInfoJoinRequest(url, 'GET', null,latlng, map, outputID, l.layer.custompopup, l.layer.lang, l.layer.joindata);
             FM.SpatialQuery.getFeatureInfoJoinRequest(url, 'GET', latlng, map, l);
         }
         else {
@@ -3415,17 +3451,35 @@ FM.SpatialQuery = {
         }
     },
 
+    customPopup: function(response, custompopup, lang, joindata, layer) {
+
+        var html = '<div class="fm-popup">'+
+                '{{' + layer.joincolumnlabel + '}} <br />'+
+                '<b>{{{' + layer.joincolumn + '}}} </b> '+ layer.mu +
+            '</div>';
+
+        if(custompopup.content && custompopup.content[lang])
+            html = custompopup.content[lang];
+
+        var values = this._parseHTML(html);
+        if ( values.id.length > 0 || values.joinid.length > 0) {
+            var h = $('<div></div>').append(response);
+            var responsetable = h.find('table');
+            if ( responsetable) {
+                return FM.SpatialQuery._customizePopUp(html, values, responsetable, joindata, layer );
+            }
+        }
+
+    },
 
     // TODO: use an isOnHover flag?
     getFeatureInfoJoinRequest: function(url, requestType, latlon, map, l) {
-        var lang = ( l.layer.lang )? l.layer.lang.toLocaleLowerCase(): null;
+        var lang = l.layer.lang != null? l.layer.lang : map.options.lang;
         var _map = map;
         var _l = l;
-        /** TODO: use JQuery? **/
         $.ajax({
             type: "GET",
             url: url,
-            //dataType: 'application/x-www-form-urlencoded',
             success: function(response) {
                 // do something to response
                 if ( response != null ) {
@@ -3437,7 +3491,8 @@ FM.SpatialQuery = {
                     /** TODO: do it MUCH nicer **/
                     var r = response;
                     if (_l.layer.customgfi) {
-                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, _l.layer.lang, _l.layer.joindata)
+                        var joindata = _l.layer.joindata != null? _l.layer.joindata : _l.layer.data;
+                        var result = FM.SpatialQuery.customPopup(response, _l.layer.customgfi, lang, joindata, l.layer);
                         // TODO: handle multiple outputs
                         r = (result != null) ? result[0] : response;
                     }
@@ -3476,26 +3531,13 @@ FM.SpatialQuery = {
         });
     },
 
-    customPopup: function(response, custompopup, lang, joindata) {
-        var values = this._parseHTML(custompopup.content[lang]);
-        if ( values.id.length > 0 || values.joinid.length > 0) {
-            var h = $('<div></div>').append(response);
-            var responsetable = h.find('table');
-            if ( responsetable) {
-                return FM.SpatialQuery._customizePopUp(custompopup.content[lang], values, responsetable, joindata );
-            }
-        }
-
-    },
-
     /** TODO: how to check it?  **/
     _checkGeoserverDefaultEmptyOutput: function(response) {
         return response;
     },
 
-    _customizePopUp:function(content, values, responsetable, joindata) {
-//        console.log('SpatialQuery._customizePopUp()')
-//        joindata = $.parseJSON(joindata)
+    _customizePopUp:function(content, values, responsetable, joindata, layer) {
+
         var tableHTML = responsetable.find('tr');
         var headersHTML = $(tableHTML[0]).find('th');
         var rowsData = [];
@@ -3503,12 +3545,10 @@ FM.SpatialQuery = {
         // get only useful headers
         var headersHTMLIndexs = [];
         for ( var i=0;  i < headersHTML.length; i ++) {
-//            console.log("-----")
-//            console.log(headersHTML[i])
             for (var j=0; j< values.id.length; j++) {
-//                console.log(values.id)
-                if ( values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
-                    headersHTMLIndexs.push(i); break;
+                if (values.id[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
+                    headersHTMLIndexs.push(i);
+                    break;
                 }
             }
         }
@@ -3516,8 +3556,6 @@ FM.SpatialQuery = {
         // this is in case the joinid is not empty TODO: split the code
         if ( joindata ) {
             var headersHTMLJOINIndexs = [];
-            //console.log( 'values.joinid');
-            //console.log( values.joinid);
             for ( var i=0;  i < headersHTML.length; i ++) {
                 for (var j=0; j< values.joinid.length; j++) {
                     if ( values.joinid[j].toUpperCase() == headersHTML[i].innerHTML.toUpperCase()) {
@@ -3526,8 +3564,6 @@ FM.SpatialQuery = {
                 }
             }
         }
-//        console.log("headersHTMLJOINIndexs");
-//        console.log(headersHTMLJOINIndexs);
 
         // get rows data
         for(var i=1; i<tableHTML.length; i ++) {
@@ -3536,8 +3572,6 @@ FM.SpatialQuery = {
 
         // create the response results
         var htmlresult = [];
-//        console.log("rowsData");
-//        console.log(rowsData);
         for( var j=0; j < rowsData.length; j++) {
 
             // this is done for each row of result (They could be many rows)
@@ -3545,51 +3579,47 @@ FM.SpatialQuery = {
 
             // Replace IDs
             for(var i=0; i<headersHTMLIndexs.length; i ++) {
-                var header = '{{' + headersHTML[headersHTMLIndexs[i]].innerHTML + '}}'
+                var header = '{{' + headersHTML[headersHTMLIndexs[i]].innerHTML + '}}';
                 var d = rowsData[j][headersHTMLIndexs[i]].innerHTML;
-                //console.log(d);
                 c = FM.Util.replaceAll(c, header, d);
             }
 
             // Replace joindata (if needed)
+            // used to add dynamically the measurementunit
+            var checkJoinData = false;
             if ( joindata ) {
-//                console.log("headersHTMLJOINIndexs");
-//                console.log(headersHTMLJOINIndexs);
-
                 for(var i=0; i<headersHTMLJOINIndexs.length; i ++) {
-//                    console.log(headersHTML[headersHTMLJOINIndexs[i]].innerHTML);
-                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}'
-//                    console.log("header");
-//                    console.log(header);
-
+                    var header = '{{{' + headersHTML[headersHTMLJOINIndexs[i]].innerHTML + '}}}';
                     var d = rowsData[j][headersHTMLJOINIndexs[i]].innerHTML;
                     var v = FM.SpatialQuery._getJoinValueFromCode(d, joindata);
-//                    console.log(v);
+                    v = (v !== 'NA' && layer.decimalvalues)? v.toFixed(layer.decimalvalues): v;
                     c = FM.Util.replaceAll(c, header, v);
-//                    console.log(c);
+                    if (v !== 'NA') {
+                        checkJoinData = true;
+                    }
                 }
             }
 
             // adding the row result to the outputcontent
             htmlresult.push(c)
         }
-        //console.log(htmlresult)
+
+        // "dynamic" measurementunit change
+        htmlresult[0] = FM.Util.replaceAll(htmlresult[0], "{{measurementunit}}", (checkJoinData)? layer.measurementunit: '');
+
         return htmlresult;
     },
 
 
     _getJoinValueFromCode: function(code, joindata) {
-        //console.log(code);
-        //console.log(joindata);
         //TODO: do it nicer: the problem on the gaul is that the code is a DOUBLE and in most cases it uses an INTEGER
         var integerCode = ( parseInt(code) )? parseInt(code): null
         //console.log(integerCode);
         var json = ( typeof joindata == 'string' )? $.parseJSON(joindata) : joindata;
-        //console.log(json);
         for(var i=0; i< json.length; i++) {
             if ( json[i][code] || json[i][integerCode] ) {
                 if ( json[i][code] ) {
-                    console.log( json[i][code]);
+                    //console.log( json[i][code]);
                     return json[i][code];
                 }
                 else {
@@ -3598,7 +3628,7 @@ FM.SpatialQuery = {
                 }
             }
         }
-        return '';
+        return 'NA';
         //return 'No data available for this point';
     },
 
@@ -3637,8 +3667,7 @@ FM.SpatialQuery = {
         var table = h.find('table');
         var result = [];
         if ( table ) {
-            var r = FM.SpatialQuery.transposeHTML(table, layertitle)
-//            console.log(r);
+            var r = FM.SpatialQuery.transposeHTML(table, layertitle);
             if ( r != null ) return r;
         }
         return null;
@@ -3648,7 +3677,6 @@ FM.SpatialQuery = {
         var div = $('<div class="fm-transpose-popup"></div>');
         var titleHTML = table.find('caption');
         try {
-//            div.append(titleHTML[0].innerHTML)
             div.append(layertitle)
 
             var tableHTML = table.find('tr');
@@ -3677,202 +3705,6 @@ FM.SpatialQuery = {
         }
     },
 
-
-    /**
-     * @param l
-     * @param fenixMap
-     * @param series
-     * @param xmin
-     * @param xmax
-     * @param ymin
-     * @param ymax
-     * @param zoomToFeatures
-     * @param layer used to highlight/filter the features
-     */
-    scatterLayerFilter:function(l, fenixMap, series, xmin, xmax, ymin, ymax, zoomToFeatures, layerHighlight, reclassify ) {
-
-        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-        if ( !l.leafletLayer || reclassify ) l.layer.joindata = [];
-
-        var spCodes = '';
-        for(var i=0; i < series.length; i++) {
-            if ( series[i].data[0][0] >= xmin && series[i].data[0][0] <= xmax && series[i].data[0][1] >= ymin && series[i].data[0][1] <= ymax )  {
-                var geocode =  series[i].geocode;
-                if ( spCodes != '') spCodes += ','
-                if ( geocode) spCodes += "'"+ geocode +"'"
-                var s = {};
-                var value = series[i].data[0][0] / series[i].data[0][1];
-                s[series[i].geocode] = value;
-
-                // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-                // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-                if ( !l.leafletLayer || reclassify ) l.layer.joindata.push(s);
-            }
-        }
-
-        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-        if ( !l.leafletLayer || reclassify )  l.layer.joindata = JSON.stringify(l.layer.joindata);
-
-        if (l.leafletLayer ) {
-            // Highlight the layer (if exist)
-            if ( layerHighlight ) FM.SpatialQuery.highlightFeaturesOfLayer(layerHighlight, spCodes);
-
-            // reclassify the layer
-            if ( reclassify ) fenixMap.createShadeLayerRequest(l, true);
-
-            // SPATIAL QUERY
-            if ( zoomToFeatures ) {
-                FM.SpatialQuery._sampleSpatialQueryBoundingBox(fenixMap.map, spCodes, l.layer);
-                //FM.SpatialQuery._sampleSpatialQueryCentroid(fenixMap.map, spCodes)
-            }
-
-        }
-        else {
-            fenixMap.addShadedLayer(l);
-            //fenixMap.addLayer(l);
-        }
-    },
-
-    scatterLayerFilterFaster:function(l, fenixMap, series, xmin, xmax, ymin, ymax, layerHighlight, reclassify, formula) {
-        console.log('----------scatterLayerFilterFaster');
-        console.log(formula);
-        console.log(series);
-        console.log(l);
-        console.log(layerHighlight);
-        var zoomToFeatures = ( l.layer.zoomToFeatures )?  l.layer.zoomToFeatures : false;
-        if ( !l.leafletLayer || reclassify ) l.layer.joindata = [];
-
-        var spCodes = '';
-        for(var i=0; i < series.length; i++) {
-            //console.log('-->' + series[i]);
-            for ( var j = 0; j < series[i].data.length; j++) {
-                //console.log('---->' + series[i].data[j]);
-                if ( series[i].data[j].x >= xmin && series[i].data[j].x <= xmax && series[i].data[j].y >= ymin && series[i].data[j].y <= ymax )  {
-                    var code =  series[i].data[j].code;
-                    if ( spCodes != '') spCodes += ','
-                    if ( code) spCodes += "'"+ code +"'"
-                    var s = {};
-
-                    // console.log('-->data: ' + series[i].data[j]);
-                    //console.log('-->code: ' + code);
-
-                    /* TODO: remove eval **/
-                    if ( series[i].data[j].x != 0 && series[i].data[j].y != 0) {
-                        var value = ( formula )? eval(formula) : series[i].data[j].x / series[i].data[j].y;
-
-                        s[series[i].data[j].code] = value;
-
-                        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-                        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-                        if ( !l.leafletLayer || reclassify ) l.layer.joindata.push(s);
-
-                    }
-                }
-            }
-        }
-
-        //console.log('END---');
-
-        // this is to filter the result output without getting all the polygons, just the ones needed
-        // TODO add a parameter to enable or disable this feature on the layer
-        // if ( spCodes ) l.layer.cql_filter= l.layer.joincolumn +" IN (" + spCodes + ")";
-
-        // TODO: make a better function (this is to avoid that when the data are requested the values are empty)
-        // if the layer is not defined OR if it's needed to reclassify the data are inserted again
-        if ( !l.leafletLayer || reclassify )  l.layer.joindata = JSON.stringify(l.layer.joindata);
-
-        if (l.leafletLayer ) {
-            // Highlight the layer (if exist)
-            if ( layerHighlight ) FM.SpatialQuery.highlightFeaturesOfLayer(layerHighlight, spCodes);
-
-            // reclassify the layer
-            if ( reclassify ) fenixMap.createShadeLayerRequest(l, true);
-
-            // SPATIAL QUERY
-            if ( zoomToFeatures ) {
-                FM.SpatialQuery._sampleSpatialQueryBoundingBox(fenixMap.map, spCodes, l.layer);
-                //FM.SpatialQuery._sampleSpatialQueryCentroid(fenixMap.map, spCodes)
-            }
-
-        }
-        else {
-            fenixMap.addShadedLayer(l);
-            //fenixMap.addLayer(l);
-        }
-    },
-
-    // Highlight the features (it's passed not '10','15' that has to be converted)
-    highlightFeaturesOfLayer:  function(l, codes) {
-        console.log('highlightFeaturesOfLayer')
-        console.log(l)
-        console.log(codes)
-        var codes = FM.Util.replaceAll(codes, "'", "");
-
-
-        l.layer.cql_filter = l.layer.joincolumn + " IN (" + codes + ")";
-//        console.log(l.layerAdded)
-        if ( l.layerAdded )
-            l.redraw();
-        else
-            l.addLayerWMS();
-    },
-
-    _sampleSpatialQueryBoundingBox: function(map, spCodes, layer) {
-        //console.log(map);
-        var data = {};
-        data.datasource = 'FENIX';
-        // default geometry column if it doesnt exist TODO: launch an alert in case
-        var geom = (layer.geometrycolumn) ? layer.geometrycolumn : 'geom'
-        data.select = 'ST_AsText(ST_Transform(ST_Envelope(ST_Collect(' + layer.geometrycolumn + ')), 4326)) ';
-        /* data.from = 'gaul0_faostat_3857';
-         data.where = "faost_code IN (" + spCodes + ") "*/
-        data.from = ( layer.layername)? layer.layername : layer.layers;
-        data.where = layer.joincolumn + " IN (" + spCodes + ") " ;
-        $.ajax({
-            type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
-            data : data,
-            success : function(response) {
-                //console.log(response);
-                var wkt = new Wkt.Wkt();
-                wkt.read(response)
-                //console.log(wkt)
-                var BBOX = {
-                    "xmin" : wkt.components[0][0].x,
-                    "xmax" : wkt.components[0][2].x,
-                    "ymax" : wkt.components[0][1].y,
-                    "ymin" : wkt.components[0][0].y
-                }
-                FM.LayerUtils.zoomTOBBOX(map, BBOX);
-            },
-            error : function(err, b, c) { }
-        });
-    },
-
-    _sampleSpatialQueryCentroid: function(map, spCodes) {
-        var data = {};
-        data.datasource = 'FENIX',
-            data.select = 'ST_AsText(ST_Transform(ST_Centroid(ST_Collect(geom)), 4326)) ';
-        data.from = 'gaul0_faostat_3857';
-        data.where = "faost_code IN (" + spCodes + ") "
-        $.ajax({
-            type : 'POST',
-            url :  FMCONFIG.BASEURL_WDS + FMCONFIG.WDS_SERVICE_SPATIAL_QUERY,
-            data : data,
-            success : function(response) {
-                //console.log(response);
-                var wkt = new Wkt.Wkt();
-                wkt.read(response)
-//                console.log("WKT:");
-//                console.log(wkt)
-                map.panTo([wkt.components[0].y,wkt.components[0].x]);
-            },
-            error : function(err, b, c) { }
-        });
-    },
-
     filterLayerMinEqualThan: function(l, value) {
         FM.LayerUtils.filterLayerMinEqualThan(this, l, value);
     },
@@ -3889,7 +3721,70 @@ FM.SpatialQuery = {
         FM.LayerUtils.filterLayerOuterEqualThan(this, l, min, max);
     }
 
-};
+}
+;
+FM.LayerSwipe = {
+
+    swipeActivate: function(l, handleID, containerID, map) {
+        l.layer.swipeActive = true;
+        var l_parent = l.leafletLayer._container,
+           // handle = document.getElementById(fenixMap.suffix +  '-handle'),
+            handle = document.getElementById(handleID),
+            dragging = false;
+/*        console.log('L_parent');
+        console.log(l_parent);*/
+        handle.onmousedown = function() { dragging = true; return false;}
+        document.onmouseup = function() { dragging = false; }
+        document.onmousemove = function(e) {
+            if (!dragging) return;
+            setDivide(e.x);
+        }
+
+        var _this = this;
+
+        l.redraw = function( e ) {
+            l_parent = l.leafletLayer._container;
+            setDivide(parseInt(handle.style.left));
+        };
+
+        l.mousemoveSwipe = function( e ) {
+            l_parent = l.leafletLayer._container;
+            setDivide(e.containerPoint.x);
+        };
+
+        map.on( "zoomend", l.redraw);
+        map.on( "moveend", l.redraw);
+        map.on( "drag", l.redraw);
+        map.on( "mousemove", l.mousemoveSwipe );
+
+        function setDivide(x) {
+            x = Math.max(0, Math.min(x, map.getSize()['x']));
+            handle.style.left = (x) + 'px';
+            var layerX = map.containerPointToLayerPoint(x,0).x
+            l_parent.style.clip = 'rect(-99999px ' + layerX + 'px 999999px -99999px)';
+        }
+
+        // set 50% of the width, maybe start with 0?
+       // var mydiv =  $('#' + fenixMap.suffix + '-map').width();
+        var mydiv =  $('#' + containerID).width();
+       // console.log(mydiv);
+        setDivide(mydiv / 2);
+    },
+
+    swipeDeactivate: function(l, map) {
+        map.off( "zoomend", l.redraw);
+        map.off( "moveend", l.redraw);
+        map.off( "drag", l.redraw);
+        map.off( "mousemove", l.mousemoveSwipe );
+        l.layer.swipeActive = false;
+
+        var l_parent = l.leafletLayer._container;
+        l_parent.style.clip = 'auto';
+    }
+
+}
+;
+
 FM.Layer = FM.Class.extend({
 
     _fenixmap: '',
@@ -3926,14 +3821,26 @@ FM.Layer = FM.Class.extend({
 
         layertitle: '',
         enablegfi: true,
-        layertype: 'WMS', //['WMS', 'JOIN']
+        layertype: 'WMS', //['WMS', 'JOIN', 'TILE']
         openlegend: false,
-
+        legendOptions: {
+            forceLabels: 'on',
+            forceRule: 'true',
+            dx: '0',
+            dy: '0',
+            mx: '0',
+            my: '0',
+            fontAntiAliasing: 'true',
+            fontColor: '0x47576F',
+            bgColor: '0xF9F7F3',
+            border: 'false',            
+            fontSize: '15'            
+        },
         // JOIN default options
         switchjointype: false,
 
         // language
-        lang: 'en' //ISO2
+        lang: 'EN' //ISO2
 
     },
 
@@ -3942,18 +3849,21 @@ FM.Layer = FM.Class.extend({
     initialize: function(layer, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
-        if ( options) this.options = options;
+        if (options)
+            this.options = options;
 
         this.id = FM.Util.randomID();
 
-        if ( layer.joindata ) layer.defaultdata = layer.joindata;
+        if (layer.joindata)
+            layer.defaultdata = layer.joindata;
     },
 
     createLayerWMS: function() {
 
         var wmsParameters = this._getWMSParameters();
         if ( this.leafletLayer ) {
-            this.leafletLayer.setParams(wmsParameters);
+            if(this.layertype === 'WMS')
+                this.leafletLayer.setParams(wmsParameters);
         }
         else {
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
@@ -4025,15 +3935,6 @@ FM.Layer = FM.Class.extend({
         }
     },
 
-    /** TOODO: remove layer also from the layers list **/
-    removeLayer: function(fenixmap) {
-        /** TODO: remove it from the list **/
-        if ( fenixmap )
-            fenixmap.removeLayer(this);
-        else if ( this._fenixmap)
-            this._fenixmap.removeLayer(this);
-    },
-
     /** shortcut **/
     addPointLayer: function(fenixmap) {
         if ( fenixmap )
@@ -4055,57 +3956,21 @@ FM.Layer = FM.Class.extend({
         else if ( this._fenixmap)
             this._fenixmap.addLayer(this);
     },
+    
+    /** TOODO: remove layer also from the layers list **/
+    removeLayer: function(fenixmap) {
+        /** TODO: remove it from the list **/
+        if ( fenixmap )
+            fenixmap.removeLayer(this);
+        else if ( this._fenixmap)
+            this._fenixmap.removeLayer(this);
+    },
 
     addShadedLayer: function(fenixmap) {
         if ( fenixmap )
             fenixmap.addShadedLayer(this);
         else if ( this._fenixmap)
             this._fenixmap.addShadedLayer(this);
-    },
-
-    createShadedLayerRequestCached:function (fenixmap) {
-        if ( fenixmap ) {
-            fenixmap.controller.layerAdded(this);
-            fenixmap.createShadedLayerRequestCached(this);
-        }
-        else if ( this._fenixmap) {
-            this._fenixmap.controller.layerAdded(this);
-            this._fenixmap.createShadedLayerRequestCached(this);
-        }
-    },
-
-    /**
-     * this method just request the layer, so it's been cached
-     *
-     * @param l
-     * @param isReload
-     */
-    createShadeLayerRequestCached: function(fenixmap, loadLayer) {
-
-      if ( this._fenixmap )
-            fenixmap = this._fenixmap;
-
-      var l = this;
-        var r = new RequestHandler();
-        var url = 'http://'+ FM.CONFIG.BASEURL_MAPS + FM.CONFIG.MAP_SERVICE_SHADED;
-        r.open('POST', url);
-        r.setContentType('application/x-www-form-urlencoded');
-        r.onload(function () {
-            var response = this.responseText;
-            if (typeof response == 'string') {
-                response = $.parseJSON(response);
-            }
-            l.layer.sldurl = response.sldurl;
-            l.layer.urlWMS = response.geoserverwms;
-            l.layer.legendHTML = response.legendHTML;
-            l.createLayerWMSSLD();
-
-            if ( loadLayer ) {
-                fenixmap.controller.layerAdded(l);
-                fenixmap._loadLayer(l, false)
-            }
-        });
-        r.send(FM.Util.parseLayerRequest(l.layer));
     }
 
 });
@@ -4116,17 +3981,18 @@ FM.layer = function (layer, map, options) {
 
 
 ;
+
 FM.TileLayer = FM.Layer.extend({
 
-    createTileLayer: function() {
-       var tileTitle = 'TITLE_' + this.layer.lang.toUpperCase();
-       var layer = (this.layer.layername)? FM.TILELAYER[this.layer.layername]: FM.TILELAYER[this.layer.layers];
-       this.layer.layertitle = {};
-       this.layer.layertitle = layer[tileTitle];
-       this.layer.layertype= 'TILE';
-       var leafletLayer =  new L.TileLayer(layer.URL);
-       return leafletLayer;
-    }
+  createTileLayer: function() {
+    
+    var info = this.layer.layername ? FM.TILELAYER[this.layer.layername] : FM.TILELAYER[this.layer.layers];
+
+    this.layer.layertype = 'TILE';
+    this.layer.layertitle = info[ 'title_' + this.layer.lang.toLowerCase() ];
+    var leafletLayer = new L.TileLayer( info.url );
+    return leafletLayer;
+  }
 
 });
 
@@ -4135,7 +4001,7 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     // this is replicated because in wms it's used "layers" instead of layername
     layer.layername = layername;
     layer.layers = layername;
-    layer.layertype ='TILE';
+    layer.layertype = 'TILE';
     layer.lang = lang;
     var l = new FM.TileLayer(layer);
     l.leafletLayer = l.createTileLayer(layer.layername);

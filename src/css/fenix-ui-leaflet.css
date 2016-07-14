@@ -17,6 +17,9 @@
 .leaflet-bar a, .leaflet-bar a:hover {
     border: none;
     background-color: #f9f7f3 !important;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
 }
 
 .leaflet-bar a,
@@ -75,39 +78,105 @@
 
 /* zoom control */
 /* to keep */
-
-.leaflet-bottom .leaflet-control {
-    /*margin-bottom: 10px !important;*/
-}
-
 .leaflet-control-zoom-in {
-    font: bold 0 'Lucida Console', Monaco, monospace;
+/*    font: bold 0 'Lucida Console', Monaco, monospace;
     width:31px !important;
     height: 30px !important;
     background-image: url(images/fenix-map-sprite.png);
-    background-position: -120px 0 !important;
+    background-position: -120px 0 !important;*/
 }
 
 .leaflet-control-zoom-in:hover {
-    background-position: -120px -30px !important;
+ /*   background-position: -120px -30px !important;*/
 }
 
 /* to keep */
 .leaflet-control-zoom-out {
+ /*   font: bold 0 'Lucida Console', Monaco, monospace;
+    width:31px !important;
+    height: 30px !important;
+    background-image: url(images/fenix-map-sprite.png);
+    background-position: -150px 0 !important;*/
+}
+
+.leaflet-control-zoom-out:hover {
+/*    background-position: -150px -30px !important;*/
+}
+  /* Specif override for the calogue map - TO BE REVIEWED */
+  .leaflet-control-zoom.leaflet-bar.leaflet-control{
+    background-color: transparent !important;
+    border-color: transparent !important;
+
+  }
+
+/*
+    .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-in,
+    .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-out{
+      height: 23px !important;
+      width: 23px !important;
+      font-size: 0px !important;
+      background-image: none;
+      position: relative;
+    }
+*/
+
+    .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-in,
+  .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-out {
+    font-family: 'eldorado_stroke';
+    font-size: 0;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    text-indent: 0;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+  }
+
+  .leaflet-control-zoom-out {
+    font-size: 0px;
+  }
+
+  .leaflet-touch .leaflet-control-zoom-in {
+    font-size: 0;
+  }
+  .leaflet-touch .leaflet-control-zoom-out {
+    font-size: 0;
+  }
+
+  .leaflet-control-zoom-in:before {
+    color: #333;
+    font-size: 24px;
+    content: "\eb2a";
+  }
+
+  .leaflet-control-zoom-out:before {
+    color: #333;
+    font-size: 24px;
+    content: "\eb28";
+  }
+
+
+
+
+
+
+
+/* to keep */
+.leaflet-control-zoom-reset {
     font: bold 0 'Lucida Console', Monaco, monospace;
     width:31px !important;
     height: 30px !important;
     background-image: url(images/fenix-map-sprite.png);
-    background-position: -150px 0 !important;
+    background-position: -210px 0 !important;
 }
 
-.leaflet-control-zoom-out:hover {
-    background-position: -150px -30px !important;
-}
-
-.leaflet-control-scale {
-    top: 35px;
-    left: 60px;
+.leaflet-control-zoom-reset:hover {
+	cursor: pointer;
+    background-position: -210px -30px !important;
 }
 
 .leaflet-container .leaflet-control-attribution{

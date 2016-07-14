@@ -1,3 +1,4 @@
+
 FM.Layer = FM.Class.extend({
 
     _fenixmap: '',
@@ -34,14 +35,26 @@ FM.Layer = FM.Class.extend({
 
         layertitle: '',
         enablegfi: true,
-        layertype: 'WMS', //['WMS', 'JOIN']
+        layertype: 'WMS', //['WMS', 'JOIN', 'TILE']
         openlegend: false,
-
+        legendOptions: {
+            forceLabels: 'on',
+            forceRule: 'true',
+            dx: '0',
+            dy: '0',
+            mx: '0',
+            my: '0',
+            fontAntiAliasing: 'true',
+            fontColor: '0x47576F',
+            bgColor: '0xF9F7F3',
+            border: 'false',            
+            fontSize: '15'            
+        },
         // JOIN default options
         switchjointype: false,
 
         // language
-        lang: 'en' //ISO2
+        lang: 'EN' //ISO2
 
     },
 
@@ -50,18 +63,21 @@ FM.Layer = FM.Class.extend({
     initialize: function(layer, options) { // (HTMLElement or String, Object)
         this.layer = $.extend(true, {}, this.layer, layer);
 
-        if ( options) this.options = options;
+        if (options)
+            this.options = options;
 
         this.id = FM.Util.randomID();
 
-        if ( layer.joindata ) layer.defaultdata = layer.joindata;
+        if (layer.joindata)
+            layer.defaultdata = layer.joindata;
     },
 
     createLayerWMS: function() {
 
         var wmsParameters = this._getWMSParameters();
         if ( this.leafletLayer ) {
-            this.leafletLayer.setParams(wmsParameters);
+            if(this.layertype === 'WMS')
+                this.leafletLayer.setParams(wmsParameters);
         }
         else {
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
@@ -133,15 +149,6 @@ FM.Layer = FM.Class.extend({
         }
     },
 
-    /** TOODO: remove layer also from the layers list **/
-    removeLayer: function(fenixmap) {
-        /** TODO: remove it from the list **/
-        if ( fenixmap )
-            fenixmap.removeLayer(this);
-        else if ( this._fenixmap)
-            this._fenixmap.removeLayer(this);
-    },
-
     /** shortcut **/
     addPointLayer: function(fenixmap) {
         if ( fenixmap )
@@ -163,57 +170,21 @@ FM.Layer = FM.Class.extend({
         else if ( this._fenixmap)
             this._fenixmap.addLayer(this);
     },
+    
+    /** TOODO: remove layer also from the layers list **/
+    removeLayer: function(fenixmap) {
+        /** TODO: remove it from the list **/
+        if ( fenixmap )
+            fenixmap.removeLayer(this);
+        else if ( this._fenixmap)
+            this._fenixmap.removeLayer(this);
+    },
 
     addShadedLayer: function(fenixmap) {
         if ( fenixmap )
             fenixmap.addShadedLayer(this);
         else if ( this._fenixmap)
             this._fenixmap.addShadedLayer(this);
-    },
-
-    createShadedLayerRequestCached:function (fenixmap) {
-        if ( fenixmap ) {
-            fenixmap.controller.layerAdded(this);
-            fenixmap.createShadedLayerRequestCached(this);
-        }
-        else if ( this._fenixmap) {
-            this._fenixmap.controller.layerAdded(this);
-            this._fenixmap.createShadedLayerRequestCached(this);
-        }
-    },
-
-    /**
-     * this method just request the layer, so it's been cached
-     *
-     * @param l
-     * @param isReload
-     */
-    createShadeLayerRequestCached: function(fenixmap, loadLayer) {
-
-      if ( this._fenixmap )
-            fenixmap = this._fenixmap;
-
-      var l = this;
-        var r = new RequestHandler();
-        var url = 'http://'+ FM.CONFIG.BASEURL_MAPS + FM.CONFIG.MAP_SERVICE_SHADED;
-        r.open('POST', url);
-        r.setContentType('application/x-www-form-urlencoded');
-        r.onload(function () {
-            var response = this.responseText;
-            if (typeof response == 'string') {
-                response = $.parseJSON(response);
-            }
-            l.layer.sldurl = response.sldurl;
-            l.layer.urlWMS = response.geoserverwms;
-            l.layer.legendHTML = response.legendHTML;
-            l.createLayerWMSSLD();
-
-            if ( loadLayer ) {
-                fenixmap.controller.layerAdded(l);
-                fenixmap._loadLayer(l, false)
-            }
-        });
-        r.send(FM.Util.parseLayerRequest(l.layer));
     }
 
 });
