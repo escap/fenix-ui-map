@@ -1,8 +1,8 @@
 {
   "name": "fenix-ui-map",
-  "version": "0.2.1",
+  "version": "2.0.0-beta.0",
   "description": "FENIX map component",
-  "main": "index.html",
+  "main": "dist/fenix-ui-map.src.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
