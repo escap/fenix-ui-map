@@ -97,11 +97,11 @@ grunt.initConfig({
 				//TODO move to lib
 				'src/map/config/*.js',
 				'src/map/Map.js',
-				'src/map/utils/LayerLegend.js',
+				//'src/map/utils/Legend.js',
+				'src/map/utils/*.js ',
 				'src/map/MapController.js',
 				'src/map/html/gui-controller.js',
 				'src/map/html/gui-map.js',
-				'src/map/utils/*.js ',
 				'src/map/layer/*.js'
 			],
 			dest: 'dist/fenix-ui-map.src.js'
