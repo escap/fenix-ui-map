@@ -1,7 +1,7 @@
 
 *SQL View for WFS layer with parametric country code*
 
-```
+```sql
 SELECT 
     l.geom, c.iso3_code, c.continent, c.fast_name, c.adm0_code 
    FROM 
