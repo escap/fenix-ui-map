@@ -44,7 +44,7 @@
     "text": "https://github.com/requirejs/text/tarball/master",
     "i18n": "https://github.com/requirejs/i18n/tarball/master",
     "domReady": "https://github.com/requirejs/domReady/tarball/master",
-    "jquery-ui": "http://fenixapps.fao.org/repository/js/jquery-ui/jquery-ui-1.10.3.tgz",
-    "jquery.hoverIntent": "http://fenixapps.fao.org/repository/js/jquery.hoverIntent/jquery.hoverIntent-1.8.0.tgz"
+    "jquery-ui": "http://fenixrepo.fao.org/cdn/js/jquery-ui/jquery-ui-1.10.3.tgz",
+    "jquery.hoverIntent": "http://fenixrepo.fao.org/cdn/js/jquery.hoverIntent/jquery.hoverIntent-1.8.0.tgz"
   }
 }
