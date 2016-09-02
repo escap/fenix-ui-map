@@ -13,7 +13,9 @@ requirejs(['../src/paths'], function (paths) {
 		'domready!'
 	], function($,jQuery,_,bts,Handlebars,
 		FenixMap, FenixMapConf) {
-		
+
+console.log('TEST AMD FenixMap:', FenixMap);
+
 		_.extend(FenixMapConf, {
 			BASEURL: '../dist',
 			BASEURL_LANG: '../dist/i18n/'
