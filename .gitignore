@@ -5,3 +5,4 @@ npm-debug.log
 .ftppass
 sftpCache.json
 *.DS_Store
+/coverage/
