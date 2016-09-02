@@ -102,7 +102,8 @@ grunt.initConfig({
 				'src/map/MapController.js',
 				'src/map/html/gui-controller.js',
 				'src/map/html/gui-map.js',
-				'src/map/layer/*.js'
+				'src/map/layer/*.js',
+				'src/compatibility.js'
 			],
 			dest: 'dist/fenix-ui-map.src.js'
 		}

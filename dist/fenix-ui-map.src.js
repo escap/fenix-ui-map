@@ -4014,4 +4014,15 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     return l;
 };
 
-// TODO: create a method to import an dependencies baselayer
+// TODO: create a method to import an dependencies baselayer;
+
+if(typeof define === 'function' && define.amd) {
+//AMD
+    define(FM);
+} else if(typeof module !== 'undefined') {
+// Node/CommonJS
+    module.exports = FM;
+} else {
+// Browser globals
+    window.FM = FM
+}
