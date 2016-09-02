@@ -1,10 +1,14 @@
 {
   "name": "fenix-ui-map",
-  "version": "0.2.1",
+  "version": "3.0.0-beta.0",
   "description": "FENIX map component",
-  "main": "index.html",
+  "main": "dist/fenix-ui-map.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test karma start ./karma.config.js",
+    "build": "NODE_ENV=production webpack --display-error-details",
+    "build:demo": "NODE_ENV=demo webpack --display-error-details",
+    "dev": "NODE_ENV=develop webpack-dev-server --display-error-details --progress --color --content-base dev",
+    "validate": "NODE_ENV=test webpack-validator webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +24,8 @@
   },
   "homepage": "https://github.com/FENIX-Platform/fenix-ui-map",
   "devDependencies": {
+    "chai": "^3.5.0",
+    "clean-webpack-plugin": "^0.1.10",
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.11",
     "grunt-contrib-clean": "~0.5.0",
@@ -30,21 +36,29 @@
     "grunt-contrib-uglify": "~0.2.7",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-jsonlint": "~1.0.4",
-    "grunt-sftp-deploy": "^0.2.4"
+    "grunt-sftp-deploy": "^0.2.4",
+    "jshint": "^2.9.3",
+    "jshint-loader": "^0.8.3",
+    "karma": "^1.2.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-mocha": "^1.1.1",
+    "karma-webpack": "^1.8.0",
+    "mocha": "^3.0.2",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.15.1"
   },
   "dependencies": {
-    "jquery": "~2.1.0",
-    "bootstrap": "~3.5.0",
-    "requirejs": "~2.1.14",
-    "handlebars": "~2.0.0",
-    "underscore": "~1.7.0",
-    "leaflet": "~0.7.7",
-    "leaflet.markercluster": "~0.4.0",
-    "chosen-jquery": "~0.1.1",
-    "text": "https://github.com/requirejs/text/tarball/master",
-    "i18n": "https://github.com/requirejs/i18n/tarball/master",
-    "domReady": "https://github.com/requirejs/domReady/tarball/master",
-    "jquery-ui": "http://fenixapps.fao.org/repository/js/jquery-ui/jquery-ui-1.10.3.tgz",
-    "jquery.hoverIntent": "http://fenixapps.fao.org/repository/js/jquery.hoverIntent/jquery.hoverIntent-1.8.0.tgz"
+    "bootstrap": "*",
+    "chosen-jquery": "^0.1.1",
+    "handlebars": "^2.0.0",
+    "hoverintent-jqplugin": "^0.2.1",
+    "jquery": "^2.1.0",
+    "jquery-ui": "^1.12.0",
+    "leaflet": "^0.7.7",
+    "leaflet.markercluster": "^0.4.0",
+    "underscore": "^1.7.0"
   }
 }

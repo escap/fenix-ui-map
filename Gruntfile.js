@@ -29,13 +29,13 @@ grunt.initConfig({
 	},
 	clean: {
 		js: {
-			src: ['dist/*.js']
+			src: ['dist_tmp/*.js']
 		},
 		css: {
-			src: ['dist/*.css']
+			src: ['dist_tmp/*.css']
 		},		
 		images: {
-			src: ['dist/images/*']
+			src: ['dist_tmp/images/*']
 		}		
 	},
 	jshint: {
@@ -59,21 +59,21 @@ grunt.initConfig({
 		fenixmapconfig: {
 			nonull: true,
 			src: 'src/FenixMapConfig.js',
-			dest: 'dist/fenix-ui-map-config.js'
+			dest: 'dist_tmp/fenix-ui-map-config.js'
 		},
 		imageslayers: {
 			nonull: true,
 			expand: true,
 			cwd: "src/css/images/",
 			src: '**',
-			dest: "dist/images/"
+			dest: "dist_tmp/images/"
 		},
 		i18n: {
 			nonull: true,
 			expand: true,
 			cwd: 'src/i18n/',
 			src: '*',
-			dest: 'dist/i18n/'
+			dest: 'dist_tmp/i18n/'
 		}		
 	},
 	concat: {
@@ -105,7 +105,7 @@ grunt.initConfig({
 				'src/map/layer/*.js',
 				'src/compatibility.js'
 			],
-			dest: 'dist/fenix-ui-map.src.js'
+			dest: 'dist_tmp/fenix-ui-map.src.js'
 		}
 	},
 	uglify: {
@@ -114,7 +114,7 @@ grunt.initConfig({
 		},
 		fenixmap: {
 			files: {
-				'dist/fenix-ui-map.min.js': ['dist/fenix-ui-map.src.js']
+				'dist_tmp/fenix-ui-map.min.js': ['dist_tmp/fenix-ui-map.src.js']
 			}
 		}
 	},
@@ -127,11 +127,11 @@ grunt.initConfig({
 				'src/css/fenix-ui-leaflet.css',
 				'src/css/fenix-ui-map.css'
 			],
-			dest: 'dist/fenix-ui-map.min.css'
+			dest: 'dist_tmp/fenix-ui-map.min.css'
 		},
 		minify: {
 			expand: true,
-			cwd: 'dist/',
+			cwd: 'dist_tmp/',
 			src: '<%= cssmin.combine.dest %>'
 		}
 	},
