@@ -26,8 +26,8 @@ define(function() {
 			'jquery.i18n.properties':FENIX_CDN+'jquery/1.0.9/jquery.i18n.properties-min',
 			'jquery.hoverIntent'    :FENIX_CDN+'jquery.hoverIntent/1.8.0/jquery.hoverIntent.min',
 
-			'fenix-map'             :'dist/fenix-ui-map.src',
-			'fenix-map-config'      :'dist/fenix-ui-map-config'
+			'fenix-map'             :'dist_grunt/fenix-ui-map.src',
+			'fenix-map-config'      :'dist_grunt/fenix-ui-map-config'
 			//'import-dependencies'   :'//fenixrepo.fao.org/cdn/js/FENIX/utils/import-dependencies-1.0',
 		},
 

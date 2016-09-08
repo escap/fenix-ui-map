@@ -27,15 +27,16 @@ grunt.initConfig({
 		' * <%= pkg.repository.url %> \n'+
 		' */\n'
 	},
+	distdir: 'dist_grunt',
 	clean: {
 		js: {
-			src: ['dist_tmp/*.js']
+			src: ['<%= distdir %>/*.js']
 		},
 		css: {
-			src: ['dist_tmp/*.css']
+			src: ['<%= distdir %>/*.css']
 		},		
 		images: {
-			src: ['dist_tmp/images/*']
+			src: ['<%= distdir %>/images/*']
 		}		
 	},
 	jshint: {
@@ -59,21 +60,21 @@ grunt.initConfig({
 		fenixmapconfig: {
 			nonull: true,
 			src: 'src/FenixMapConfig.js',
-			dest: 'dist_tmp/fenix-ui-map-config.js'
+			dest: '<%= distdir %>/fenix-ui-map-config.js'
 		},
 		imageslayers: {
 			nonull: true,
 			expand: true,
 			cwd: "src/css/images/",
 			src: '**',
-			dest: "dist_tmp/images/"
+			dest: "<%= distdir %>/images/"
 		},
 		i18n: {
 			nonull: true,
 			expand: true,
 			cwd: 'src/i18n/',
 			src: '*',
-			dest: 'dist_tmp/i18n/'
+			dest: '<%= distdir %>/i18n/'
 		}		
 	},
 	concat: {
@@ -87,6 +88,7 @@ grunt.initConfig({
 		fenixmap: {
 			src: [
 				'src/FenixMap.js',
+				'src/config.js',
 				'src/core/Class.js',
 				'src/core/Util.js',
 				'src/core/HashMap.js',
@@ -105,7 +107,7 @@ grunt.initConfig({
 				'src/map/layer/*.js',
 				'src/compatibility.js'
 			],
-			dest: 'dist_tmp/fenix-ui-map.src.js'
+			dest: '<%= distdir %>/fenix-ui-map.src.js'
 		}
 	},
 	uglify: {
@@ -114,7 +116,7 @@ grunt.initConfig({
 		},
 		fenixmap: {
 			files: {
-				'dist_tmp/fenix-ui-map.min.js': ['dist_tmp/fenix-ui-map.src.js']
+				'<%= distdir %>/fenix-ui-map.min.js': ['<%= distdir %>/fenix-ui-map.src.js']
 			}
 		}
 	},
@@ -127,11 +129,11 @@ grunt.initConfig({
 				'src/css/fenix-ui-leaflet.css',
 				'src/css/fenix-ui-map.css'
 			],
-			dest: 'dist_tmp/fenix-ui-map.min.css'
+			dest: '<%= distdir %>/fenix-ui-map.min.css'
 		},
 		minify: {
 			expand: true,
-			cwd: 'dist_tmp/',
+			cwd: '<%= distdir %>/',
 			src: '<%= cssmin.combine.dest %>'
 		}
 	},
@@ -156,7 +158,14 @@ grunt.initConfig({
 		dist: {
 			options: { livereload: true },
 			files: ['src/**/*','Gruntfile.js'],
-			tasks: ['clean:js','clean:css','copy:fenixmapconfig','concat','cssmin','jshint']
+			tasks: [
+				'clean:js',
+				'clean:css',
+				'copy:fenixmapconfig',
+				'concat',
+				'cssmin',
+				'jshint'
+			]
 		}
 	}
 });

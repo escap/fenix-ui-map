@@ -18,7 +18,7 @@
     "url": "https://github.com/FENIX-Platform/fenix-ui-map.git"
   },
   "keywords": [
-    "FENIX"
+    "fenix","map","leaflet"
   ],
   "author": "FENIX team (http://fenix.fao.org/)",
   "license": "GPL-2.0",
