@@ -9,13 +9,11 @@
     "build:demo": "NODE_ENV=demo webpack --display-error-details",
     "dev": "NODE_ENV=develop webpack-dev-server --display-error-details --progress --color --content-base dev",
     "validate": "NODE_ENV=test webpack-validator webpack.config.js",
-
     "w-test": "SET NODE_ENV=test && karma start ./karma.config.js",
     "w-build": "SET NODE_ENV=production && webpack --display-error-details",
     "w-build:demo": "SET NODE_ENV=demo && webpack --display-error-details",
     "w-dev": "SET NODE_ENV=develop && webpack-dev-server --display-error-details --progress --color --content-base dev",
     "w-validate": "SET NODE_ENV=test && webpack-validator webpack.config.js"
-
   },
   "repository": {
     "type": "git",
@@ -60,12 +58,14 @@
   "dependencies": {
     "bootstrap": "*",
     "chosen-jquery": "^0.1.1",
-    "handlebars": "^2.0.0",
+    "handlebars": "^4.0.5",
+    "handlebars-loader": "^1.4.0",
     "hoverintent-jqplugin": "^0.2.1",
     "jquery": "^2.1.0",
     "jquery-ui": "^1.12.0",
     "leaflet": "^0.7.7",
     "leaflet.markercluster": "^0.4.0",
+    "loglevel": "^1.4.1",
     "underscore": "^1.7.0"
   }
 }
