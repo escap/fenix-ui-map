@@ -1,8 +1,8 @@
 {
   "name": "fenix-ui-map",
-  "version": "2.1.0-beta.0",
+  "version": "2.2.0-beta.0",
   "description": "FENIX map component",
-  "main": "dist/fenix-ui-map.src.js",
+  "main": "dist/fenix-ui-map.min.js",
   "scripts": {
     "test": "NODE_ENV=test karma start ./karma.config.js",
     "build": "NODE_ENV=production webpack --display-error-details",
@@ -18,7 +18,9 @@
     "url": "https://github.com/FENIX-Platform/fenix-ui-map.git"
   },
   "keywords": [
-    "fenix","map","leaflet"
+    "fenix",
+    "map",
+    "leaflet"
   ],
   "author": "FENIX team (http://fenix.fao.org/)",
   "license": "GPL-2.0",
