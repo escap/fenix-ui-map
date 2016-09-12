@@ -1,7 +1,7 @@
 
 #Required
 layer.layers=layername; layer(s) to be added (current layername on the WMS Server)
-layer.urlWMS='http:/fenixapps.fao.org/geoserver/wms' this is the current WMS Server location
+layer.urlWMS='http:/fenix.fao.org/geoserver/wms' this is the current WMS Server location
 
 #WMS Layer Parameters *Optional*
 layer.styles='';        style applied to the layer(s)

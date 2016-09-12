@@ -24,5 +24,3 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     l.leafletLayer = l.createTileLayer(layer.layername);
     return l;
 };
-
-// TODO: create a method to import an dependencies baselayer

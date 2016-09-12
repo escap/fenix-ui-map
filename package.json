@@ -60,6 +60,7 @@
     "chosen-jquery": "^0.1.1",
     "handlebars": "^4.0.5",
     "handlebars-loader": "^1.4.0",
+    "hashmap": "^2.0.6",
     "hoverintent-jqplugin": "^0.2.1",
     "jquery": "^2.1.0",
     "jquery-ui": "^1.12.0",

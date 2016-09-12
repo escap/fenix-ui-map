@@ -17,8 +17,8 @@ requirejs(['../src/paths'], function (paths) {
 console.log('TEST AMD FenixMap:', FenixMap);
 
 		_.extend(FenixMapConf, {
-			BASEURL: '../dist',
-			BASEURL_LANG: '../dist/i18n/'
+			BASEURL: '../dist_grunt',
+			BASEURL_LANG: '../dist_grunt/i18n/'
 		});
 
 		var m = new FM.Map('#map', {
@@ -75,7 +75,7 @@ console.log('TEST AMD FenixMap:', FenixMap);
 		m.addLayer( new FM.layer({
 			layers: 'fenix:gaul0_line_3857',
 			layertitle: 'Country Boundaries',
-			urlWMS: 'http://fenixapps.fao.org/geoserver',
+			urlWMS: 'http://fenix.fao.org/geoserver',
 			opacity: '0.8',
 			lang: 'EN'
 		}) );

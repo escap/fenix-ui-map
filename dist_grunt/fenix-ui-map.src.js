@@ -1,41 +1,10 @@
-/* 
- * fenix-ui-map v3.0.0-beta.1 
- * Copyright 2016  
- * FENIX team (http://fenix.fao.org/) 
- * 
- * Licensed under the GPL-2.0 license. 
- * 
- * Source: 
- * https://github.com/FENIX-Platform/fenix-ui-map.git 
- */
-var FM, originalFM;
+define(["jquery","leaflet","hashmap"], function($, L, HashMap) {$.i18n = {
+    properties: function(opts) {},
+    prop: function(p) {return p}
+};
 
-if(!window.console) {
-    window.console = {
-        log: function(){},
-        warn: function(){},
-        info: function(){},
-        error: function(){}        
-    };
-}
-
-if (typeof exports !== undefined + '') {
-    FM = exports;
-} else {
-    originalL = window.FM;
-    FM = {};
-
-    FM.noConflict = function () {
-        window.FM = originalFM;
-        return this;
-    };
-    window.FM = FM;
-}
-
-FM.authors = [
-	{name: 'Stefano Cudini', email: 'stefano.cudini@fao.org'},
-	{name: 'Simone Murzilli', email: 'simone.murzilli@gmail.com; simone.murzilli@fao.org'}
-];;
+var FM = {};
+;
 
 FM.CONFIG = {
 	BASEURL_LANG: 'http://fenixrepo.fao.org/cdn/js/fenix-ui-map/0.1.4/i18n/',
@@ -367,110 +336,6 @@ FM.stamp = FM.Util.stamp;
 FM.setOptions = FM.Util.setOptions;
 FM.loadModuleLibs = FM.Util.loadModuleLibs;
 FM.initializeLangProperties = FM.Util.initializeLangProperties;;
-;(function(exports){
-	
-	function HashMap() {
-		this.clear();
-	};
-
-	HashMap.prototype = {
-		constructor:HashMap,
-
-		get:function(key) {
-			var data = this._data[this.hash(key)];
-			return data && data[1];
-		},
-		
-		set:function(key, value) {
-			// Store original key as well (for iteration)
-			this._data[this.hash(key)] = [key, value];
-		},
-		
-		has:function(key) {
-			return this.hash(key) in this._data;
-		},
-		
-		remove:function(key) {
-			delete this._data[this.hash(key)];
-		},
-
-		type:function(key) {
-			var str = Object.prototype.toString.call(key);
-			var type = str.slice(8, -1).toLowerCase();
-			// Some browsers yield DOMWindow for null and undefined, works fine on Node
-			if (type === 'domwindow' && !key) {
-				return key + '';
-			}
-			return type;
-		},
-
-		count:function() {
-			var n = 0;
-			for (var key in this._data) {
-				n++;
-			}
-			return n;
-		},
-
-		clear:function() {
-			// TODO: Would Object.create(null) make any difference
-			this._data = {};
-		},
-
-		hash:function(key) {
-			switch (this.type(key)) {
-				case 'undefined':
-				case 'null':
-				case 'boolean':
-				case 'number':
-				case 'regexp':
-					return key + '';
-
-				case 'date':
-					return ':' + key.getTime();
-
-				case 'string':
-					return '"' + key;
-
-				case 'array':
-					var hashes = [];
-					for (var i = 0; i < key.length; i++)
-						hashes[i] = this.hash(key[i]);
-					return '[' + hashes.join('|');
-
-				case 'object':
-				default:
-					// TODO: Don't use expandos when Object.defineProperty is not available?
-					if (!key._hmuid_) {
-						key._hmuid_ = ++HashMap.uid;
-						hide(key, '_hmuid_');
-					}
-
-					return '{' + key._hmuid_;
-			}
-		},
-
-		forEach:function(func) {
-			for (var key in this._data) {
-				var data = this._data[key];
-				func(data[1], data[0]);
-			}
-		}
-	};
-
-	HashMap.uid = 0;
-
-	
-	function hide(obj, prop) {
-		// Make non iterable if supported
-		if (Object.defineProperty) {
-			Object.defineProperty(obj, prop, {enumerable:false});
-		}
-	};
-
-	exports.HashMap = HashMap;
-
-})(this.exports || this);;
 
 FM.UIUtils = {
 
@@ -4037,16 +3902,4 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     l.leafletLayer = l.createTileLayer(layer.layername);
     return l;
 };
-
-// TODO: create a method to import an dependencies baselayer;
-
-if(typeof define === 'function' && define.amd) {
-//AMD
-    define(FM);
-} else if(typeof module !== 'undefined') {
-// Node/CommonJS
-    module.exports = FM;
-} else {
-// Browser globals
-    window.FM = FM
-}
+ return FM; });

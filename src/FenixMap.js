@@ -3,31 +3,9 @@
  * This code allows you to handle any possible namespace conflicts.
  */
 
-var FM, originalFM;
+$.i18n = {
+    properties: function(opts) {},
+    prop: function(p) {return p}
+};
 
-if(!window.console) {
-    window.console = {
-        log: function(){},
-        warn: function(){},
-        info: function(){},
-        error: function(){}        
-    };
-}
-
-if (typeof exports !== undefined + '') {
-    FM = exports;
-} else {
-    originalL = window.FM;
-    FM = {};
-
-    FM.noConflict = function () {
-        window.FM = originalFM;
-        return this;
-    };
-    window.FM = FM;
-}
-
-FM.authors = [
-	{name: 'Stefano Cudini', email: 'stefano.cudini@fao.org'},
-	{name: 'Simone Murzilli', email: 'simone.murzilli@gmail.com; simone.murzilli@fao.org'}
-];
+var FM = {};

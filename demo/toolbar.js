@@ -17,8 +17,8 @@ requirejs(['../src/paths'], function (paths) {
 		Data) {
 		
 		_.extend(FenixMapConf, {
-			BASEURL: '../dist',
-			BASEURL_LANG: '../dist/i18n/'
+			BASEURL: '../dist_grunt',
+			BASEURL_LANG: '../dist_grunt/i18n/'
 		});
 
 		window.map = new FM.Map('#map', {

@@ -79,7 +79,8 @@ grunt.initConfig({
 	},
 	concat: {
 		options: {
-			banner: '<%= meta.banner %>',
+			banner: 'define(["jquery","leaflet","hashmap"], function($, L, HashMap) {',
+			footer: ' return FM; });',
 			separator: ';\n',
 			stripBanners: {
 				block: true
@@ -91,7 +92,7 @@ grunt.initConfig({
 				'src/config.js',
 				'src/core/Class.js',
 				'src/core/Util.js',
-				'src/core/HashMap.js',
+				//'src/core/HashMap.js',
 				//TODO move to lib
 				'src/core/UIUtils.js',
 				'src/core/WMSUtils.js',
@@ -105,15 +106,12 @@ grunt.initConfig({
 				'src/map/html/gui-controller.js',
 				'src/map/html/gui-map.js',
 				'src/map/layer/*.js',
-				'src/compatibility.js'
+				//'src/compatibility.js'
 			],
 			dest: '<%= distdir %>/fenix-ui-map.src.js'
 		}
 	},
 	uglify: {
-		options: {
-			banner: '<%= meta.banner %>'
-		},
 		fenixmap: {
 			files: {
 				'<%= distdir %>/fenix-ui-map.min.js': ['<%= distdir %>/fenix-ui-map.src.js']
@@ -174,7 +172,7 @@ grunt.registerTask('default', [
 	//'jshint',
 	'clean',
 	'concat:fenixmap',
-	'uglify',	
+	//'uglify',	
 	'cssmin',
 	'jsonlint',	
 	'copy'

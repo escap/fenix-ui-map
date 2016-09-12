@@ -25,8 +25,8 @@ require.config({
 		'jquery.hoverIntent'    :'node_modules/jquery.hoverIntent/jquery.hoverIntent.min',
 
 
-		'fenix-map'             :'dist/fenix-ui-map.src',
-		'fenix-map-config'      :'dist/fenix-ui-map-config'
+		'fenix-map'             :'dist_grunt/fenix-ui-map.src',
+		'fenix-map-config'      :'dist_grunt/fenix-ui-map-config'
 		//'import-dependencies'   :'//fenixrepo.fao.org/cdn/js/FENIX/utils/import-dependencies-1.0',
 	},
 
@@ -69,8 +69,8 @@ require([
 
 
 	_.extend(FenixMapConf, {
-		BASEURL: '../dist',
-		BASEURL_LANG: '../dist/i18n/'
+		BASEURL: '../dist_grunt',
+		BASEURL_LANG: '../dist_grunt/i18n/'
 	});
 
 	var m = new FM.Map('map', {
