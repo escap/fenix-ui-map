@@ -104,7 +104,7 @@ FM.WMSUtils = FM.Class.extend({
 
                 $("#" + id).append(layerPanel);
                 $('#' + rand + '-WMSLayer-title')
-                    .tooltip({title: layer.layertitle})
+                    //.tooltip({title: layer.layertitle})
                     .append(layer.layertitle);
 
 

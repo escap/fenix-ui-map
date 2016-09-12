@@ -566,7 +566,7 @@ FM.WMSUtils = FM.Class.extend({
 
                 $("#" + id).append(layerPanel);
                 $('#' + rand + '-WMSLayer-title')
-                    .tooltip({title: layer.layertitle})
+                    //.tooltip({title: layer.layertitle})
                     .append(layer.layertitle);
 
 
@@ -2988,7 +2988,7 @@ FM.MAPController = FM.Class.extend({
         }
         
         var $boxIcon = $(FM.Util.replaceAll(FM.guiController[guiIcon], 'REPLACE', this.suffix));
-        $boxIcon.tooltip({title: $.i18n.prop('_' + toLoad) });
+        //$boxIcon.tooltip({title: $.i18n.prop('_' + toLoad) });
 
         $boxIcon.appendTo(this.$boxIcons);
 
@@ -3129,7 +3129,7 @@ FM.MAPController = FM.Class.extend({
 
             // Enable/Disable layer
             $(idItem+ '-enabledisable')
-                .tooltip({title: $.i18n.prop('_enabledisablelayer') })
+                //.tooltip({title: $.i18n.prop('_enabledisablelayer') })
                 .on('click', {id:l.id}, function(event) {
                     self.showHide(event.data.id)
                 });
@@ -3140,7 +3140,7 @@ FM.MAPController = FM.Class.extend({
                 opacity = l.layer.opacity;
 
             $(idItem+ '-opacity')
-                .tooltip({title: $.i18n.prop('_layeropacity') })
+                //.tooltip({title: $.i18n.prop('_layeropacity') })
                 .slider({
                     orientation: "horizontal",
                     range: "min",
@@ -3177,7 +3177,7 @@ FM.MAPController = FM.Class.extend({
                     }
                 });
                 
-                $layergfi.tooltip({title: $.i18n.prop('_getfeatureinfo') });
+                //$layergfi.tooltip({title: $.i18n.prop('_getfeatureinfo') });
 
                 if ( l.layer.defaultgfi ) {
                     // TODO: set default gfi style on the layer
@@ -3199,7 +3199,8 @@ FM.MAPController = FM.Class.extend({
                 });
             }
             
-            $getlegend.tooltip({title: $.i18n.prop('_showhidelegend') })
+            $getlegend
+                //.tooltip({title: $.i18n.prop('_showhidelegend') })
                 .css("display","inline-block");
 
             // Switch JoinType (From shaded to Point Layer)
@@ -3207,7 +3208,7 @@ FM.MAPController = FM.Class.extend({
                 if (l.layer.layertype == 'JOIN' ) {
                     if (l.layer.switchjointype == null || l.layer.switchjointype ) {
                         $(idItem+ '-switchjointype')
-                        .tooltip({title: $.i18n.prop('_switchto'+ l.layer.jointype.toLowerCase()) })
+                        //.tooltip({title: $.i18n.prop('_switchto'+ l.layer.jointype.toLowerCase()) })
                         .css("display","inline-block")
                         .on('click', {id:l.id}, function(event) {
                             self.switchJoinType(event.data.id);
@@ -3443,7 +3444,7 @@ FM.MAPController = FM.Class.extend({
             $('#' + l.id + '-controller-item-switchjointype').attr( "title", $.i18n.prop('_switchtoshaded'));
             this.switchToPoint(id);
         }
-        $("#" + l.id +  "-controller-item-switchjointype").tooltip({title: $.i18n.prop('_switchtoshaded') });
+        //$("#" + l.id +  "-controller-item-switchjointype").tooltip({title: $.i18n.prop('_switchtoshaded') });
     },
 
     /*
