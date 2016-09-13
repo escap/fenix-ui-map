@@ -30,7 +30,7 @@ grunt.initConfig({
 	distdir: 'dist_grunt',
 	clean: {
 		js: {
-			src: ['<%= distdir %>/*.js']
+			src: ['<%= distdir %>/fenix-ui-map*.js']
 		},
 		css: {
 			src: ['<%= distdir %>/*.css']
