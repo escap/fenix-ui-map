@@ -1,41 +1,38 @@
-/* 
- * fenix-ui-map v0.2.1 
- * Copyright 2016  
- * FENIX team (http://fenix.fao.org/) 
- * 
- * Licensed under the GPL-2.0 license. 
- * 
- * Source: 
- * https://github.com/FENIX-Platform/fenix-ui-map.git 
- */
-var FM, originalFM;
 
-if(!window.console) {
-    window.console = {
-        log: function(){},
-        warn: function(){},
-        info: function(){},
-        error: function(){}        
-    };
-}
+define(["jquery","leaflet","hashmap"], function($, L, HashMap) {
 
-if (typeof exports !== undefined + '') {
-    FM = exports;
-} else {
-    originalL = window.FM;
-    FM = {};
+//TODO replace $.i18n lib
+//PATCH
+$.i18n = {
+    properties: function(opts) {},
+    prop: function(p) {return p.replace('_','')}
+};
 
-    FM.noConflict = function () {
-        window.FM = originalFM;
-        return this;
-    };
-    window.FM = FM;
-}
+var FM = {};
 
-FM.authors = [
-	{name: 'Stefano Cudini', email: 'stefano.cudini@fao.org'},
-	{name: 'Simone Murzilli', email: 'simone.murzilli@gmail.com; simone.murzilli@fao.org'}
-];;
+FM.CONFIG = {
+    BASEURL_LANG: 'http://fenixrepo.fao.org/cdn/js/fenix-ui-map/0.1.4/i18n/',
+
+    MAP_SERVICE_SHADED: 'http://fenix.fao.org/test/geo/fenix/mapclassify/join/',
+    DEFAULT_WMS_SERVER: 'http://fenix.fao.org/demo/fenix/geoserver',
+    MAP_SERVICE_GFI_JOIN: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/',
+    MAP_SERVICE_GFI_STANDARD: 'http://fenix.fao.org/test/geo/fenix/mapclassify/request/',
+
+    // ZOOM TO BBOX
+    ZOOM_TO_BBOX: 'http://fenix.fao.org/geo/fenix/spatialquery/db/spatial/bbox/layer/',
+
+    CSS_TO_SLD: 'http://fenixapps2.fao.org/geoservices/CSS2SLD',
+
+    BASEURL_MAPS: 'http://fenixapps2.fao.org/maps-demo',
+    MAP_SERVICE_ZOOM_TO_BOUNDARY: '/rest/service/bbox',
+    MAP_SERVICE_WMS_GET_CAPABILITIES: '/rest/service/request',
+    MAP_SERVICE_PROXY: '/rest/service/request',
+
+    LAYER_BOUNDARIES: 'fenix:gaul0_line_3857',
+    LAYER_LABELS: 'http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png',
+};
+
+FMCONFIG = FM.CONFIG;;
 FM.Class = function () {};
 
 FM.Class.extend = function (props) {
@@ -343,110 +340,6 @@ FM.stamp = FM.Util.stamp;
 FM.setOptions = FM.Util.setOptions;
 FM.loadModuleLibs = FM.Util.loadModuleLibs;
 FM.initializeLangProperties = FM.Util.initializeLangProperties;;
-;(function(exports){
-	
-	function HashMap() {
-		this.clear();
-	};
-
-	HashMap.prototype = {
-		constructor:HashMap,
-
-		get:function(key) {
-			var data = this._data[this.hash(key)];
-			return data && data[1];
-		},
-		
-		set:function(key, value) {
-			// Store original key as well (for iteration)
-			this._data[this.hash(key)] = [key, value];
-		},
-		
-		has:function(key) {
-			return this.hash(key) in this._data;
-		},
-		
-		remove:function(key) {
-			delete this._data[this.hash(key)];
-		},
-
-		type:function(key) {
-			var str = Object.prototype.toString.call(key);
-			var type = str.slice(8, -1).toLowerCase();
-			// Some browsers yield DOMWindow for null and undefined, works fine on Node
-			if (type === 'domwindow' && !key) {
-				return key + '';
-			}
-			return type;
-		},
-
-		count:function() {
-			var n = 0;
-			for (var key in this._data) {
-				n++;
-			}
-			return n;
-		},
-
-		clear:function() {
-			// TODO: Would Object.create(null) make any difference
-			this._data = {};
-		},
-
-		hash:function(key) {
-			switch (this.type(key)) {
-				case 'undefined':
-				case 'null':
-				case 'boolean':
-				case 'number':
-				case 'regexp':
-					return key + '';
-
-				case 'date':
-					return ':' + key.getTime();
-
-				case 'string':
-					return '"' + key;
-
-				case 'array':
-					var hashes = [];
-					for (var i = 0; i < key.length; i++)
-						hashes[i] = this.hash(key[i]);
-					return '[' + hashes.join('|');
-
-				case 'object':
-				default:
-					// TODO: Don't use expandos when Object.defineProperty is not available?
-					if (!key._hmuid_) {
-						key._hmuid_ = ++HashMap.uid;
-						hide(key, '_hmuid_');
-					}
-
-					return '{' + key._hmuid_;
-			}
-		},
-
-		forEach:function(func) {
-			for (var key in this._data) {
-				var data = this._data[key];
-				func(data[1], data[0]);
-			}
-		}
-	};
-
-	HashMap.uid = 0;
-
-	
-	function hide(obj, prop) {
-		// Make non iterable if supported
-		if (Object.defineProperty) {
-			Object.defineProperty(obj, prop, {enumerable:false});
-		}
-	};
-
-	exports.HashMap = HashMap;
-
-})(this.exports || this);;
 
 FM.UIUtils = {
 
@@ -1092,7 +985,7 @@ FM.Map = FM.Class.extend({
     plugins: {},    //indexed plugins istances
 
     options: {
-        url: {},    	
+        url: {},        
         lang: 'EN',
         guiController : {
             container: null,
@@ -1103,11 +996,11 @@ FM.Map = FM.Class.extend({
             layersthumbs: false
         },
         plugins: {
-			fullscreen: true,  //true or {id: 'divID'} or false
-        	zoomcontrol: true,
+            fullscreen: true,  //true or {id: 'divID'} or false
+            zoomcontrol: true,
             scalecontrol: true,
             legendcontrol: true,
-        	disclaimerfao: true
+            disclaimerfao: true
         },
         baselayers: null,
         boundaries: null,
@@ -1125,8 +1018,8 @@ FM.Map = FM.Class.extend({
         }
     },
     mapOptions: {
-		zoomControl: false,
-		attributionControl: false,
+        zoomControl: false,
+        attributionControl: false,
         center: [0, 0],
         lat: 0,
         lng: 0,
@@ -1225,6 +1118,9 @@ FM.Map = FM.Class.extend({
     },
     
     createMap: function(lat, lng, zoom) {
+
+        var self = this;
+        
         this.mapOptions.lat = lat || this.mapOptions.lat;
         this.mapOptions.lng = lng || this.mapOptions.lng;
         this.mapOptions.zoom = zoom || this.mapOptions.zoom;
@@ -1578,10 +1474,10 @@ FM.Map = FM.Class.extend({
             var _this = this;
             $.each(this.options.plugins, function(key, value) {
                 var pname = key.toLowerCase(),
-                	invoke = '_add' + pname;
+                    invoke = '_add' + pname;
 
                 if (FM.Plugins[invoke])
-                	_this.plugins[pname] = FM.Plugins[invoke](_this, value);
+                    _this.plugins[pname] = FM.Plugins[invoke](_this, value);
             });
         }
     },
@@ -2125,35 +2021,35 @@ FM.MapUtils = function() {
     };
 
     var fitWorldByScreen = function(m, bounds) {
-    	//http://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
+        //http://stackoverflow.com/questions/6048975/google-maps-v3-how-to-calculate-the-zoom-level-for-a-given-bounds
 
-		var worldBounds = L.latLngBounds([[-90, -180], [90, 180]]),
-			targetBounds = bounds instanceof L.LatLngBounds ? bounds : worldBounds,
+        var worldBounds = L.latLngBounds([[-90, -180], [90, 180]]),
+            targetBounds = bounds instanceof L.LatLngBounds ? bounds : worldBounds,
 
-			GLOBE_WIDTH = 190, // a constant in Google's map projection
-			GLOBE_HEIGHT = 190, // a constant in Google's map projection
+            GLOBE_WIDTH = 190, // a constant in Google's map projection
+            GLOBE_HEIGHT = 190, // a constant in Google's map projection
 
-			west = targetBounds.getSouthWest().lng,
-			east = targetBounds.getNorthEast().lng,
-			angleW = east - west,
+            west = targetBounds.getSouthWest().lng,
+            east = targetBounds.getNorthEast().lng,
+            angleW = east - west,
 
-			north = targetBounds.getNorthEast().lat,
-			south = targetBounds.getSouthWest().lat,
-			angleH = north - south,
+            north = targetBounds.getNorthEast().lat,
+            south = targetBounds.getSouthWest().lat,
+            angleH = north - south,
 
-			mapW = m.getSize().x,
-			mapH = m.getSize().y;
+            mapW = m.getSize().x,
+            mapH = m.getSize().y;
 
-		if (angleW < 0)
-			angleW += 360;
-		if (angleH < 0)
-			angleH += 360;			
+        if (angleW < 0)
+            angleW += 360;
+        if (angleH < 0)
+            angleH += 360;          
 
-		var zoomW = Math.round(Math.log(mapW * 360 / angleW / GLOBE_WIDTH) / Math.LN2),
-			zoomH = Math.round(Math.log(mapH * 360 / angleH / GLOBE_HEIGHT) / Math.LN2),
-			zoom = Math.max(zoomW, zoomH) - 1;
+        var zoomW = Math.round(Math.log(mapW * 360 / angleW / GLOBE_WIDTH) / Math.LN2),
+            zoomH = Math.round(Math.log(mapH * 360 / angleH / GLOBE_HEIGHT) / Math.LN2),
+            zoom = Math.max(zoomW, zoomH) - 1;
 
-		m.setZoom(zoom, { animate: false });
+        m.setZoom(zoom, { animate: false });
     };
 
     return {
@@ -2169,98 +2065,98 @@ FM.MapUtils = function() {
 FM.Plugins = {
 
     _addzoomcontrol: function(_fenixmap, show) {
-    	if( show ) {
-	    	var pos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
-							_fenixmap.options.plugins.zoomcontrol : 'bottomright';
-	        return new L.Control.Zoom({position: pos}).addTo(_fenixmap.map);
-       	}
+        if( show ) {
+            var pos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+                            _fenixmap.options.plugins.zoomcontrol : 'bottomright';
+            return new L.Control.Zoom({position: pos}).addTo(_fenixmap.map);
+        }
     },
 
     _addfullscreen: function(_fenixmap, show) {
         if ( show && window.fullScreenApi && window.fullScreenApi.supportsFullScreen) {
-			return (function() {
+            return (function() {
 
                 //TODO second click on button exit from fullscreen
 
-				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
-						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
-					pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
-						_fenixmap.options.plugins.fullscreen : zoompos,
-					control = new L.Control({position: pos});
+                var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+                        _fenixmap.options.plugins.zoomcontrol : 'bottomright',
+                    pos = typeof _fenixmap.options.plugins.fullscreen === 'string' ? 
+                        _fenixmap.options.plugins.fullscreen : zoompos,
+                    control = new L.Control({position: pos});
 
-				control.onAdd = function(map) {
-					var div = L.DomUtil.create('div','leaflet-control-fullscreen fm-icon-box-background'),
-						a = L.DomUtil.create('a','fm-icon-sprite fm-btn-icon', div);
-					L.DomEvent
-						.disableClickPropagation(a)
-						.addListener(a, 'click', function() {
+                control.onAdd = function(map) {
+                    var div = L.DomUtil.create('div','leaflet-control-fullscreen fm-icon-box-background'),
+                        a = L.DomUtil.create('a','fm-icon-sprite fm-btn-icon', div);
+                    L.DomEvent
+                        .disableClickPropagation(a)
+                        .addListener(a, 'click', function() {
 
-							var idDiv = _fenixmap.options.plugins.fullscreen.id || _fenixmap.id,
+                            var idDiv = _fenixmap.options.plugins.fullscreen.id || _fenixmap.id,
                                 mapdiv = document.getElementById(idDiv);
 
                             if( window.fullScreenApi.isFullScreen(mapdiv) )
                                 window.fullScreenApi.cancelFullScreen(mapdiv);
                             else
                                 window.fullScreenApi.requestFullScreen(mapdiv);
-						}, a);
-					return div;
-				};
-				return control;
-			}())
-			.addTo(_fenixmap.map);
+                        }, a);
+                    return div;
+                };
+                return control;
+            }())
+            .addTo(_fenixmap.map);
         }
     },
 
     _addzoomresetcontrol: function( _fenixmap, show) {
-    	if( show ) {
-			return (function() {
-				var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
-						_fenixmap.options.plugins.zoomcontrol : 'bottomright',
-					pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? 
-						_fenixmap.options.plugins.zoomresetcontrol : zoompos,
-					control = new L.Control({position: pos}),
-					container = _fenixmap.plugins.zoomcontrol._container;
+        if( show ) {
+            return (function() {
+                var zoompos = typeof _fenixmap.options.plugins.zoomcontrol === 'string' ? 
+                        _fenixmap.options.plugins.zoomcontrol : 'bottomright',
+                    pos = typeof _fenixmap.options.plugins.zoomresetcontrol === 'string' ? 
+                        _fenixmap.options.plugins.zoomresetcontrol : zoompos,
+                    control = new L.Control({position: pos}),
+                    container = _fenixmap.plugins.zoomcontrol._container;
 
-				control.onAdd = function(map) {
-						var a = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
-						a.innerHTML = "&nbsp;";
-						a.title = "Zoom Reset";
-						L.DomEvent
-							.disableClickPropagation(a)
-							.addListener(a, 'click', function() {
-								map.setView(map.options.center, map.options.zoom);
-							},a);
-						var d=  L.DomUtil.create('span');
-						d.style.display = 'none';
-						return d;
-					};
-				return control;
-			}())
-			.addTo(_fenixmap.map);
-		}    	
+                control.onAdd = function(map) {
+                        var a = L.DomUtil.create('div','leaflet-control-zoom-reset',container);
+                        a.innerHTML = "&nbsp;";
+                        a.title = "Zoom Reset";
+                        L.DomEvent
+                            .disableClickPropagation(a)
+                            .addListener(a, 'click', function() {
+                                map.setView(map.options.center, map.options.zoom);
+                            },a);
+                        var d=  L.DomUtil.create('span');
+                        d.style.display = 'none';
+                        return d;
+                    };
+                return control;
+            }())
+            .addTo(_fenixmap.map);
+        }       
     },
 
     _adddisclaimerfao: function(_fenixmap, show) {
         if ( show && $.powerTip) {
-			return (function() {
-				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? 
+            return (function() {
+                var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? 
                         _fenixmap.options.plugins.disclaimerfao : 'bottomright',
-					control = new L.Control({position: pos}),
-					lang = _fenixmap.options.lang.toLowerCase();
+                    control = new L.Control({position: pos}),
+                    lang = _fenixmap.options.lang.toLowerCase();
 
-				control.onAdd = function(map) {
-						var div = L.DomUtil.create('div','leaflet-control-disclaimer fm-icon-box-background'),					
-							a = L.DomUtil.create('a','fm-icon-sprite fm-icon-info', div);
-						
-						a.title = FM.guiMap['disclaimerfao_'+lang];
-						
-						$(a).powerTip({placement: 'nw'});
+                control.onAdd = function(map) {
+                        var div = L.DomUtil.create('div','leaflet-control-disclaimer fm-icon-box-background'),                  
+                            a = L.DomUtil.create('a','fm-icon-sprite fm-icon-info', div);
+                        
+                        a.title = FM.guiMap['disclaimerfao_'+lang];
+                        
+                        $(a).powerTip({placement: 'nw'});
 
-						return div;
-					};
-				return control;
-			}())
-			.addTo(_fenixmap.map);
+                        return div;
+                    };
+                return control;
+            }())
+            .addTo(_fenixmap.map);
         }
     },
 
@@ -2288,13 +2184,13 @@ FM.Plugins = {
 
     _addmouseposition: function(_fenixmap, show) {
         if ( show && L.control.mousePosition) {
-        	L.control.mousePosition().addTo(_fenixmap.map);
+            L.control.mousePosition().addTo(_fenixmap.map);
         }
     },
 
     _addexport: function(_fenixmap, show) {
         if ( show && L.Control.Export) {
-        	_fenixmap.map.addControl(new L.Control.Export())
+            _fenixmap.map.addControl(new L.Control.Export())
         }
     },
 
@@ -3048,7 +2944,7 @@ FM.MAPController = FM.Class.extend({
 
 //TODO replace with https://github.com/RubaXa/Sortable
 
-        $('#'+ this.suffix + '-controller-overlay-content').sortable({
+        /*$('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
             stop: function (event, ui) {
@@ -3067,7 +2963,7 @@ FM.MAPController = FM.Class.extend({
                 // setting the z-indexes based on the layers order list
                 // N.B. they are set from the bottom to the top
             }
-        });
+        });*/
     },
 
     /**
@@ -3139,7 +3035,7 @@ FM.MAPController = FM.Class.extend({
             if ( l.layer.opacity != null )
                 opacity = l.layer.opacity;
 
-            $(idItem+ '-opacity')
+            /*$(idItem+ '-opacity')
                 //.tooltip({title: $.i18n.prop('_layeropacity') })
                 .slider({
                     orientation: "horizontal",
@@ -3149,7 +3045,7 @@ FM.MAPController = FM.Class.extend({
                     slide: function( event, ui ) {
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
                     }
-                });
+                });*/
 
             // Layer GetFeatureInfo
             var $layergfi = $(idItem+ '-getfeatureinfo');
@@ -3776,7 +3672,7 @@ FM.guiController = {
 };;
 FM.guiMap = {
     disclaimerfao_en:
-    		'<div class="fm-disclaimerfao">'+
+            '<div class="fm-disclaimerfao">'+
             'The designations employed and the presentation of material in the maps  <br>' +
             'do not imply the expression of any opinion whatsoever on the part of  <br>' +
             'FAO concerning the legal or constitutional status of any country, <br>' +
@@ -3986,9 +3882,6 @@ FM.layer = function (layer, map, options) {
     return new FM.Layer(layer, map, options);
 };
 
-
-;
-
 FM.TileLayer = FM.Layer.extend({
 
   createTileLayer: function() {
@@ -4015,15 +3908,6 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     return l;
 };
 
-// TODO: create a method to import an dependencies baselayer;
+return FM;
 
-if(typeof define === 'function' && define.amd) {
-//AMD
-    define(FM);
-} else if(typeof module !== 'undefined') {
-// Node/CommonJS
-    module.exports = FM;
-} else {
-// Browser globals
-    window.FM = FM
-}
+});

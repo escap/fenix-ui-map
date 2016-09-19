@@ -1,10 +1,14 @@
-define(["jquery","leaflet","hashmap"], function($, L, HashMap) {$.i18n = {
+
+define(["jquery","leaflet","hashmap"], function($, L, HashMap) {
+
+//TODO replace $.i18n lib
+//PATCH
+$.i18n = {
     properties: function(opts) {},
-    prop: function(p) {return p}
+    prop: function(p) {return p.replace('_','')}
 };
 
 var FM = {};
-;
 
 FM.CONFIG = {
 	BASEURL_LANG: 'http://fenixrepo.fao.org/cdn/js/fenix-ui-map/0.1.4/i18n/',
@@ -2940,7 +2944,7 @@ FM.MAPController = FM.Class.extend({
 
 //TODO replace with https://github.com/RubaXa/Sortable
 
-/*        $('#'+ this.suffix + '-controller-overlay-content').sortable({
+        /*$('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
             stop: function (event, ui) {
@@ -3031,9 +3035,9 @@ FM.MAPController = FM.Class.extend({
             if ( l.layer.opacity != null )
                 opacity = l.layer.opacity;
 
-            $(idItem+ '-opacity')
+            /*$(idItem+ '-opacity')
                 //.tooltip({title: $.i18n.prop('_layeropacity') })
-/*                .slider({
+                .slider({
                     orientation: "horizontal",
                     range: "min",
                     min: 0, max: 1, step: 0.1,
@@ -3041,8 +3045,8 @@ FM.MAPController = FM.Class.extend({
                     slide: function( event, ui ) {
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
                     }
-                });
-*/
+                });*/
+
             // Layer GetFeatureInfo
             var $layergfi = $(idItem+ '-getfeatureinfo');
 
@@ -3878,9 +3882,6 @@ FM.layer = function (layer, map, options) {
     return new FM.Layer(layer, map, options);
 };
 
-
-;
-
 FM.TileLayer = FM.Layer.extend({
 
   createTileLayer: function() {
@@ -3906,4 +3907,7 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     l.leafletLayer = l.createTileLayer(layer.layername);
     return l;
 };
- return FM; });
+
+return FM;
+
+});

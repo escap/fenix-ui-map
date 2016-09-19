@@ -143,6 +143,9 @@ FM.Map = FM.Class.extend({
     },
     
     createMap: function(lat, lng, zoom) {
+
+        var self = this;
+        
         this.mapOptions.lat = lat || this.mapOptions.lat;
         this.mapOptions.lng = lng || this.mapOptions.lng;
         this.mapOptions.zoom = zoom || this.mapOptions.zoom;

@@ -219,7 +219,7 @@ FM.MAPController = FM.Class.extend({
 
 //TODO replace with https://github.com/RubaXa/Sortable
 
-        $('#'+ this.suffix + '-controller-overlay-content').sortable({
+/*        $('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
             stop: function (event, ui) {
@@ -238,7 +238,7 @@ FM.MAPController = FM.Class.extend({
                 // setting the z-indexes based on the layers order list
                 // N.B. they are set from the bottom to the top
             }
-        });
+        });*/
     },
 
     /**
@@ -312,7 +312,7 @@ FM.MAPController = FM.Class.extend({
 
             $(idItem+ '-opacity')
                 //.tooltip({title: $.i18n.prop('_layeropacity') })
-                .slider({
+/*                .slider({
                     orientation: "horizontal",
                     range: "min",
                     min: 0, max: 1, step: 0.1,
@@ -321,7 +321,7 @@ FM.MAPController = FM.Class.extend({
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
                     }
                 });
-
+*/
             // Layer GetFeatureInfo
             var $layergfi = $(idItem+ '-getfeatureinfo');
 
