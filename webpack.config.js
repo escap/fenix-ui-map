@@ -3,6 +3,8 @@ var distFolderPath = "dist",
     devFolderPath = "dev",
     webpack = require('webpack'),
     packageJson = require("./package.json"),
+    ExtractTextPlugin = require("extract-text-webpack-plugin"),
+    HtmlWebpackPlugin = require('html-webpack-plugin'),
     CleanWebpackPlugin = require('clean-webpack-plugin'),
     Path = require('path'),
     dependencies = Object.keys(packageJson.dependencies);
@@ -29,16 +31,29 @@ module.exports = {
 
     module: {
         loaders: [
-            {test: /\.hbs$/, loader: "handlebars-loader"},
-            {test: /bootstrap.+\.(jsx|js)$/, loader: 'imports?jQuery=jquery,$=jquery'}]
+            isProduction(
+                {test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader")},
+                {test: /\.css$/, loader: "style-loader!css-loader"}
+            ),
+            {test: /\.png$/, loader: "url-loader?limit=100000"},
+            //{test: /\.gif/, loader: "file-loader?name=[name].[ext]&limit=100000"},
+
+            //Bootstrap loader
+            {test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery'}
+        ]
     },
 
     plugins: clearArray([
         new webpack.ProvidePlugin({$: "jquery", jQuery: "jquery"}),
-        isDemo(undefined, new CleanWebpackPlugin([distFolderPath])),
+        isProduction(new CleanWebpackPlugin([distFolderPath]), undefined),
         isProduction(new webpack.optimize.UglifyJsPlugin({
             compress: {warnings: false},
             output: {comments: false}
+        })),
+        isProduction(new ExtractTextPlugin(packageJson.name + '.min.css')),
+        isDevelop(new HtmlWebpackPlugin({
+            inject: "body",
+            template: devFolderPath + "/index.html"
         }))
     ])
 
