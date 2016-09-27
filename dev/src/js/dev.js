@@ -3,25 +3,9 @@ define([
     'jquery',
     'underscore',
     '../../../src/js/index',
-    /*'fx-common/utils',*/
-/*    'dev/src/models/model-1',
-    'dev/src/models/all',
-    'dev/src/models/semantic',
-    'dev/src/models/fx-resource',
-    'dev/src/models/to-sync',
-    'dev/src/models/tab-table-toolbar-config',
-    'dev/src/models/fx-process',
-    'dev/src/models/aggregation',
-    'dev/src/models/model-2',
-    'dev/src/models/dependencies',
-    'dev/src/models/countrystat',
-    'dev/src/models/setSources',
-    'dev/src/models/amis',
-    'dev/src/html/model-1-base.hbs',*/
     'dev/src/nls/labels',
     'handlebars'
-], function (log, $, _, FxMap, /* Utils, */
-    //Model1, AllModel, SemanticModel, FxResource, ModelToSync, TableTabModel, Process, AggregationModel, Model2, ModelDependencies, CountryStatModel, SetSourcesModel, AmisModel, model1baseTemplate, 
+], function (log, $, _, FxMap,
     i18nLabels, Handlebars) {
 
     'use strict';
