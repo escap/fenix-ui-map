@@ -931,27 +931,6 @@ div#legend.bottomright div table {
     background-position: -12px 0px;
 }
 
-
-.fm-icon-baselayer-ESRI_WORLDSTREETMAP {
-    background-image: url(images/baselayers/ESRI_WORLDSTREETMAP.png);
-}
-
-.fm-icon-baselayer-ESRI_WORLDTERRAINBASE {
-    background-image: url(images/baselayers/ESRI_WORLDTERRAINBASE.png);
-}
-
-.fm-icon-baselayer-OSM {
-    background-image: url(images/baselayers/OSM.png);
-}
-
-.fm-icon-baselayer-MAPQUEST_NASA_AERIAL {
-    background-image: url(images/baselayers/MAPQUEST_NASA_AERIAL.png);
-}
-
-.fm-icon-baselayer-OSM_GRAYSCALE {
-    background-image: url(images/baselayers/OSM_GRAYSCALE.png);
-}
-
 .cards-card {
     background: none repeat scroll 0 0 #FFFFFF;
     border-radius: 2px;

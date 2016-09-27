@@ -14,20 +14,9 @@ grunt.loadNpmTasks('grunt-sftp-deploy');
 
 grunt.initConfig({
 	pkg: grunt.file.readJSON('package.json'),
-	meta: {
-		banner:
-		'/* \n'+
-		' * <%= pkg.name %> v<%= pkg.version %> \n'+
-		' * Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> \n'+
-		' * <%= pkg.author %> \n'+
-		' * \n'+
-		' * Licensed under the <%= pkg.license %> license. \n'+
-		' * \n'+
-		' * Source: \n'+
-		' * <%= pkg.repository.url %> \n'+
-		' */\n'
-	},
-	distdir: 'dist_grunt',
+	
+	distdir: 'dist',
+
 	clean: {
 		js: {
 			src: ['<%= distdir %>/fenix-ui-map*.js']
@@ -57,11 +46,6 @@ grunt.initConfig({
 		}
 	},
 	copy: {
-		fenixmapconfig: {
-			nonull: true,
-			src: 'src/FenixMapConfig.js',
-			dest: '<%= distdir %>/fenix-ui-map-config.js'
-		},
 		imageslayers: {
 			nonull: true,
 			expand: true,
@@ -119,9 +103,6 @@ grunt.initConfig({
 		}
 	},
 	cssmin: {
-		options: {
-			banner: '<%= meta.banner %>'
-		},
 		combine: {
 			src: [
 				'src/css/fenix-ui-leaflet.css',
