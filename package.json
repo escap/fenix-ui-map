@@ -1,6 +1,6 @@
 {
   "name": "fenix-ui-map",
-  "version": "2.6.2",
+  "version": "2.6.5",
   "description": "FENIX map component",
   "main": "dist_grunt/fenix-ui-map.src.js",
   "scripts": {
