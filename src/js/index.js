@@ -3770,7 +3770,8 @@ FM.Layer = FM.Class.extend({
         }
         else {
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
-            this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
+            if(this.layer.urlWMS)
+                this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
         }
         return this.leafletLayer;
     },
@@ -3781,7 +3782,8 @@ FM.Layer = FM.Class.extend({
             this.leafletLayer.setParams(wmsParameters);
         }
         else {
-            this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
+            if(this.layer.urlWMS)
+                this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
         }
         return this.leafletLayer;
     },
