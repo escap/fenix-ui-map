@@ -3760,13 +3760,15 @@ FM.Layer = FM.Class.extend({
     createLayerWMS: function() {
 
         var wmsParameters = this._getWMSParameters();
+
         if ( this.leafletLayer ) {
             if(this.layertype === 'WMS')
                 this.leafletLayer.setParams(wmsParameters);
         }
         else {
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
-            this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
+            if(this.layer.urlWMS)
+                this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
         }
         return this.leafletLayer;
     },
@@ -3777,7 +3779,8 @@ FM.Layer = FM.Class.extend({
             this.leafletLayer.setParams(wmsParameters);
         }
         else {
-            this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
+            if(this.layer.urlWMS)
+                this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
         }
         return this.leafletLayer;
     },
@@ -3884,7 +3887,6 @@ FM.layer = function (layer, map, options) {
 FM.TileLayer = FM.Layer.extend({
 
   createTileLayer: function() {
-    
     var info = this.layer.layername ? FM.TILELAYER[this.layer.layername] : FM.TILELAYER[this.layer.layers];
 
     this.layer.layertype = 'TILE';
