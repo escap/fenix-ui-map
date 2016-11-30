@@ -17,8 +17,8 @@ requirejs(['../src/paths'], function (paths) {
 console.log('TEST AMD FenixMap:', FenixMap);
 
 		_.extend(FenixMapConf, {
-			BASEURL: '../dist_grunt',
-			BASEURL_LANG: '../dist_grunt/i18n/'
+			BASEURL: '../dist',
+			BASEURL_LANG: '../dist/i18n/'
 		});
 
 		var m = new FM.Map('#map', {

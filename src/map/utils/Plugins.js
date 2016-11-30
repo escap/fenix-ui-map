@@ -73,7 +73,7 @@ FM.Plugins = {
     },
 
     _adddisclaimerfao: function(_fenixmap, show) {
-        if ( show && $.powerTip) {
+        if ( show ) {
 			return (function() {
 				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? 
                         _fenixmap.options.plugins.disclaimerfao : 'bottomright',
@@ -86,7 +86,7 @@ FM.Plugins = {
 						
 						a.title = FM.guiMap['disclaimerfao_'+lang];
 						
-						$(a).powerTip({placement: 'nw'});
+                        $(a).tooltip({placement:'left'});
 
 						return div;
 					};

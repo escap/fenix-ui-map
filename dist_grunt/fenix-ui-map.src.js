@@ -1,10 +1,12 @@
-define(["jquery","leaflet","hashmap"], function($, L, HashMap) {$.i18n = {
+define(["jquery","leaflet","hashmap","bootstrap"],
+function($, L, HashMap, Bootstrap) {
+
+$.i18n = {
     properties: function(opts) {},
     prop: function(p) {return p}
 };
 
 var FM = {};
-;
 
 FM.CONFIG = {
 	BASEURL_LANG: 'http://fenixrepo.fao.org/cdn/js/fenix-ui-map/0.1.4/i18n/',
@@ -2122,7 +2124,7 @@ FM.Plugins = {
 							.addListener(a, 'click', function() {
 								map.setView(map.options.center, map.options.zoom);
 							},a);
-						var d=  L.DomUtil.create('span');
+						var d = L.DomUtil.create('span');
 						d.style.display = 'none';
 						return d;
 					};
@@ -2133,7 +2135,7 @@ FM.Plugins = {
     },
 
     _adddisclaimerfao: function(_fenixmap, show) {
-        if ( show && $.powerTip) {
+        if ( show ) {
 			return (function() {
 				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? 
                         _fenixmap.options.plugins.disclaimerfao : 'bottomright',
@@ -2146,7 +2148,7 @@ FM.Plugins = {
 						
 						a.title = FM.guiMap['disclaimerfao_'+lang];
 						
-						$(a).powerTip({placement: 'nw'});
+						$(a).tooltip({placement:'left'});
 
 						return div;
 					};

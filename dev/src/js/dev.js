@@ -2,7 +2,7 @@ define([
     'loglevel',
     'jquery',
     'underscore',
-    '../../../src/js/index',
+    '../../../dist/fenix-ui-map.src',
     'dev/src/nls/labels',
     'handlebars'
 ], function (log, $, _, FxMap,

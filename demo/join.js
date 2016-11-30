@@ -89,7 +89,7 @@ requirejs(['../src/paths'], function (paths) {
             plugins: {
                 geosearch: true,
                 mouseposition: false,
-                controlloading : true
+                controlloading: true
             },
             guiController: {
                 overlay: true,

@@ -1,9 +1,9 @@
-define(["jquery","leaflet","hashmap","bootstrap"],
-function($, L, HashMap, Bootstrap) {
+
+define(["jquery","leaflet","hashmap"], function($, L, HashMap) {
 
 $.i18n = {
     properties: function(opts) {},
-    prop: function(p) {return p}
+    prop: function(p) {return p.replace('_','')}
 };
 
 var FM = {};
@@ -1116,9 +1116,6 @@ FM.Map = FM.Class.extend({
     },
     
     createMap: function(lat, lng, zoom) {
-
-        var self = this;
-        
         this.mapOptions.lat = lat || this.mapOptions.lat;
         this.mapOptions.lng = lng || this.mapOptions.lng;
         this.mapOptions.zoom = zoom || this.mapOptions.zoom;
@@ -2124,7 +2121,7 @@ FM.Plugins = {
 							.addListener(a, 'click', function() {
 								map.setView(map.options.center, map.options.zoom);
 							},a);
-						var d = L.DomUtil.create('span');
+						var d=  L.DomUtil.create('span');
 						d.style.display = 'none';
 						return d;
 					};
@@ -2135,7 +2132,7 @@ FM.Plugins = {
     },
 
     _adddisclaimerfao: function(_fenixmap, show) {
-        if ( show ) {
+        if ( show && $.powerTip) {
 			return (function() {
 				var pos = typeof _fenixmap.options.plugins.disclaimerfao === 'string' ? 
                         _fenixmap.options.plugins.disclaimerfao : 'bottomright',
@@ -2148,7 +2145,7 @@ FM.Plugins = {
 						
 						a.title = FM.guiMap['disclaimerfao_'+lang];
 						
-						$(a).tooltip({placement:'left'});
+						$(a).powerTip({placement: 'nw'});
 
 						return div;
 					};
@@ -2942,7 +2939,7 @@ FM.MAPController = FM.Class.extend({
 
 //TODO replace with https://github.com/RubaXa/Sortable
 
-/*        $('#'+ this.suffix + '-controller-overlay-content').sortable({
+        /*$('#'+ this.suffix + '-controller-overlay-content').sortable({
             cursor: 'move',
             opacity:'0.5',
             stop: function (event, ui) {
@@ -3033,9 +3030,9 @@ FM.MAPController = FM.Class.extend({
             if ( l.layer.opacity != null )
                 opacity = l.layer.opacity;
 
-            $(idItem+ '-opacity')
+            /*$(idItem+ '-opacity')
                 //.tooltip({title: $.i18n.prop('_layeropacity') })
-/*                .slider({
+                .slider({
                     orientation: "horizontal",
                     range: "min",
                     min: 0, max: 1, step: 0.1,
@@ -3043,8 +3040,8 @@ FM.MAPController = FM.Class.extend({
                     slide: function( event, ui ) {
                         FM.LayerUtils.setLayerOpacity(l, ui.value);
                     }
-                });
-*/
+                });*/
+
             // Layer GetFeatureInfo
             var $layergfi = $(idItem+ '-getfeatureinfo');
 
@@ -3762,15 +3759,13 @@ FM.Layer = FM.Class.extend({
     createLayerWMS: function() {
 
         var wmsParameters = this._getWMSParameters();
-
         if ( this.leafletLayer ) {
             if(this.layertype === 'WMS')
                 this.leafletLayer.setParams(wmsParameters);
         }
         else {
             wmsParameters = (this.options)? $.extend(true, {}, this.options, wmsParameters): wmsParameters;
-            if(this.layer.urlWMS)
-                this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
+            this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
         }
         return this.leafletLayer;
     },
@@ -3781,8 +3776,7 @@ FM.Layer = FM.Class.extend({
             this.leafletLayer.setParams(wmsParameters);
         }
         else {
-            if(this.layer.urlWMS)
-                this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
+            this.leafletLayer = new L.TileLayer.WMS( this.layer.urlWMS, wmsParameters );
         }
         return this.leafletLayer;
     },
@@ -3883,12 +3877,10 @@ FM.layer = function (layer, map, options) {
     return new FM.Layer(layer, map, options);
 };
 
-
-;
-
 FM.TileLayer = FM.Layer.extend({
 
   createTileLayer: function() {
+    
     var info = this.layer.layername ? FM.TILELAYER[this.layer.layername] : FM.TILELAYER[this.layer.layers];
 
     this.layer.layertype = 'TILE';
@@ -3910,4 +3902,7 @@ FM.TileLayer.createBaseLayer = function (layername, lang) {
     l.leafletLayer = l.createTileLayer(layer.layername);
     return l;
 };
- return FM; });
+
+return FM;
+
+});
